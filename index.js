@@ -145,7 +145,7 @@ export function apply(ctx, config = {}) {
       entry ??= entries.find((item) => item.options?.id === ENTRY_ID)
     }
     if (!entry) throw new Error(`找不到插件配置行 ${ENTRY_ID}`)
-    const allowed = ['outputRoot', 'namespace', 'timezone', 'profilesDir', 'residualGate', 'validatorJar', 'validatorSample', 'javaPath']
+    const allowed = ['outputRoot', 'outputFormat', 'namespace', 'timezone', 'profilesDir', 'residualGate', 'validatorJar', 'validatorSample', 'javaPath']
     const clean = Object.fromEntries(Object.entries(patch ?? {}).filter(([k]) => allowed.includes(k)))
     await editor.edit(entry, (current) => ({ ...current, ...clean }))
     return { saved: true }

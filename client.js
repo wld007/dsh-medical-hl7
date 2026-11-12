@@ -450,7 +450,7 @@ window.__ModuleLoader__.load({
       if (!form) return h('div', { className: 'hx-settings' }, h('style', {}, CSS), state || '加载中…')
       const field = (k, label, props = {}) => h('label', { className: 'hx-field' }, label, h('input', { className: 'hx-input', value: form[k] ?? '', onChange: (e) => setForm({ ...form, [k]: e.target.value }), ...props }))
       const save = async () => {
-        const patch = { outputRoot: form.outputRoot ?? '', namespace: form.namespace || 'http://dsh.local/fhir', timezone: form.timezone || '+08:00', profilesDir: form.profilesDir ?? '', residualGate: form.residualGate === 'warn' ? 'warn' : 'block', validatorJar: form.validatorJar ?? '', validatorSample: Number(form.validatorSample) || 2, javaPath: form.javaPath || 'java' }
+        const patch = { outputRoot: form.outputRoot ?? '', namespace: form.namespace || 'http://dsh.local/fhir', timezone: form.timezone || '+08:00', profilesDir: form.profilesDir ?? '', residualGate: form.residualGate === 'warn' ? 'warn' : 'block', outputFormat: ['bundles', 'ndjson'].includes(form.outputFormat) ? form.outputFormat : 'both', validatorJar: form.validatorJar ?? '', validatorSample: Number(form.validatorSample) || 2, javaPath: form.javaPath || 'java' }
         try { await call('saveDefaults', patch); setState('已保存（插件会重新加载）') } catch (e) { setState(msg(e)) }
       }
       return h('div', { className: 'hx-settings' }, h('style', {}, CSS),
@@ -461,6 +461,11 @@ window.__ModuleLoader__.load({
           field('timezone', '源数据无时区时按此时区（如 +08:00）'),
           field('outputRoot', '默认输出根目录（空＝输入旁的 _medical-hl7）'),
           field('profilesDir', '额外映射规格目录（*.mjs / *.json，可空）')),
+        h('label', { className: 'hx-field' }, '交付格式',
+          h('select', { className: 'hx-input', value: form.outputFormat ?? 'both', onChange: (e) => setForm({ ...form, outputFormat: e.target.value }) },
+            h('option', { value: 'both' }, '两种都存：按人 bundles/ ＋ 按资源类型 ndjson/'),
+            h('option', { value: 'bundles' }, '只存按人 bundles/（导入 FHIR 服务器、单人交换）'),
+            h('option', { value: 'ndjson' }, '只存按资源类型 ndjson/（批量导入、数据分析；页面不能按病人浏览资源）'))),
         h('h3', { style: { margin: '6px 0 0' } }, '验收'),
         h('label', { className: 'hx-field' }, '发现像真实身份证号/手机号的内容时',
           h('select', { className: 'hx-input', value: form.residualGate ?? 'block', onChange: (e) => setForm({ ...form, residualGate: e.target.value }) },

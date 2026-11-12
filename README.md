@@ -47,6 +47,10 @@ Agent 工具：
   _records/runs/<批次>/          report.md、run.json、mapping.json（本批实际用的映射）、held/（暂扣的病人）
 ```
 
+**字段说明**：按人存储的 Bundle 里每类资源有哪些元素、含义、来自哪个源字段，见 [docs/bundle-fields.md](docs/bundle-fields.md)。
+
+**交付格式**：设置项 `outputFormat` 可选 `both`（默认）、`bundles`（只存按人）、`ndjson`（只存按资源类型）。
+
 ## 设计：语义角色 → 固定构建器
 
 数据源多样、标准化程度低，所以不按每张表写转换代码：
@@ -98,6 +102,7 @@ Agent 工具：
 | `namespace` | `http://dsh.local/fhir` | 标识、代码体系、扩展的命名空间，也是 Bundle fullUrl 的前缀。确定后不要再改 |
 | `timezone` | `+08:00` | 源数据没写时区的时间按此处理 |
 | `profilesDir` | 空 | 额外的映射规格目录 |
+| `outputFormat` | `both` | 交付格式：`both` / `bundles` / `ndjson` |
 | `residualGate` | `block` | `warn` = 只提示、不暂扣 |
 | `validatorJar` / `validatorSample` / `javaPath` | 空 / 2 / java | 官方校验器抽检 |
 

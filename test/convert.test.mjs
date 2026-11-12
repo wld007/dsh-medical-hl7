@@ -181,6 +181,32 @@ test('批次：交付布局、源文件只读、暂扣、报告、Bulk NDJSON', 
   assert.equal((await svc.list()).runs.length, 1)
 })
 
+test('交付格式开关：只存按人 / 只存按资源类型', async () => {
+  for (const outputFormat of ['bundles', 'ndjson']) {
+    const base = await realpath(await mkdtemp(join(tmpdir(), `hl7-fmt-${outputFormat}-`)))
+    await writeFictionalPatient(join(base, 'in', '病人A'))
+    const svc = createService({ config: { outputRoot: join(base, 'out'), outputFormat }, defaultDirectory: base, stateDir: join(base, 'state') })
+    const { runId } = await svc.start({ inputDir: join(base, 'in') })
+    const run = await waitDone(svc, runId)
+    assert.equal(run.error, undefined, run.error)
+    const listing = (await readdir(run.output)).sort()
+    const manifest = JSON.parse(await readFile(join(run.output, 'manifest.json'), 'utf8'))
+    assert.equal(manifest.outputFormat, outputFormat)
+    if (outputFormat === 'bundles') {
+      assert.deepEqual(listing, ['bundles', 'definitions', 'manifest.json'])
+      assert.equal(manifest.output.length, 0)
+      assert.deepEqual(manifest.bundles.map((b) => b.url), ['bundles/病人A.json'])
+      assert.ok((await svc.resources(runId, '病人A')).total > 0)
+    } else {
+      assert.deepEqual(listing, ['definitions', 'manifest.json', 'ndjson'])
+      assert.equal(manifest.bundles.length, 0)
+      assert.ok(manifest.output.some((o) => o.type === 'Patient'))
+      await assert.rejects(svc.resources(runId, '病人A'), /只保存按资源类型/)
+    }
+    assert.ok(run.definitions.CodeSystem > 0, '两种模式都有定义')
+  }
+})
+
 test('输出根目录不能与输入相同或包含输入', async () => {
   const base = await realpath(await mkdtemp(join(tmpdir(), 'hl7-guard-')))
   await writeFictionalPatient(join(base, 'in'))

@@ -10,6 +10,8 @@
         timezone: '+08:00'
         # 额外的映射规格目录（*.mjs / *.json），用于新数据源；空 = 只用内置规格
         profilesDir: ''
+        # 交付格式：both = 按人 bundles/ 与按资源类型 ndjson/ 都存；bundles = 只存按人；ndjson = 只存按资源类型
+        outputFormat: 'both'
         # 交付前发现像真实身份证号/手机号的内容：block = 该病人暂扣不交付；warn = 只在报告里提示
         residualGate: 'block'
         # 官方 HL7 FHIR Validator（validator_cli.jar）路径；空 = 只做内置校验

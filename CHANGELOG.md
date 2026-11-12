@@ -1,5 +1,10 @@
 # 更新记录
 
+## 0.3.0 — 2026-11-12
+
+- 新设置「交付格式」`outputFormat`：`both`（默认，按人 bundles/ 与按资源类型 ndjson/ 都存）、`bundles`（只存按人）、`ndjson`（只存按资源类型）。definitions/ 与 manifest.json 总是保留；manifest 新增 `outputFormat`、`bundles` 列表。
+- 新文档 `docs/bundle-fields.md`：按人存储（Bundle）的字段说明——每类资源的元素、含义、来源字段，扩展、标识体系一览。
+
 ## 0.2.2 — 2026-11-12
 
 - 浅色/深色配色与「医疗数据匿名化」一致：自动检测 DSH 当前主题；浅色下底色与卡片带青绿底调、强调色青绿，不再发白；深色下用青绿控制室配色。
