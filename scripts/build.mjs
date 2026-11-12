@@ -12,7 +12,7 @@ const root = fileURLToPath(new URL('..', import.meta.url))
 const target = join(root, 'dist', version)
 await rm(target, { recursive: true, force: true })
 await mkdir(target, { recursive: true })
-for (const file of ['index.js', 'cordis.patch.yml', 'icon.svg', 'README.md']) await cp(join(root, file), join(target, file))
+for (const file of ['index.js', 'cordis.patch.yml', 'icon.svg', 'README.md', 'CHANGELOG.md', 'LICENSE']) await cp(join(root, file), join(target, file))
 for (const dir of ['lib', 'profiles', 'locale']) await cp(join(root, dir), join(target, dir), { recursive: true })
 const manifest = JSON.parse(await readFile(join(root, 'package.json'), 'utf8'))
 manifest.version = version

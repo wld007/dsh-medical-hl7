@@ -1,10 +1,18 @@
 {
   "name": "dsh-medical-hl7",
   "version": "0.1.0",
-  "private": true,
-  "description": "把匿名化后的医疗数据转换成 HL7 FHIR R4（每病人 transaction Bundle + Bulk NDJSON），用于存储与交换。DeepSeek Harness 插件。",
+  "description": "把匿名化后的医疗数据转换成 HL7 FHIR R4（每病人 transaction Bundle + Bulk NDJSON + 本地扩展与代码定义），用于存储与交换。DeepSeek Harness 插件。",
   "type": "module",
   "license": "MIT",
+  "author": "wld007",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wld007/dsh-medical-hl7.git"
+  },
+  "homepage": "https://github.com/wld007/dsh-medical-hl7#readme",
+  "bugs": {
+    "url": "https://github.com/wld007/dsh-medical-hl7/issues"
+  },
   "engines": {
     "node": ">=20",
     "dsh": ">=0.2.1-0"
@@ -19,7 +27,7 @@
     "./locale/*.json": "./locale/*.json",
     "./package.json": "./package.json"
   },
-  "keywords": ["dsh", "deepseek-harness", "cordis", "plugin", "medical", "hl7", "fhir"],
+  "keywords": ["dsh", "deepseek-harness", "cordis", "plugin", "dsh-plugin", "medical", "hl7", "fhir", "fhir-r4", "interoperability"],
   "files": [
     "index.js",
     "lib/**/*.js",
@@ -27,8 +35,13 @@
     "cordis.patch.yml",
     "locale/*.json",
     "icon.svg",
-    "README.md"
+    "README.md",
+    "CHANGELOG.md",
+    "LICENSE"
   ],
+  "publishConfig": {
+    "access": "public"
+  },
   "dsh": {
     "bundle": {
       "patch": "./cordis.patch.yml"
