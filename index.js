@@ -115,6 +115,7 @@ function tool(def) {
     description: def.description,
     parameters: { type: 'object', properties, ...(required.length ? { required } : {}), additionalProperties: false },
     output: { schema: { type: 'object', additionalProperties: true }, render: def.render },
-    execute: def.execute,
+    // 工具输出必须是无损 JSON（不能有 undefined 等）：统一做一次 JSON 往返
+    execute: async (...a) => JSON.parse(JSON.stringify(await def.execute(...a) ?? null)),
   }
 }
