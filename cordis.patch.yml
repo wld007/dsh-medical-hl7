@@ -1,0 +1,19 @@
+- insert:
+    - id: medical-hl7
+      name: 'dsh-medical-hl7'
+      config:
+        # 输出根目录；空 = 输入旁的 _medical-hl7
+        outputRoot: ''
+        # 资源标识、本地代码体系、扩展的命名空间（也是 Bundle 的 fullUrl 前缀）。换成本单位的固定网址后不要再改，否则编号体系会变。
+        namespace: 'http://dsh.local/fhir'
+        # 源数据里没写时区的时间按这个时区标注
+        timezone: '+08:00'
+        # 额外的映射规格目录（*.mjs / *.json），用于新数据源；空 = 只用内置规格
+        profilesDir: ''
+        # 交付前发现像真实身份证号/手机号的内容：block = 该病人暂扣不交付；warn = 只在报告里提示
+        residualGate: 'block'
+        # 官方 HL7 FHIR Validator（validator_cli.jar）路径；空 = 只做内置校验
+        validatorJar: ''
+        # 每批抽检几个病人的 Bundle
+        validatorSample: 2
+        javaPath: 'java'

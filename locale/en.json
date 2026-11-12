@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "HL7 FHIR exchange",
+    "description": "Converts de-identified medical records into HL7 FHIR R4: one importable transaction Bundle per patient plus cohort Bulk NDJSON, with unmapped fields preserved."
+  }
+}

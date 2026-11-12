@@ -1,0 +1,37 @@
+{
+  "name": "dsh-medical-hl7",
+  "version": "0.1.0",
+  "private": true,
+  "description": "把匿名化后的医疗数据转换成 HL7 FHIR R4（每病人 transaction Bundle + Bulk NDJSON），用于存储与交换。DeepSeek Harness 插件。",
+  "type": "module",
+  "license": "MIT",
+  "engines": {
+    "node": ">=20",
+    "dsh": ">=0.2.1-0"
+  },
+  "scripts": {
+    "test": "node --test test/*.test.mjs"
+  },
+  "main": "./index.js",
+  "exports": {
+    ".": "./index.js",
+    "./icon": "./icon.svg",
+    "./locale/*.json": "./locale/*.json",
+    "./package.json": "./package.json"
+  },
+  "keywords": ["dsh", "deepseek-harness", "cordis", "plugin", "medical", "hl7", "fhir"],
+  "files": [
+    "index.js",
+    "lib/**/*.js",
+    "profiles/**/*.mjs",
+    "cordis.patch.yml",
+    "locale/*.json",
+    "icon.svg",
+    "README.md"
+  ],
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  }
+}
