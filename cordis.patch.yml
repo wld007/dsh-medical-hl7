@@ -18,6 +18,30 @@
         keepIntermediate: true
         # 值域归一覆盖率低于这个比例时在报告里告警（不阻断交付）
         domainCoverageWarn: 0.9
+        # 模型（可选，参照医疗数据匿名化）：Schema 起草映射规格、值域补对照、术语找标准代码。
+        # 病历内容只发往这里配置的端点（通常为本机或内网）；Agent 不能更改。空 = 不用模型，只按规则。
+        modelEnabled: true
+        baseURL: ''
+        model: ''
+        # 独立核验（盲审）模型；空 = 用同一个模型盲审
+        verifyBaseURL: ''
+        verifyModel: ''
+        disableThinking: true
+        timeoutMs: 120000
+        temperature: 0
+        # 每个模型同时处理的请求数
+        modelConcurrency: 4
+        # 核验轮次上限：起草 → 盲审 → 复判修正，最多几轮
+        maxRounds: 3
+        # 每个值域 / 每组术语对照最多交给模型的条数（按出现次数从多到少）
+        valueLimit: 300
+        termLimit: 500
+        # 本地标准代码表：术语对照的候选只从这里来，模型只在候选里选（没配置的标准不交给模型）
+        # LOINC：loinc.org 下载包里的 LoincTable/Loinc.csv；中文变体 LinguisticVariants/zhCN*LinguisticVariant.csv（可选，强烈建议）
+        loincTable: ''
+        loincZhTable: ''
+        # SNOMED CT：RF2 发布包里的 sct2_Description_Snapshot-*.txt
+        snomedTable: ''
         # 交付前发现像真实身份证号/手机号的内容：block = 该病人暂扣不交付；warn = 只在报告里提示
         residualGate: 'block'
         # 官方 HL7 FHIR Validator（validator_cli.jar）路径；空 = 只做内置校验

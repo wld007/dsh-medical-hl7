@@ -14,5 +14,12 @@
     "scope": "org"
   },
   "lands": "Observation.code.coding",
-  "mappings": []
+  "mappings": [],
+  "context": [
+    "panel.display",
+    "unit",
+    "specimen.display",
+    "item.stdDisplay",
+    "value"
+  ]
 }

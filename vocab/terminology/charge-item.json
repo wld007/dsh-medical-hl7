@@ -14,5 +14,9 @@
     "scope": "org"
   },
   "lands": "ChargeItem.code.coding",
-  "mappings": []
+  "mappings": [],
+  "context": [
+    "category.display",
+    "unit"
+  ]
 }

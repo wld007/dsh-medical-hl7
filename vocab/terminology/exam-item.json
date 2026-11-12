@@ -12,5 +12,9 @@
     "display": "item.display"
   },
   "lands": "DiagnosticReport.code.coding",
-  "mappings": []
+  "mappings": [],
+  "context": [
+    "modality",
+    "bodySite.text"
+  ]
 }

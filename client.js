@@ -65,6 +65,8 @@ window.__ModuleLoader__.load({
 .hx-chip.ok{color:var(--ok);border-color:color-mix(in srgb,var(--ok) 45%,transparent);background:color-mix(in srgb,var(--ok) 9%,transparent)}
 .hx-chip.w{color:var(--warn);border-color:color-mix(in srgb,var(--warn) 50%,transparent);background:color-mix(in srgb,var(--warn) 9%,transparent)}
 .hx-chip.b{color:var(--bad);border-color:color-mix(in srgb,var(--bad) 50%,transparent);background:color-mix(in srgb,var(--bad) 9%,transparent)}
+.hx-chip.vio{color:#8b6cf0;border-color:color-mix(in srgb,#8b6cf0 50%,transparent);background:color-mix(in srgb,#8b6cf0 10%,transparent)}
+.hx-draft{border:1px solid var(--line2);border-radius:6px;padding:8px 10px;margin:6px 0;background:var(--panel2)}
 .hx-chip.t{color:var(--teal);border-color:color-mix(in srgb,var(--teal) 50%,transparent);background:var(--tealdim)}
 .hx table{border-collapse:collapse;width:100%}
 .hx td,.hx th{padding:5px 8px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
@@ -246,7 +248,7 @@ window.__ModuleLoader__.load({
       const openPatient = (name, next = 'resources') => { setPatient(name); setTab(next) }
       const t = run?.totals
       const st = run?.stages
-      const tabs = [['overview', '◈ 概览'], ['schema', '① Schema 同构'], ['domains', '② 值域归一', st ? (st.domains.pending + st.domains.unmapped) || null : null], ['terms', '③ 术语对照'], ['patients', '病人', t?.held || null], ['resources', '资源浏览'], ['report', '报告']]
+      const tabs = [['overview', '◈ 概览'], ['schema', '① Schema 同构'], ['domains', '② 值域归一', st ? (st.domains.pending + st.domains.unmapped) || null : null], ['terms', '③ 术语对照'], ['patients', '病人', t?.held || null], ['resources', '资源浏览'], ['model', '模型调用'], ['report', '报告']]
       const rerun = () => call('rerun', { runId: run.id }).then((v) => { setRunId(v.runId); setRun(null); refreshList() }).catch((e) => setError(msg(e)))
       return h('div', { className: `hx ${dark ? 'hx-dark' : 'hx-light'}`, ref: rootRef },
         h('style', {}, CSS),
@@ -270,9 +272,10 @@ window.__ModuleLoader__.load({
             : tab === 'overview' ? h(Overview, { run, openPatient, onTab: setTab, dark })
               : tab === 'patients' ? h(Patients, { run, patient, setPatient, openPatient })
                 : tab === 'resources' ? h(Resources, { run, patient, setPatient })
-                  : tab === 'schema' ? h(SchemaTab, { run })
+                  : tab === 'schema' ? h(SchemaTab, { run, onRerun: rerun })
                   : tab === 'domains' ? h(DomainsTab, { run, onRerun: rerun })
                   : tab === 'terms' ? h(TermsTab, { run, onRerun: rerun })
+                  : tab === 'model' ? h(ModelTab, { run, onTab: setTab })
                     : h(Report, { run })))
     }
 
@@ -407,19 +410,27 @@ window.__ModuleLoader__.load({
       const st = (doneCond, warnCond) => (running ? (doneCond ? 'done' : 'active') : warnCond ? 'warn' : 'done')
       const states = {
         read: running ? (unitsDone >= t.units ? 'done' : 'active') : 'done',
-        schema: st(false, S && S.schema.inferred > 0), domains: st(false, pend > 0), terms: st(false, false), build: st(false, false),
+        schema: st(false, S && (S.schema.inferred > 0 || run.model?.phases?.schema?.review > 0)), domains: st(false, pend > 0), terms: st(false, run.model?.phases?.terms?.review > 0), build: st(false, false),
         gate: st(false, t.held > 0), deliver: running ? 'idle' : run.output ? 'done' : 'idle',
       }
       if (['failed', 'cancelled'].includes(run.status)) for (const k of Object.keys(states)) if (states[k] === 'done' && !run.output) states[k] = k === 'deliver' ? 'idle' : 'warn'
       const pc = (x) => (x == null ? '—' : `${(x * 100).toFixed(1)}%`)
+      const MP = run.model?.phases
       const labels = {
         read: [`${fmt(unitsDone)} / ${fmt(t.units)} 目录`, `${fmt(t.patients)} 位病人`],
-        schema: S ? [`${fmt(S.schema.tables)} 张表`, S.schema.inferred ? `自动推断 ${S.schema.inferred} · 保留 ${S.schema.extrasFields} 字段` : `保留 ${S.schema.extrasFields} 字段`, S.schema.inferred ? 'warn' : ''] : ['—'],
+        schema: S ? [`${fmt(S.schema.tables)} 张表`, MP?.schema?.tables ? `模型起草 ${MP.schema.tables} · 分歧 ${MP.schema.review}` : S.schema.inferred ? `Basic ${S.schema.inferred} · 保留 ${S.schema.extrasFields} 字段` : `保留 ${S.schema.extrasFields} 字段`, S.schema.inferred || MP?.schema?.review ? 'warn' : ''] : ['—'],
         domains: S ? [`覆盖 ${pc(S.domains.coverage)}`, pend ? `待处理 ${fmt(pend)}` : '全部归一', pend ? 'warn' : ''] : ['—'],
-        terms: S ? [`${fmt(S.terminology.mappedConcepts)} / ${fmt(S.terminology.concepts)} 概念`, `覆盖 ${pc(S.terminology.coverage)}`] : ['—'],
+        terms: S ? [`${fmt(S.terminology.mappedConcepts)} / ${fmt(S.terminology.concepts)} 概念`, MP?.terms?.asked ? `模型对照 ${fmt(MP.terms.confirmed)} · 分歧 ${fmt(MP.terms.review)}` : `覆盖 ${pc(S.terminology.coverage)}`] : ['—'],
         build: [`${fmt(t.resources)} 资源`],
         gate: [t.held ? `暂扣 ${t.held}` : `${fmt(t.done)} 通过`, t.errors ? `结构错误 ${t.errors}` : '', t.held ? 'warn' : ''],
         deliver: [run.output ? '已交付' : running ? '处理中' : '未交付', run.outputFormat === 'bundles' ? '按人' : run.outputFormat === 'ndjson' ? '按资源' : '按人 + 按资源'],
+      }
+      if (running && run.current?.unit === '模型') {
+        const step = run.current.step ?? ''
+        const at = step.startsWith('①') ? 'schema' : step.startsWith('② ③') ? 'domains' : step.startsWith('②') ? 'domains' : step.startsWith('③') ? 'terms' : 'schema'
+        const order = ['read', 'schema', 'domains', 'terms', 'build', 'gate', 'deliver']
+        for (const k of order) states[k] = order.indexOf(k) < order.indexOf(at) ? 'done' : k === at ? 'active' : 'idle'
+        labels[at] = [step.replace(/^[①②③ ]+/, '').slice(0, 18), labels[at]?.[1] ?? '']
       }
       const done = run.patients.filter((p) => p.status !== 'held').length
       const held = run.patients.filter((p) => p.status === 'held').length
@@ -576,23 +587,53 @@ window.__ModuleLoader__.load({
     }
 
     /* ------------------------------------------------------- ① Schema 同构 */
-    function SchemaTab({ run }) {
-      const d = useAsync(() => call('schema', { runId: run.id }), [run.id, run.status])
+    const DRAFT_ST = { applied: ['模型起草 · 未复核', 't'], review: ['模型起草 · 有未解决问题', 'w'], confirmed: ['人工已确认', 'ok'], rejected: ['已驳回 · 按 Basic', 'b'], failed: ['起草失败', 'b'] }
+    const draftLabel = (dr) => (dr.status === 'applied' ? (dr.agreement === 'disputed' ? ['模型起草 · 复判为准', 'vio'] : ['模型起草 · 两模型一致', 't']) : DRAFT_ST[dr.status] ?? [dr.status, ''])
+    function SchemaTab({ run, onRerun }) {
+      const [tick, setTick] = useState(0)
+      const d = useAsync(() => call('schema', { runId: run.id }), [run.id, run.status, tick])
       const [sel, setSel] = useState(null)
+      const [json, setJson] = useState(null)
+      const [err, setErr] = useState('')
+      const [changed, setChanged] = useState(0)
+      const act = async (file, action, spec) => { setErr(''); try { await call('reviewDraft', { file, action, spec }); setJson(null); setChanged((n) => n + 1); setTick((n) => n + 1) } catch (e) { setErr(msg(e)) } }
       if (!d.value) return h('div', { className: 'hx-frame hx-pad', style: { flex: 1 } }, h('span', { className: 'hx-faint' }, d.error ?? '加载中…'))
       const tables = d.value.tables
       const t = tables.find((x) => x.table === sel) ?? tables[0]
-      return h('div', { style: { display: 'flex', gap: 8, flex: 1, minHeight: 0 } },
-        h('div', { className: 'hx-frame hx-scroll', style: { width: 380, flex: 'none' } },
+      const dr = t?.draft
+      return h('div', { className: 'hx-col', style: { flex: 1 } },
+        h(RerunBar, { run, changed, onRerun }),
+        h('div', { style: { display: 'flex', gap: 8, flex: 1, minHeight: 0 } },
+        h('div', { className: 'hx-frame hx-scroll', style: { width: 400, flex: 'none' } },
           h('div', { className: 'hx-pad', style: { paddingBottom: 4 } }, h('div', { className: 'hx-h' }, h('b', {}, '① Schema 同构'), h('span', { className: 'hx-cap' }, 'HARMONIZE')),
-            h('div', { className: 'hx-muted', style: { fontSize: 11.5, lineHeight: 1.6 } }, '表 → 记录类别，字段 → 语义角色。只搬不改：这一步不解释任何取值。没有对应角色的字段原样保留。')),
+            h('div', { className: 'hx-muted', style: { fontSize: 11.5, lineHeight: 1.6 } }, '表 → 记录类别，字段 → 语义角色。只搬不改：这一步不解释任何取值。没有规格的表由模型起草（插件校验 + 独立盲审 + 复判），没对上的字段原样保留。'),
+            d.value.model?.tables ? h('div', { className: 'hx-muted', style: { fontSize: 11.5, marginTop: 6 } }, `本批模型起草 ${d.value.model.tables} 张：一致采用 ${d.value.model.applied}、有分歧 ${d.value.model.review}、失败 ${d.value.model.failed}`) : null),
           h('table', {}, h('thead', {}, h('tr', {}, ['表', '类别', '行数', '保留字段'].map((x) => h('th', { key: x }, x)))),
             h('tbody', {}, tables.map((x) => h('tr', { key: x.table, className: `click${x === t ? ' sel' : ''}`, onClick: () => setSel(x.table) },
-              h('td', { className: 'hx-num' }, x.table, x.inferred ? h('span', { className: 'hx-chip w', style: { marginLeft: 6 } }, '自动推断') : null),
+              h('td', { className: 'hx-num' }, x.table, x.inferred ? h('span', { className: 'hx-chip w', style: { marginLeft: 6 } }, '自动推断 · Basic') : x.draft ? h('span', { className: `hx-chip ${draftLabel(x.draft)[1]}`, style: { marginLeft: 6 } }, draftLabel(x.draft)[0]) : null),
               h('td', {}, h('span', { className: 'hx-chip t' }, x.kind)), h('td', { className: 'hx-num' }, fmt(x.rows)), h('td', { className: 'hx-num hx-faint' }, fmt(x.extras.length))))))),
         !t ? h('div', { className: 'hx-frame hx-pad', style: { flex: 1 } }, '—') : h('div', { className: 'hx-frame hx-scroll hx-pad', style: { flex: 1 } },
           h('div', { className: 'hx-h' }, h('b', { className: 'hx-num' }, t.table), h('span', { className: 'hx-chip t' }, t.kind), h('span', { className: 'hx-faint' }, `${t.profile === 'auto' ? '自动推断' : `规格 ${t.profile}`} · ${t.file ?? ''} · ${fmt(t.rows)} 行${t.invalid ? ` · 作废 ${t.invalid}` : ''}`)),
-          t.inferred ? h('div', { className: 'hx-text', style: { fontSize: 12 } }, `没有现成规格，按 Basic 保留全部字段。建议类别：${t.suggestedKind ?? '—'}。推断依据：\n${t.reasons.join('\n') || '—'}`) : null,
+          t.inferred ? h('div', { className: 'hx-text', style: { fontSize: 12 } }, `没有现成规格，按 Basic 保留全部字段（${run.model?.configured ? '模型起草失败或已驳回' : '未配置模型'}）。建议类别：${t.suggestedKind ?? '—'}。推断依据：\n${t.reasons.join('\n') || '—'}`) : null,
+          dr ? h('div', { className: 'hx-draft' },
+            h('div', { style: { display: 'flex', gap: 6, alignItems: 'center', flexWrap: 'wrap' } },
+              h('span', { className: `hx-chip ${draftLabel(dr)[1]}` }, draftLabel(dr)[0]),
+              h('span', { className: 'hx-faint', style: { fontSize: 11.5 } }, `${dr.models?.suggest ?? ''}${dr.models?.verify ? ` · 盲审 ${dr.models.verify}` : ''} · ${dr.rounds ?? 0} 轮`),
+              h('span', { className: 'hx-sp' }),
+              dr.status !== 'confirmed' ? h('button', { className: 'hx-btn sm pri', onClick: () => act(dr.file, 'confirm') }, '确认') : null,
+              h('button', { className: 'hx-btn sm', onClick: () => setJson(json === null ? JSON.stringify(dr.spec, null, 2) : null) }, json === null ? '修改' : '收起'),
+              h('button', { className: 'hx-btn sm', onClick: () => act(dr.file, 'redraft') }, '重新起草'),
+              dr.status !== 'rejected' ? h('button', { className: 'hx-btn sm', onClick: () => act(dr.file, 'reject') }, '驳回（按 Basic）') : null),
+            dr.disputed?.length ? h('div', { className: 'hx-warn', style: { fontSize: 12, marginTop: 6 } }, `两模型有分歧、已先拿掉的字段（原样保留）：${dr.disputed.join('、')}`) : null,
+            dr.dropped?.length ? h('div', { className: 'hx-faint', style: { fontSize: 12, marginTop: 4 } }, `插件校验后去掉的角色：${dr.dropped.join('、')}`) : null,
+            dr.links?.length ? h('div', { style: { fontSize: 12, marginTop: 4 } }, h('span', { className: 'hx-faint' }, '就诊号关联（按数据核对，覆盖了模型的选择）：'), dr.links.map((x, i) => h('div', { key: i, className: 'hx-num', style: { marginTop: 2 } }, `${x.role}：${x.previous ?? '—'} → ${x.field ?? '（拿掉）'}`, h('span', { className: 'hx-faint' }, `　${x.evidence}`)))) : null,
+            dr.issue?.reason ? h('div', { className: 'hx-warn', style: { fontSize: 12, marginTop: 4 } }, `未解决的问题：${dr.issue.reason}`) : null,
+            dr.dismissed?.length ? h('div', { style: { fontSize: 12, marginTop: 4 } }, h('span', { className: 'hx-faint' }, '核验模型提出、复判未采纳（请人工过目）：'), dr.dismissed.map((x, i) => h('div', { key: i, style: { marginTop: 2 } }, h('span', { className: 'hx-warn' }, `R${x.round} ${x.reason}`), h('span', { className: 'hx-faint' }, ` ← 复判：${x.ruling}`)))) : null,
+            h('details', { style: { marginTop: 6 } }, h('summary', { className: 'hx-faint', style: { fontSize: 12, cursor: 'pointer' } }, '起草过程'),
+              (dr.trail ?? []).map((x, i) => h('div', { key: i, style: { fontSize: 11.5, marginTop: 3 } }, h('span', { className: 'hx-num hx-faint' }, `R${x.round} ${x.step}`), ' ', x.ok === true ? h('span', { className: 'hx-ok' }, '通过 ') : x.ok === false ? h('span', { className: 'hx-warn' }, '报出问题 ') : x.revise === true ? h('span', { className: 'hx-ok' }, '改正 ') : x.revise === false ? h('span', { className: 'hx-warn' }, '坚持 ') : null, x.reason ?? ''))),
+            json !== null ? h('div', { style: { marginTop: 8 } }, h('textarea', { className: 'hx-input hx-num', style: { width: '100%', height: 260, fontSize: 11.5 }, value: json, onChange: (e) => setJson(e.target.value) }),
+              h('div', { style: { display: 'flex', gap: 8, marginTop: 6 } }, h('button', { className: 'hx-btn pri', onClick: () => act(dr.file, 'edit', json) }, '保存并确认'), h('span', { className: 'hx-faint', style: { fontSize: 11.5 } }, '规格格式见 lib/mapping/roles.js；保存后下次运行生效'))) : null,
+            err ? h('div', { className: 'hx-err', style: { marginTop: 6 } }, err) : null) : null,
           h('div', { className: 'hx-sec' }, h('b', {}, '角色'), h('span', { className: 'hx-faint' }, '字段 → 语义角色；多个字段时取第一个有值的')),
           h('table', {}, h('thead', {}, h('tr', {}, ['角色', '来源字段', '有值', '填充率', '值域'].map((x) => h('th', { key: x }, x)))),
             h('tbody', {}, t.roles.map((r) => h('tr', { key: r.role },
@@ -602,7 +643,7 @@ window.__ModuleLoader__.load({
               h('td', { className: 'hx-num hx-faint' }, r.domain ?? ''))))),
           h('div', { className: 'hx-sec' }, h('b', {}, '原样保留的字段'), h('span', { className: 'hx-faint' }, 'source-field 扩展；出现多的值得补进规格')),
           t.extras.length ? h('div', {}, t.extras.map(([f, n]) => h('span', { key: f, className: 'hx-chip' }, `${f} · ${fmt(n)}`))) : h('div', { className: 'hx-faint' }, '无'),
-          t.fields ? h(React.Fragment, {}, h('div', { className: 'hx-sec' }, h('b', {}, '字段画像')), h('div', {}, t.fields.map((f) => h('span', { key: f.name, className: `hx-chip${f.pseudonym ? ' w' : f.time ? ' t' : ''}`, title: `填充 ${f.fill}%${f.pseudonym ? ` · ${f.pseudonym}假名` : ''}${f.time ? ' · 时间' : ''}` }, f.name)))) : null))
+          t.fields ? h(React.Fragment, {}, h('div', { className: 'hx-sec' }, h('b', {}, '字段画像')), h('div', {}, t.fields.map((f) => h('span', { key: f.name, className: `hx-chip${f.pseudonym ? ' w' : f.time ? ' t' : ''}`, title: `填充 ${f.fill}%${f.pseudonym ? ` · ${f.pseudonym}假名` : ''}${f.time ? ' · 时间' : ''}` }, f.name)))) : null)))
     }
 
     /* ---------------------------------------------------------- ② 值域归一 */
@@ -631,7 +672,8 @@ window.__ModuleLoader__.load({
       const dom = doms.find((x) => x.id === sel) ?? doms.find((x) => x.kind === 'enum') ?? doms[0]
       const changed = doms.reduce((n, x) => n + x.changed, 0)
       const open = (v) => ['pending', 'unmapped', 'invalid'].includes(v.status) || v.changed
-      const rows = (dom?.values ?? []).filter((v) => filter === 'all' || (filter === 'open' ? open(v) : v.status === filter))
+      const rows = (dom?.values ?? []).filter((v) => filter === 'all' || (filter === 'open' ? open(v) : filter === 'model' ? v.current?.source === 'model' : v.status === filter))
+      const confirm = async (v) => { setErr(''); try { await call('confirmModel', { kind: 'domain', id: dom.id, key: `${v.code ?? ''}\u0001${v.display ?? ''}` }); setTick((x) => x + 1) } catch (e) { setErr(msg(e)) } }
       const save = async () => {
         setErr('')
         try { await call('reviewDomain', { domain: dom.id, code: edit.code, display: edit.display, to: edit.status === 'confirmed' ? edit.to : null, status: edit.status, note: edit.note }); setEdit(null); setTick((x) => x + 1) } catch (e) { setErr(msg(e)) }
@@ -657,7 +699,7 @@ window.__ModuleLoader__.load({
               h('div', { style: { display: 'flex', gap: 6, marginTop: 8, flexWrap: 'wrap', alignItems: 'center' } },
                 Object.entries(dom.byStatus).map(([k, n]) => h('span', { key: k }, dchip(k), h('span', { className: 'hx-num hx-muted' }, fmt(n)))),
                 h('span', { className: 'hx-sp' }),
-                dom.kind === 'enum' ? h('select', { className: 'hx-input', value: filter, onChange: (e) => setFilter(e.target.value) }, h('option', { value: 'open' }, '待处理（待确认/无对照/不属于/已改）'), h('option', { value: 'all' }, '全部'), ...Object.keys(DST).map((k) => h('option', { key: k, value: k }, DST[k][0]))) : null),
+                dom.kind === 'enum' ? h('select', { className: 'hx-input', value: filter, onChange: (e) => setFilter(e.target.value) }, h('option', { value: 'open' }, '待处理（待确认/无对照/不属于/已改）'), h('option', { value: 'model' }, '模型给出 · 未经人工复核'), h('option', { value: 'all' }, '全部'), ...Object.keys(DST).map((k) => h('option', { key: k, value: k }, DST[k][0]))) : null),
               dom.kind === 'format' ? h('div', { style: { marginTop: 10 } }, h('div', { className: 'hx-cap', style: { marginBottom: 4 } }, '写法分布'), h('div', {}, Object.entries(dom.forms ?? {}).sort((a, b) => b[1] - a[1]).map(([f, n]) => h('span', { key: f, className: 'hx-chip' }, `${f} · ${fmt(n)}`)))) : null,
               err ? h('div', { className: 'hx-err', style: { marginTop: 6 } }, err) : null),
             h('div', { className: 'hx-scroll', style: { flex: 1 } },
@@ -669,9 +711,9 @@ window.__ModuleLoader__.load({
                   const row = h('tr', { key: k, className: edit?.key === k ? 'sel' : '' },
                     h('td', { className: 'hx-num' }, v.code ?? ''), h('td', {}, v.display ?? ''), h('td', { className: 'hx-num' }, fmt(v.count)),
                     h('td', {}, dchip(v.status)),
-                    h('td', {}, cur ? h(React.Fragment, {}, h('span', { className: `hx-chip ${cur.status === 'confirmed' ? 'ok' : cur.status === 'invalid' ? 'b' : cur.status === 'text' ? 't' : 'w'}` }, ENTRY_ST[cur.status]), cur.to ? h('span', { className: 'hx-num' }, `→ ${cur.to}${tv(cur.to)?.label ? ` ${tv(cur.to).label}` : ''}`) : null, cur.source === 'review' ? h('span', { className: 'hx-chip t', style: { marginLeft: 4 } }, '本机复核') : null, v.changed ? h('span', { className: 'hx-chip w', style: { marginLeft: 4 } }, '下次生效') : null) : h('span', { className: 'hx-faint' }, '—')),
+                    h('td', {}, cur ? h(React.Fragment, {}, h('span', { className: `hx-chip ${cur.status === 'confirmed' ? 'ok' : cur.status === 'invalid' ? 'b' : cur.status === 'text' ? 't' : 'w'}` }, ENTRY_ST[cur.status]), cur.to ? h('span', { className: 'hx-num' }, `→ ${cur.to}${tv(cur.to)?.label ? ` ${tv(cur.to).label}` : ''}`) : null, cur.source === 'review' ? h('span', { className: 'hx-chip t', style: { marginLeft: 4 } }, '本机复核') : null, cur.source === 'model' ? h('span', { className: 'hx-chip vio', style: { marginLeft: 4 }, title: (cur.trail ?? []).map((x) => `R${x.round} ${x.step}${x.ok === false ? ' 报出问题' : x.ok ? ' 通过' : ''}${x.revise === true ? ' 改正' : x.revise === false ? ' 坚持' : ''} ${x.reason ?? ''}`).join('\n') }, '模型 · 未复核') : null, cur.candidate ? h('span', { className: 'hx-num hx-faint', style: { marginLeft: 4 } }, `候选 ${cur.candidate.verdict}${cur.candidate.to ? ` → ${cur.candidate.to}` : ''}`) : null, v.changed ? h('span', { className: 'hx-chip w', style: { marginLeft: 4 } }, '下次生效') : null) : h('span', { className: 'hx-faint' }, '—')),
                     h('td', { className: 'hx-faint', style: { fontSize: 11.5, maxWidth: 280 } }, cur?.note ?? v.note ?? ''),
-                    h('td', {}, dom.kind === 'enum' ? h('button', { className: 'hx-btn sm', onClick: () => (edit?.key === k ? setEdit(null) : startEdit(v)) }, edit?.key === k ? '收起' : '复核') : null))
+                    h('td', { style: { whiteSpace: 'nowrap' } }, cur?.source === 'model' && cur.status === 'confirmed' ? h('button', { className: 'hx-btn sm pri', style: { marginRight: 4 }, onClick: () => confirm(v) }, '确认') : null, dom.kind === 'enum' ? h('button', { className: 'hx-btn sm', onClick: () => (edit?.key === k ? setEdit(null) : startEdit(v)) }, edit?.key === k ? '收起' : '复核') : null))
                   if (edit?.key !== k) return [row]
                   const vals = dom.target?.values ?? []
                   return [row, h('tr', { key: `${k}-e` }, h('td', { colSpan: 7 },
@@ -700,7 +742,8 @@ window.__ModuleLoader__.load({
       const b = bs.find((x) => x.id === sel) ?? bs[0]
       const changed = bs.reduce((n, x) => n + x.changed, 0)
       const mapped = (c) => c.current?.status === 'confirmed' && (c.current.to || c.current.equivalence === 'unmatched')
-      const rows = (b?.items ?? []).filter((c) => (filter === 'all' || (filter === 'mapped' ? mapped(c) : !mapped(c))) && (!q || `${c.code ?? ''} ${c.display ?? ''}`.toLowerCase().includes(q.toLowerCase())))
+      const rows = (b?.items ?? []).filter((c) => (filter === 'all' || (filter === 'model' ? c.current?.source === 'model' && mapped(c) : filter === 'candidates' ? Boolean(c.current?.candidates?.length) : filter === 'mapped' ? mapped(c) : !mapped(c))) && (!q || `${c.code ?? ''} ${c.display ?? ''}`.toLowerCase().includes(q.toLowerCase())))
+      const confirm = async (c) => { setErr(''); try { await call('confirmModel', { kind: 'term', id: b.id, key: c.key }); setTick((x) => x + 1) } catch (e) { setErr(msg(e)) } }
       const save = async () => {
         setErr('')
         try { await call('reviewTerm', { binding: b.id, key: edit.key, from: edit.from, to: edit.equivalence === 'unmatched' ? null : { code: edit.code, display: edit.display }, equivalence: edit.equivalence, status: edit.status, note: edit.note }); setEdit(null); setTick((x) => x + 1) } catch (e) { setErr(msg(e)) }
@@ -721,7 +764,7 @@ window.__ModuleLoader__.load({
               h('div', { className: 'hx-muted', style: { fontSize: 12, lineHeight: 1.6 } }, b.description),
               h('div', { className: 'hx-faint', style: { fontSize: 11.5, marginTop: 4 } }, `目标：${b.target?.name ?? ''}（${b.target?.system ?? ''}）· 落在 ${b.lands ?? ''}`),
               h('div', { style: { display: 'flex', gap: 6, marginTop: 8, alignItems: 'center' } },
-                h('select', { className: 'hx-input', value: filter, onChange: (e) => setFilter(e.target.value) }, h('option', { value: 'unmapped' }, '未对照'), h('option', { value: 'mapped' }, '已对照'), h('option', { value: 'all' }, '全部')),
+                h('select', { className: 'hx-input', value: filter, onChange: (e) => setFilter(e.target.value) }, h('option', { value: 'unmapped' }, '未对照'), h('option', { value: 'mapped' }, '已对照'), h('option', { value: 'model' }, '模型给出 · 未经人工复核'), h('option', { value: 'candidates' }, '两模型有分歧（有候选）'), h('option', { value: 'all' }, '全部')),
                 h('input', { className: 'hx-input', placeholder: '筛选代码/名称…', value: q, onChange: (e) => setQ(e.target.value) }), h('span', { className: 'hx-faint' }, `${fmt(rows.length)} 个`)),
               err ? h('div', { className: 'hx-err', style: { marginTop: 6 } }, err) : null),
             h('div', { className: 'hx-scroll', style: { flex: 1 } },
@@ -730,8 +773,8 @@ window.__ModuleLoader__.load({
                   const cur = c.current
                   const row = h('tr', { key: c.key, className: edit?.key === c.key ? 'sel' : '' },
                     h('td', { className: 'hx-num hx-faint' }, c.scope ?? ''), h('td', { className: 'hx-num' }, c.code ?? ''), h('td', {}, c.display ?? ''), h('td', { className: 'hx-num' }, fmt(c.count)),
-                    h('td', {}, cur ? h(React.Fragment, {}, h('span', { className: `hx-chip ${cur.status === 'confirmed' ? 'ok' : 'w'}` }, cur.status === 'confirmed' ? EQ[cur.equivalence] ?? cur.equivalence : '待确认'), cur.to ? h('span', { className: 'hx-num' }, `${cur.to.code} ${cur.to.display ?? ''}`) : null, cur.source === 'review' ? h('span', { className: 'hx-chip t', style: { marginLeft: 4 } }, '本机复核') : null, c.changed ? h('span', { className: 'hx-chip w', style: { marginLeft: 4 } }, '下次生效') : null) : h('span', { className: 'hx-faint' }, '—')),
-                    h('td', {}, h('button', { className: 'hx-btn sm', onClick: () => (edit?.key === c.key ? setEdit(null) : setEdit({ key: c.key, from: { scope: c.scope ?? undefined, code: c.code ?? undefined, display: c.display ?? undefined }, code: cur?.to?.code ?? '', display: cur?.to?.display ?? '', equivalence: cur?.equivalence ?? 'equivalent', status: cur?.status ?? 'confirmed', note: cur?.note ?? '' })) }, edit?.key === c.key ? '收起' : '对照')))
+                    h('td', {}, cur ? h(React.Fragment, {}, h('span', { className: `hx-chip ${cur.status === 'confirmed' ? 'ok' : 'w'}` }, cur.status === 'confirmed' ? EQ[cur.equivalence] ?? cur.equivalence : '待确认'), cur.to ? h('span', { className: 'hx-num' }, `${cur.to.code} ${cur.to.display ?? ''}`) : null, cur.source === 'review' ? h('span', { className: 'hx-chip t', style: { marginLeft: 4 } }, '本机复核') : null, cur.source === 'model' ? h('span', { className: 'hx-chip vio', style: { marginLeft: 4 }, title: [cur.note, cur.verifiedBy ? `插件校验：${cur.verifiedBy}` : '', ...(cur.trail ?? []).map((x) => `R${x.round} ${x.step}${x.ok === false ? ' 报出问题' : x.ok ? ' 通过' : ''}${x.revise === true ? ' 改正' : x.revise === false ? ' 坚持' : ''} ${x.reason ?? ''}`)].filter(Boolean).join('\n') }, cur.status === 'confirmed' ? '模型 · 未复核' : '模型') : null, (cur.candidates ?? []).map((x, i) => h('span', { key: i, className: 'hx-num hx-faint', style: { marginLeft: 4 } }, `${x.by === 'verify' ? '核验' : '识别'}候选 ${x.code} ${x.display ?? ''}`)), c.changed ? h('span', { className: 'hx-chip w', style: { marginLeft: 4 } }, '下次生效') : null) : h('span', { className: 'hx-faint' }, '—')),
+                    h('td', { style: { whiteSpace: 'nowrap' } }, cur?.source === 'model' && cur.status === 'confirmed' ? h('button', { className: 'hx-btn sm pri', style: { marginRight: 4 }, onClick: () => confirm(c) }, '确认') : null, h('button', { className: 'hx-btn sm', onClick: () => (edit?.key === c.key ? setEdit(null) : setEdit({ key: c.key, from: { scope: c.scope ?? undefined, code: c.code ?? undefined, display: c.display ?? undefined }, code: cur?.to?.code ?? '', display: cur?.to?.display ?? '', equivalence: cur?.equivalence ?? 'equivalent', status: cur?.status === 'pending' ? 'confirmed' : cur?.status ?? 'confirmed', note: cur?.note ?? '', code: cur?.to?.code ?? cur?.candidates?.[0]?.code ?? '', display: cur?.to?.display ?? cur?.candidates?.[0]?.display ?? '' })) }, edit?.key === c.key ? '收起' : '对照')))
                   if (edit?.key !== c.key) return [row]
                   return [row, h('tr', { key: `${c.key}-e` }, h('td', { colSpan: 6 },
                     h('div', { style: { display: 'flex', gap: 8, alignItems: 'flex-end', flexWrap: 'wrap', padding: '4px 0 8px' } },
@@ -744,6 +787,49 @@ window.__ModuleLoader__.load({
                 })))))))
     }
 
+    /* ---------------------------------------------------------- 模型调用 */
+    function ModelTab({ run, onTab }) {
+      const d = useAsync(() => call('model', { runId: run.id }), [run.id, run.status])
+      const m = run.model
+      if (!m?.configured) return h('div', { className: 'hx-frame hx-pad', style: { flex: 1 } }, h('div', { className: 'hx-h' }, h('b', {}, '模型调用'), h('span', { className: 'hx-cap' }, 'MODEL')), h('div', { className: 'hx-muted' }, m?.note ?? '这一批没有使用模型。'), h('div', { className: 'hx-faint', style: { marginTop: 8, fontSize: 12 } }, '在 设置 → HL7 数据交换 → 模型 里配置识别模型和核验模型后，没有规格的表会由模型起草映射规格，无对照的取值和本地概念会由模型给出规范值和标准代码。'))
+      const P = m.phases ?? {}
+      const C = m.calls ?? d.value?.model?.calls
+      const crossRow = (name, x, go) => x ? h('tr', { className: 'click', onClick: () => onTab(go) },
+        h('td', {}, name), h('td', { className: 'hx-num' }, fmt(x.reviewed)), h('td', { className: 'hx-num' }, fmt(x.reported)), h('td', { className: 'hx-num' }, fmt(x.checkFailed)), h('td', { className: 'hx-num' }, fmt(x.revised)), h('td', { className: 'hx-num hx-warn' }, fmt(x.insisted)),
+        h('td', { className: 'hx-num' }, x.reviewed ? `${(((x.reviewed - x.reported) / x.reviewed) * 100).toFixed(0)}%` : '—')) : null
+      const calls = d.value?.calls ?? []
+      return h('div', { className: 'hx-col hx-scroll', style: { flex: 1 } },
+        h('div', { style: { display: 'flex', gap: 8 } },
+          h('div', { className: 'hx-frame hx-pad', style: { flex: 1 } },
+            h('div', { className: 'hx-h' }, h('b', {}, '模型'), h('span', { className: 'hx-cap' }, 'MODELS')),
+            h('div', { className: 'hx-kv hx-kv-tight' },
+              h('span', { className: 'hx-faint' }, '识别'), h('span', { className: 'hx-num' }, `${m.models?.suggest ?? '—'} · ${m.endpoint ?? ''}`),
+              h('span', { className: 'hx-faint' }, '核验（盲审）'), h('span', { className: 'hx-num' }, m.models?.verify ? `${m.models.verify} · ${m.verifyEndpoint ?? ''}` : '同识别模型'),
+              h('span', { className: 'hx-faint' }, '轮次上限'), h('span', { className: 'hx-num' }, `${m.maxRounds}（起草 → 插件校验 → 盲审 → 复判修正）`),
+              h('span', { className: 'hx-faint' }, '并发 · 超时'), h('span', { className: 'hx-num' }, `${m.concurrency} / 模型 · ${Math.round((m.timeoutMs ?? 0) / 1000)} 秒 · 思考模式${m.disableThinking ? '关闭' : '开启'}`),
+              h('span', { className: 'hx-faint' }, '调用'), h('span', { className: 'hx-num' }, C ? `${fmt(C.total)} 次（实发 ${fmt(C.live)}，缓存 ${fmt(C.cached)}，失败 ${fmt(C.failed)}）· ${fmt(C.tokens)} token` : '—'))),
+          h('div', { className: 'hx-frame hx-pad', style: { flex: 1.3 } },
+            h('div', { className: 'hx-h' }, h('b', {}, '三个阶段'), h('span', { className: 'hx-cap' }, 'RESULTS')),
+            h('table', {}, h('thead', {}, h('tr', {}, ['阶段', '交给模型', '两模型一致 · 采用', '转人工复核', '模型放弃', '失败'].map((x) => h('th', { key: x }, x)))),
+              h('tbody', {},
+                P.schema ? h('tr', { className: 'click', onClick: () => onTab('schema') }, h('td', {}, '① Schema 起草'), h('td', { className: 'hx-num' }, `${fmt(P.schema.tables)} 张表`), h('td', { className: 'hx-num hx-ok' }, fmt(P.schema.applied)), h('td', { className: 'hx-num hx-warn' }, fmt(P.schema.review)), h('td', {}, '—'), h('td', { className: 'hx-num' }, fmt(P.schema.failed))) : null,
+                P.values ? h('tr', { className: 'click', onClick: () => onTab('domains') }, h('td', {}, '② 值域归一'), h('td', { className: 'hx-num' }, `${fmt(P.values.asked)} 个取值`), h('td', { className: 'hx-num hx-ok' }, fmt(P.values.confirmed + P.values.text + P.values.invalid)), h('td', { className: 'hx-num hx-warn' }, fmt(P.values.pending)), h('td', {}, '—'), h('td', { className: 'hx-num' }, fmt(P.values.failed))) : null,
+                P.terms ? h('tr', { className: 'click', onClick: () => onTab('terms') }, h('td', {}, '③ 术语对照'), h('td', { className: 'hx-num' }, `${fmt(P.terms.asked)} 个概念`), h('td', { className: 'hx-num hx-ok' }, fmt(P.terms.confirmed)), h('td', { className: 'hx-num hx-warn' }, fmt(P.terms.review)), h('td', { className: 'hx-num' }, fmt(P.terms.abstain)), h('td', { className: 'hx-num' }, fmt(P.terms.failed))) : null)),
+            h('div', { className: 'hx-faint', style: { fontSize: 11.5, marginTop: 6 } }, '采用的结果标为“模型 · 未复核”，可在对应页面确认或改正；结果存本机对照表，下次运行直接复用。'))),
+        h('div', { className: 'hx-frame hx-pad' },
+          h('div', { className: 'hx-h' }, h('b', {}, '交叉核验'), h('span', { className: 'hx-cap' }, 'CROSS-CHECK'), h('span', { className: 'hx-faint' }, '核验模型只看“输入 + 结论”，不看识别模型的理由')),
+          h('table', {}, h('thead', {}, h('tr', {}, ['阶段', '盲审', '报出问题', '插件校验拦下', '复判改正', '坚持（分歧 → 人工）', '一次通过'].map((x) => h('th', { key: x }, x)))),
+            h('tbody', {}, crossRow('① Schema 起草', P.schema?.cross, 'schema'), crossRow('② 值域归一', P.values?.cross, 'domains'), crossRow('③ 术语对照', P.terms?.cross, 'terms')))),
+        h('div', { className: 'hx-frame hx-pad' },
+          h('div', { className: 'hx-h' }, h('b', {}, '按环节'), h('span', { className: 'hx-cap' }, 'CALLS')),
+          C?.byPhase?.length ? h('table', {}, h('thead', {}, h('tr', {}, ['环节', '模型', '调用', '缓存', '失败', '条目', '平均耗时', 'token'].map((x) => h('th', { key: x }, x)))),
+            h('tbody', {}, C.byPhase.map((x, i) => h('tr', { key: i }, h('td', {}, x.phase), h('td', { className: 'hx-num hx-faint' }, x.model), h('td', { className: 'hx-num' }, fmt(x.calls)), h('td', { className: 'hx-num' }, fmt(x.cached)), h('td', { className: `hx-num ${x.failed ? 'hx-bad' : ''}` }, fmt(x.failed)), h('td', { className: 'hx-num' }, fmt(x.items)), h('td', { className: 'hx-num' }, x.calls - x.cached ? `${((x.ms / Math.max(1, x.calls - x.cached)) / 1000).toFixed(1)} s` : '—'), h('td', { className: 'hx-num' }, fmt(x.tokens)))))) : h('div', { className: 'hx-faint' }, '—')),
+        h('div', { className: 'hx-frame hx-pad' },
+          h('div', { className: 'hx-h' }, h('b', {}, '最近的调用'), h('span', { className: 'hx-faint' }, '只记录大小、耗时和 token，不记录内容')),
+          calls.length ? h('table', {}, h('thead', {}, h('tr', {}, ['时间', '环节', '轮', '模型', '条目', '结果', '耗时', 'token'].map((x) => h('th', { key: x }, x)))),
+            h('tbody', {}, calls.slice(-60).reverse().map((c, i) => h('tr', { key: i }, h('td', { className: 'hx-num hx-faint' }, shortTime(c.at)), h('td', {}, c.phase), h('td', { className: 'hx-num' }, c.round), h('td', { className: 'hx-num hx-faint' }, c.model), h('td', { className: 'hx-num' }, c.items), h('td', {}, c.cached ? h('span', { className: 'hx-chip t' }, '缓存') : c.ok ? h('span', { className: 'hx-chip ok' }, '成功') : h('span', { className: 'hx-chip b', title: c.error }, '失败')), h('td', { className: 'hx-num' }, c.ms ? `${(c.ms / 1000).toFixed(1)} s` : '—'), h('td', { className: 'hx-num' }, c.tokens ?? '—'))))) : h('div', { className: 'hx-faint' }, d.error ?? '—')))
+    }
+
     function Report({ run }) {
       const d = useAsync(() => call('report', { runId: run.id }), [run.id, run.status])
       return h('div', { className: 'hx-frame hx-scroll hx-pad', style: { flex: 1 } },
@@ -754,15 +840,51 @@ window.__ModuleLoader__.load({
     function SettingsSection() {
       const [form, setForm] = useState(null)
       const [state, setState] = useState('')
-      useEffect(() => { call('config').then(setForm).catch((e) => setState(msg(e))) }, [])
+      const [test, setTest] = useState(null)
+      useEffect(() => { call('config').then((c) => setForm({ ...c, apiKey: '' })).catch((e) => setState(msg(e))) }, [])
       if (!form) return h('div', { className: 'hx-settings' }, h('style', {}, CSS), state || '加载中…')
       const field = (k, label, props = {}) => h('label', { className: 'hx-field' }, label, h('input', { className: 'hx-input', value: form[k] ?? '', onChange: (e) => setForm({ ...form, [k]: e.target.value }), ...props }))
+      const check = (k, label) => h('label', { style: { display: 'flex', gap: 6, alignItems: 'center' } }, h('input', { type: 'checkbox', checked: form[k] !== false, onChange: (e) => setForm({ ...form, [k]: e.target.checked }) }), label)
+      const num = (v, d) => (Number.isFinite(Number(v)) && String(v).trim() !== '' ? Number(v) : d)
       const save = async () => {
-        const patch = { outputRoot: form.outputRoot ?? '', namespace: form.namespace || 'http://dsh.local/fhir', timezone: form.timezone || '+08:00', profilesDir: form.profilesDir ?? '', residualGate: form.residualGate === 'warn' ? 'warn' : 'block', outputFormat: ['bundles', 'ndjson'].includes(form.outputFormat) ? form.outputFormat : 'both', validatorJar: form.validatorJar ?? '', validatorSample: Number(form.validatorSample) || 2, javaPath: form.javaPath || 'java' }
+        const patch = {
+          loincZhTable: form.loincZhTable ?? '', snomedTable: form.snomedTable ?? '',
+          outputRoot: form.outputRoot ?? '', namespace: form.namespace || 'http://dsh.local/fhir', timezone: form.timezone || '+08:00', profilesDir: form.profilesDir ?? '',
+          residualGate: form.residualGate === 'warn' ? 'warn' : 'block', outputFormat: ['bundles', 'ndjson'].includes(form.outputFormat) ? form.outputFormat : 'both',
+          validatorJar: form.validatorJar ?? '', validatorSample: num(form.validatorSample, 2), javaPath: form.javaPath || 'java',
+          modelEnabled: form.modelEnabled !== false, baseURL: form.baseURL ?? '', model: form.model ?? '', verifyBaseURL: form.verifyBaseURL ?? '', verifyModel: form.verifyModel ?? '',
+          disableThinking: form.disableThinking !== false, timeoutMs: num(form.timeoutMs, 120000), temperature: num(form.temperature, 0), modelConcurrency: num(form.modelConcurrency, 4),
+          maxRounds: Math.min(6, Math.max(1, num(form.maxRounds, 3))), valueLimit: num(form.valueLimit, 300), termLimit: num(form.termLimit, 500), loincTable: form.loincTable ?? '',
+        }
+        if (form.apiKey) patch.apiKey = form.apiKey
         try { await call('saveDefaults', patch); setState('已保存（插件会重新加载）') } catch (e) { setState(msg(e)) }
       }
+      const runTest = async () => {
+        setTest({ busy: true })
+        try { setTest(await call('testConnection', { baseURL: form.baseURL, model: form.model, verifyBaseURL: form.verifyBaseURL, verifyModel: form.verifyModel, apiKey: form.apiKey || undefined })) } catch (e) { setTest({ error: msg(e) }) }
+      }
+      const testLine = (role, label) => {
+        const x = test?.[role]
+        if (!x) return null
+        return h('div', { style: { fontSize: 12, color: x.ok ? 'var(--dsw-alias-state-success-primary)' : x.skipped ? 'var(--dsw-alias-label-secondary)' : 'var(--dsw-alias-state-error-primary)' } }, `${label}：${x.skipped ? '未配置' : x.message}${!x.ok && x.models?.length ? `（端点上有：${x.models.join('、')}）` : ''}`)
+      }
       return h('div', { className: 'hx-settings' }, h('style', {}, CSS),
-        h('p', { style: { margin: 0, color: 'var(--dsw-alias-label-secondary)' } }, `这里只放配置。运行批次、浏览资源，请到左侧栏的「${TITLE}」，或在聊天框使用 /hl7。只在本机按规则处理，不调用模型。`),
+        h('p', { style: { margin: 0, color: 'var(--dsw-alias-label-secondary)' } }, `这里只放配置。运行批次、复核对照，请到左侧栏的「${TITLE}」，或在聊天框使用 /hl7。`),
+        h('h3', { style: { margin: '6px 0 0' } }, '模型'),
+        h('p', { style: { margin: 0, fontSize: 12, color: 'var(--dsw-alias-label-secondary)' } }, '用于：给没有规格的表起草映射规格（Schema 同构）、给无对照的取值找规范值（值域归一）、给本地概念找 LOINC / SNOMED CT 等标准代码（术语对照）。模型结果经插件校验和独立盲审、复判，两模型一致才采用，有分歧的转人工复核，结果存本机对照表、下次复用。病历内容只发往这里配置的端点；发送的只是字段名、截短的取值样例和本地代码 / 名称，不发文书正文。Agent 不能更改这些设置。'),
+        check('modelEnabled', '启用模型'),
+        h('div', { className: 'hx-grid2' },
+          field('baseURL', '识别模型端点（OpenAI 兼容，以 /v1 结尾）', { placeholder: 'http://127.0.0.1:11434/v1' }), field('model', '识别模型'),
+          field('verifyBaseURL', '核验模型端点（空＝同上）'), field('verifyModel', '核验模型（独立盲审；空＝用识别模型盲审）'),
+          field('apiKey', form.apiKeySet ? 'API Key（已设置；留空不修改）' : 'API Key（可空）', { type: 'password' }), field('timeoutMs', '单次调用超时（毫秒）'),
+          field('modelConcurrency', '每个模型同时处理的请求数'), field('maxRounds', '核验轮次上限（1–6）'),
+          field('temperature', '温度'), field('loincTable', 'LOINC 代码表：LoincTable/Loinc.csv'),
+          field('loincZhTable', 'LOINC 中文变体：LinguisticVariants/zhCN…LinguisticVariant.csv（建议）'), field('snomedTable', 'SNOMED CT 描述表：sct2_Description_Snapshot-….txt'),
+          field('valueLimit', '每个值域最多交给模型的取值数'), field('termLimit', '每组术语对照最多交给模型的概念数')),
+        h('p', { style: { margin: 0, fontSize: 12, color: 'var(--dsw-alias-label-secondary)' } }, '术语对照的候选只从本地代码表里检索，模型只在候选里选、核验模型独立再选一次，两者相同才采用。没有配置代码表的标准不交给模型（实测模型凭记忆给的代码约一半是编的）。LOINC 在 loinc.org 免费注册后下载。'),
+        check('disableThinking', '关闭思考模式（推理模型更快）'),
+        h('div', { style: { display: 'flex', gap: 8, alignItems: 'center' } }, h('button', { className: 'hx-btn', onClick: runTest, disabled: test?.busy }, test?.busy ? '测试中…' : '测试连接'), test?.error ? h('span', { style: { color: 'var(--dsw-alias-state-error-primary)', fontSize: 12 } }, test.error) : null),
+        testLine('suggest', '识别模型'), testLine('verify', '核验模型'),
         h('h3', { style: { margin: '6px 0 0' } }, '转换'),
         h('div', { className: 'hx-grid2' },
           field('namespace', '命名空间（标识、代码体系、扩展的网址前缀；确定后不要再改）'),

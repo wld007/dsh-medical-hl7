@@ -14,5 +14,9 @@
     "scope": "org"
   },
   "lands": "DiagnosticReport.code.coding",
-  "mappings": []
+  "mappings": [],
+  "context": [
+    "specimen.display",
+    "item.display"
+  ]
 }

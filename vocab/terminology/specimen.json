@@ -12,5 +12,8 @@
     "display": "specimen.display"
   },
   "lands": "Specimen.type.coding",
-  "mappings": []
+  "mappings": [],
+  "context": [
+    "panel.display"
+  ]
 }

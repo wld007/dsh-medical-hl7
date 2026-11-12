@@ -6,6 +6,8 @@ import { join } from 'node:path'
 import { createService } from './lib/service.js'
 
 export const name = 'medical-hl7'
+
+const DATA_BOUNDARY = '病历内容只发往用户在插件设置中配置的模型端点（通常为本机或内网），发送的只是字段名、截短的取值样例和本地代码 / 名称，不发文书正文；未配置模型时只在本机按规则处理。'
 export const inject = ['tools']
 
 export function apply(ctx, config = {}) {
@@ -22,14 +24,15 @@ export function apply(ctx, config = {}) {
 
   register({
     name: 'hl7_start',
-    description: 'dsh-medical-hl7 插件：把医疗数据（通常是 dsh-medical-anonymizer 的交付目录；json/ndjson/csv，字段命名不限）转换成 HL7 FHIR R4，用于存储和交换。每位病人一个 transaction Bundle（PUT、编号稳定，可直接导入 FHIR 服务器），另出整批 Bulk Data NDJSON 和 manifest。按“语义角色→固定构建器”映射：已知数据源用内置规格（区域平台 p_doc_*），未知的表自动推断病人/机构/医生/就诊号并以 Basic 保留；没有对应的字段原样挂扩展，不丢数据；值不变（时间只做格式转换）。每位病人过结构校验、引用完整性和残留身份证号/手机号检查，未过的暂扣不交付。只在本机按规则处理，不调用模型；绝不修改源文件。立即返回批次 id。',
+    description: `dsh-medical-hl7 插件（HL7 数据交换）：把医疗数据（通常是 dsh-medical-anonymizer 的交付目录；json/ndjson/csv，字段命名不限）转换成 HL7 FHIR R4，用于存储和交换。流程：Schema 同构（表→记录类别、字段→语义角色；没有规格的表由模型起草映射规格）→ 值域归一（写法统一到规范值；无对照的取值由模型给出）→ 术语对照（本地概念→LOINC、SNOMED CT 等；由模型给出候选）→ FHIR 组装 → 验收 → 交付。模型结果都经插件校验（字段存在、目标值集、LOINC/SNOMED 校验位）和独立盲审、复判，两模型一致才采用，有分歧的转人工复核，结果存本机对照表、下次复用。每位病人一个 transaction Bundle（PUT、编号稳定），另出整批 Bulk NDJSON、definitions（含 ConceptMap）和 manifest。没有对应的字段原样保留，值不变。${DATA_BOUNDARY}绝不修改源文件。立即返回批次 id。`,
     parameters: {
       inputDir: { type: 'string', description: '输入目录（一位病人或多位病人的上级目录）或单个文件，绝对路径或相对工作区。' },
       outputRoot: { type: 'string', description: '输出根目录，不能与输入相同、不能包含输入或放在输入里；省略时用设置里的默认值，再缺省为输入旁的 _medical-hl7。' },
-      resumeFrom: { type: 'string', description: '继续一个已取消或失败的批次（填批次 id），沿用原输入和输出根目录；填写时可省略 inputDir。' },
+      resumeFrom: { type: 'string', description: '继续一个已取消或失败的批次（填批次 id），沿用原输入和输出根目录；已完成的模型调用直接复用。填写时可省略 inputDir。' },
+      maxRounds: { type: 'number', description: '模型核验轮次上限（1–6）：每轮以盲审结束，有问题时下一轮先复判修正再盲审；省略时用设置里的默认值。' },
     },
-    execute: async (args, exec) => service.start({ inputDir: args.inputDir, outputRoot: args.outputRoot, resumeFrom: args.resumeFrom, source: { kind: 'agent', sessionId: sessionIdOf(exec?.agent) } }),
-    render: (args, v) => [{ type: 'text', text: `已启动批次 ${v.runId}，输出到 ${v.outputRoot}。${v.provenance?.note ?? ''}。用 hl7_status 查看进度。` }],
+    execute: async (args, exec) => service.start({ inputDir: args.inputDir, outputRoot: args.outputRoot, resumeFrom: args.resumeFrom, maxRounds: args.maxRounds, source: { kind: 'agent', sessionId: sessionIdOf(exec?.agent) } }),
+    render: (args, v) => [{ type: 'text', text: `已启动批次 ${v.runId}，输出到 ${v.outputRoot}（${v.model ? `模型 ${v.model}${v.verifyModel ? `，核验 ${v.verifyModel}` : ''}` : '未配置模型，只按内置规格和已有对照'}）。${v.provenance?.note ?? ''}。用 hl7_status 查看进度。` }],
   })
 
   register({
@@ -145,7 +148,7 @@ export function apply(ctx, config = {}) {
       entry ??= entries.find((item) => item.options?.id === ENTRY_ID)
     }
     if (!entry) throw new Error(`找不到插件配置行 ${ENTRY_ID}`)
-    const allowed = ['outputRoot', 'outputFormat', 'vocabDir', 'keepIntermediate', 'domainCoverageWarn', 'namespace', 'timezone', 'profilesDir', 'residualGate', 'validatorJar', 'validatorSample', 'javaPath']
+    const allowed = ['outputRoot', 'outputFormat', 'vocabDir', 'keepIntermediate', 'domainCoverageWarn', 'modelEnabled', 'baseURL', 'model', 'apiKey', 'verifyBaseURL', 'verifyModel', 'disableThinking', 'timeoutMs', 'temperature', 'modelConcurrency', 'maxRounds', 'valueLimit', 'termLimit', 'loincTable', 'loincZhTable', 'snomedTable', 'namespace', 'timezone', 'profilesDir', 'residualGate', 'validatorJar', 'validatorSample', 'javaPath']
     const clean = Object.fromEntries(Object.entries(patch ?? {}).filter(([k]) => allowed.includes(k)))
     await editor.edit(entry, (current) => ({ ...current, ...clean }))
     return { saved: true }
@@ -172,6 +175,10 @@ export function apply(ctx, config = {}) {
           case 'reviewDomain': return service.reviewDomain(r)
           case 'reviewTerm': return service.reviewTerm(r)
           case 'rerun': return service.rerun(r.runId)
+          case 'reviewDraft': return service.reviewDraft(r)
+          case 'confirmModel': return service.confirmModel(r)
+          case 'model': return service.modelView(r.runId)
+          case 'testConnection': return service.testConnection(r)
           case 'pickFolder': {
             const ws = ctx.get('uiWorkspace')
             return { path: ws?.pickDirectory ? await ws.pickDirectory() : null }
