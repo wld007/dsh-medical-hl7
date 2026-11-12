@@ -1,6 +1,6 @@
 {
   "name": "dsh-medical-hl7",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "把匿名化后的医疗数据转换成 HL7 FHIR R4（每病人 transaction Bundle + Bulk NDJSON + 本地扩展与代码定义），用于存储与交换。DeepSeek Harness 插件。",
   "type": "module",
   "license": "MIT",
