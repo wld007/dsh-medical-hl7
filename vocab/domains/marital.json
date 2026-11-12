@@ -1,0 +1,137 @@
+{
+  "version": "1.0.0",
+  "kind": "enum",
+  "id": "marital",
+  "name": "婚姻状况",
+  "description": "源数据婚姻状况 → HL7 v3 MaritalStatus。国标 GB/T 2261.2：10 未婚、20 已婚（21 初婚、22 再婚、23 复婚）、30 丧偶、40 离婚、90 未说明。 “未知”在 FHIR R4 中取自 v3-NullFlavor（UNK）。",
+  "target": {
+    "system": "http://terminology.hl7.org/CodeSystem/v3-MaritalStatus",
+    "name": "HL7 v3 婚姻状况",
+    "values": [
+      {
+        "code": "S",
+        "display": "Never Married",
+        "label": "未婚"
+      },
+      {
+        "code": "M",
+        "display": "Married",
+        "label": "已婚"
+      },
+      {
+        "code": "W",
+        "display": "Widowed",
+        "label": "丧偶"
+      },
+      {
+        "code": "D",
+        "display": "Divorced",
+        "label": "离婚"
+      },
+      {
+        "code": "UNK",
+        "display": "unknown",
+        "label": "未知",
+        "system": "http://terminology.hl7.org/CodeSystem/v3-NullFlavor"
+      }
+    ]
+  },
+  "entries": [
+    {
+      "code": "10",
+      "to": "S",
+      "status": "confirmed",
+      "basis": "GB/T 2261.2"
+    },
+    {
+      "code": "20",
+      "to": "M",
+      "status": "confirmed",
+      "basis": "GB/T 2261.2"
+    },
+    {
+      "code": "21",
+      "to": "M",
+      "status": "confirmed",
+      "basis": "GB/T 2261.2"
+    },
+    {
+      "code": "22",
+      "to": "M",
+      "status": "confirmed",
+      "basis": "GB/T 2261.2"
+    },
+    {
+      "code": "23",
+      "to": "M",
+      "status": "confirmed",
+      "basis": "GB/T 2261.2"
+    },
+    {
+      "code": "30",
+      "to": "W",
+      "status": "confirmed",
+      "basis": "GB/T 2261.2"
+    },
+    {
+      "code": "40",
+      "to": "D",
+      "status": "confirmed",
+      "basis": "GB/T 2261.2"
+    },
+    {
+      "code": "90",
+      "to": "UNK",
+      "status": "confirmed",
+      "basis": "GB/T 2261.2：90 未说明"
+    },
+    {
+      "display": "未婚",
+      "to": "S",
+      "status": "confirmed",
+      "basis": "以名称为准"
+    },
+    {
+      "display": "已婚",
+      "to": "M",
+      "status": "confirmed",
+      "basis": "以名称为准"
+    },
+    {
+      "display": "丧偶",
+      "to": "W",
+      "status": "confirmed",
+      "basis": "以名称为准"
+    },
+    {
+      "display": "离婚",
+      "to": "D",
+      "status": "confirmed",
+      "basis": "以名称为准"
+    },
+    {
+      "display": "未说明的婚姻状况",
+      "to": "UNK",
+      "status": "confirmed",
+      "basis": "以名称为准"
+    },
+    {
+      "code": "3",
+      "to": null,
+      "status": "pending",
+      "note": "代码 3 不在 GB/T 2261.2 中，且没有名称"
+    },
+    {
+      "display": "其他",
+      "to": null,
+      "status": "pending",
+      "note": "“其他”不是婚姻状况的有效取值"
+    },
+    {
+      "display": "2",
+      "to": null,
+      "status": "pending",
+      "note": "名称字段里填的是“2”，含义不明"
+    }
+  ]
+}

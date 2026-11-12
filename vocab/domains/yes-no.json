@@ -1,0 +1,49 @@
+{
+  "version": "1.0.0",
+  "kind": "enum",
+  "id": "yes-no",
+  "name": "是否标志",
+  "description": "通用是否标志：0 否、1 是。",
+  "target": {
+    "system": "http://terminology.hl7.org/CodeSystem/v2-0136",
+    "name": "HL7 是/否",
+    "values": [
+      {
+        "code": "Y",
+        "display": "Yes",
+        "label": "是"
+      },
+      {
+        "code": "N",
+        "display": "No",
+        "label": "否"
+      }
+    ]
+  },
+  "entries": [
+    {
+      "code": "1",
+      "to": "Y",
+      "status": "confirmed",
+      "basis": "通用是否标志"
+    },
+    {
+      "code": "0",
+      "to": "N",
+      "status": "confirmed",
+      "basis": "通用是否标志"
+    },
+    {
+      "display": "是",
+      "to": "Y",
+      "status": "confirmed",
+      "basis": "以名称为准"
+    },
+    {
+      "display": "否",
+      "to": "N",
+      "status": "confirmed",
+      "basis": "以名称为准"
+    }
+  ]
+}

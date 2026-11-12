@@ -1,0 +1,51 @@
+{
+  "version": "1.0.0",
+  "kind": "enum",
+  "id": "regional-platform/discharge-disposition",
+  "name": "离院方式",
+  "target": {
+    "system": "{ns}/CodeSystem/canonical/discharge-disposition",
+    "name": "离院方式（规范值）",
+    "values": [
+      {
+        "code": "1",
+        "display": "医嘱离院",
+        "label": "医嘱离院"
+      },
+      {
+        "code": "2",
+        "display": "医嘱转院",
+        "label": "医嘱转院"
+      },
+      {
+        "code": "3",
+        "display": "医嘱转社区",
+        "label": "医嘱转社区"
+      },
+      {
+        "code": "4",
+        "display": "非医嘱离院",
+        "label": "非医嘱离院"
+      },
+      {
+        "code": "5",
+        "display": "死亡",
+        "label": "死亡"
+      },
+      {
+        "code": "9",
+        "display": "其他",
+        "label": "其他"
+      }
+    ]
+  },
+  "entries": [
+    {
+      "code": "1",
+      "display": "离院",
+      "to": null,
+      "status": "pending",
+      "note": "WS 364 中 1 = 医嘱离院，名称只写“离院”，待确认"
+    }
+  ]
+}

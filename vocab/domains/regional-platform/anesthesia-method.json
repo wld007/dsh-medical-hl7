@@ -1,0 +1,62 @@
+{
+  "version": "1.0.0",
+  "kind": "enum",
+  "id": "regional-platform/anesthesia-method",
+  "name": "麻醉方式",
+  "target": {
+    "system": "{ns}/CodeSystem/canonical/anesthesia-method",
+    "name": "麻醉方式（规范值）",
+    "values": [
+      {
+        "code": "general",
+        "display": "全身麻醉",
+        "label": "全身麻醉"
+      },
+      {
+        "code": "local",
+        "display": "局部麻醉",
+        "label": "局部麻醉"
+      },
+      {
+        "code": "regional",
+        "display": "区域阻滞",
+        "label": "区域阻滞"
+      },
+      {
+        "code": "spinal",
+        "display": "椎管内麻醉",
+        "label": "椎管内麻醉"
+      },
+      {
+        "code": "sedation",
+        "display": "镇静",
+        "label": "镇静"
+      },
+      {
+        "code": "none",
+        "display": "无麻醉",
+        "label": "无麻醉"
+      }
+    ]
+  },
+  "entries": [
+    {
+      "display": "全麻",
+      "to": "general",
+      "status": "confirmed",
+      "basis": "以名称为准"
+    },
+    {
+      "display": "局麻",
+      "to": "local",
+      "status": "confirmed",
+      "basis": "以名称为准"
+    },
+    {
+      "display": "会诊",
+      "to": null,
+      "status": "invalid",
+      "note": "“会诊”不是麻醉方式"
+    }
+  ]
+}

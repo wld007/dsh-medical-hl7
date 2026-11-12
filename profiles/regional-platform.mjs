@@ -2,7 +2,8 @@
  * 内置映射规格：区域平台导出（p_doc_*.json，按“类别/子类/年月”分文件）。
  * 只是数据：字段 → 语义角色。没写进规格的字段不会丢，按原样挂在资源的 source-field 扩展上。
  *
- * 取值对照（values）只写确知的含义。RSLT_FLG 等含义不明的代码原样保留在本地代码体系里，不换算成 FHIR 的 interpretation。
+ * 这里只做 Schema 同构（字段 → 角色）。每个角色绑定哪个值域写在 domains 里；值域的取值对照在 vocab/domains/，
+ * 含义未确认的取值标“待确认”，保留原值，不换算。
  */
 const org = { 'org.code': 'MDC_ORG_CD', 'org.name': 'MDC_ORG_NM' }
 const pat = { 'patient.id': 'ID_CRD_NO', 'patient.localId': 'PID', 'patient.name': 'PTT_NM', 'patient.gender.code': 'GDR_CD', 'patient.gender.display': 'GDR_NM', 'patient.birthDate': 'BTH_DT' }
@@ -15,7 +16,7 @@ const invalid = { field: 'INVLD_FLG', values: ['1'] }
 export default {
   id: 'regional-platform',
   name: '区域平台导出（p_doc_*）',
-  version: '0.1.0',
+  version: '0.2.0',
   detect: { fileRe: '^p_doc_[a-z_]+\\.json$' },
   timezone: '+08:00',
   tables: [
@@ -58,41 +59,40 @@ export default {
         'emergency.flag': 'EMG_FLG', 'firstVisit.flag': 'FST_VST_FLG',
         'maritalStatus.code': 'MRY_CDT_CD', 'maritalStatus.display': 'MRY_CDT_NM',
       },
-      // VST_TP：1 门诊、2 住院、3 体检（事件还原插件已核对过）
-      values: { 'encounter.setting': { 1: 'AMB', 2: 'IMP', 3: 'AMB' }, 'encounter.settingName': { 1: '门诊', 2: '住院', 3: '体检' } },
+      domains: { 'encounter.setting': 'regional-platform/visit-type', dischargeDisposition: 'regional-platform/discharge-disposition' },
     },
     {
       id: 'diagnosis', match: { file: 'p_doc_fact_diag_infmt.json' }, kind: 'condition', key: ['PRM_KEY'], invalid,
       roles: {
         ...pat, ...org, ...enc, ...audit, 'encounter.setting': 'VST_TP',
         'code.code': 'DIAG_ICD10_CD', 'code.display': 'DIAG_ICD10_NM', 'code.local': 'DIAG_CD', text: 'DIAG_DSCPT',
-        // DIAG_CGY_CD 与 DIAG_CGY_NM 的对应在不同机构间不一致；以含义明确的 NM（cbzd 等）为代码，CD 原样保留
+        // DIAG_CGY_CD 与 DIAG_CGY_NM 的对应在不同机构间不一致；只用含义明确的 NM（cbzd 等），CD 原样保留
         'time.recorded': ['DIAG_DT', 'CRT_TM'], 'category.display': 'DIAG_CGY_NM', 'main.flag': 'MAIN_DIAG_FLG',
         'tcm.flag': 'TCM_DIAG_FLG', 'tcm.code': ['TCM_SPTM_CD', 'TCM_DSES_CD'], 'tcm.display': ['TCM_SPTM_NM', 'TCM_DSES_NM'], order: 'DIAG_SRL_NO', note: 'RMRK',
         'dept.code': 'DIAG_DPT_CD', 'dept.name': 'DIAG_DPT_NM', 'actor.author.code': 'DIAG_DCT_CD', 'actor.author.name': 'DIAG_DCT_NM',
       },
-      values: { 'encounter.setting': { 1: 'AMB', 2: 'IMP' }, 'category.display': { cbzd: '初步诊断', cyzd: '出院诊断', bczd: '补充诊断', xzzd: '修正诊断' } },
+      domains: { 'encounter.setting': 'regional-platform/diagnosis-setting', category: 'regional-platform/diagnosis-category', 'main.flag': 'regional-platform/main-diagnosis-flag' },
       codeSystems: { code: { name: 'icd-10-cn' }, local: { name: 'diagnosis-local', scope: 'org' } },
     },
     {
       id: 'lab', match: { file: 'p_doc_fact_test_rcd.json' }, kind: 'lab', key: ['PRM_KEY'], invalid,
       roles: {
-        ...pat, ...org, ...audit, 'encounter.outpatientNo': ['OTPT_EMG_NO', 'TEST_OTPT_NO'], 'encounter.inpatientNo': ['INHOS_NO', 'TEST_INHOS_NO'], 'encounter.setting': 'PTT_SRC_CD',
+        ...pat, ...org, ...audit, 'encounter.outpatientNo': ['OTPT_EMG_NO', 'TEST_OTPT_NO'], 'encounter.inpatientNo': ['INHOS_NO', 'TEST_INHOS_NO'], 'encounter.setting': 'PTT_SRC_CD', 'encounter.setting.display': 'PTT_SRC_NM',
         'report.no': ['TEST_RPT_NO', 'TEST_RCD_NO'], 'panel.code': 'TEST_ITM_CD', 'panel.display': 'TEST_ITM_NM',
         'item.code': 'TEST_CHD_ITM_CD', 'item.display': 'TEST_CHD_ITM_NM', 'item.stdCode': 'STD_TEST_CHD_ITM_CD', 'item.stdDisplay': 'STD_TEST_CHD_ITM_NM',
-        value: 'TEST_RSLT_VLU', unit: 'TEST_RSLT_VLU_UNT', refRange: 'RFRC_VLU', flag: 'RSLT_FLG',
+        value: 'TEST_RSLT_VLU', unit: 'TEST_RSLT_VLU_UNT', refRange: 'RFRC_VLU', flag: 'RSLT_FLG', 'flag.decision': 'RSLT_DCD_CD',
         'specimen.code': 'SPCM_CD', 'specimen.display': 'SPCM_NM',
         'time.effective': ['TEST_DT', 'CRT_TM'], 'time.issued': 'ADT_TM', 'time.ordered': 'APL_DT_TM', 'order.no': 'ELCTRNC_APL_NO', note: 'RMRK',
         'dept.code': 'DLVR_EXAM_DPT_CD', 'dept.name': 'DLVR_EXAM_DPT_NM',
         'actor.performer.name': 'TEST_DCT_NM', 'actor.verifier.name': 'ADT_DCT_NM', 'actor.requester.name': 'APL_DCT_NM', 'actor.collector.name': 'CLLT_SPCM_PSN_NM',
       },
-      values: { 'encounter.setting': { 0: 'AMB', 1: 'IMP' } },
+      domains: { 'encounter.setting': 'regional-platform/lab-patient-source', flag: 'regional-platform/lab-result-flag', 'flag.decision': 'regional-platform/lab-result-decision' },
       codeSystems: { panel: { name: 'lab-panel', scope: 'org' }, item: { name: 'lab-item', scope: 'org' }, std: { name: 'lab-item-std' }, specimen: { name: 'specimen', scope: 'org' }, flag: { name: 'lab-result-flag' } },
     },
     {
       id: 'exam', match: { file: 'p_doc_fact_exam_rcd.json' }, kind: 'imaging', key: ['PRM_KEY'], invalid,
       roles: {
-        ...pat, ...org, ...audit, 'encounter.outpatientNo': ['OTPT_EMG_NO', 'EXAM_OTPT_NO'], 'encounter.inpatientNo': ['INHOS_NO', 'EXAM_INHOS_NO'], 'encounter.setting': 'PTT_SRC_CD',
+        ...pat, ...org, ...audit, 'encounter.outpatientNo': ['OTPT_EMG_NO', 'EXAM_OTPT_NO'], 'encounter.inpatientNo': ['INHOS_NO', 'EXAM_INHOS_NO'], 'encounter.setting': 'PTT_SRC_CD', 'encounter.setting.display': 'PTT_SRC_NM',
         'report.no': 'EXAM_RCD_NO', 'item.display': 'EXAM_ITM_NM', 'item.stdCode': 'STD_EXAM_ITM_CD', 'item.stdDisplay': 'STD_EXAM_ITM_NM', modality: 'EXAM_ITM_TP_NM',
         findings: 'EXAM_RPT_RSLT_OBJCT', conclusion: 'EXAM_RPT_RSLT_SBJCT', 'bodySite.text': 'EXAM_PRT_NM', 'reason.text': 'DIAG_DSCPT',
         'time.effective': 'EXAM_DT', 'time.issued': ['EXAM_RPT_DT', 'EXAM_ADT_DT_TM'], 'time.ordered': 'APL_DT_TM', 'order.no': 'ELCTRNC_APL_NO', status: 'EXAM_STTS_CD',
@@ -100,7 +100,7 @@ export default {
         'actor.requester.code': 'APL_DCT_CD', 'actor.requester.name': 'APL_DCT_NM', 'actor.performer.code': 'EXAM_DCT_CD', 'actor.performer.name': 'EXAM_DCT_NM',
         'actor.author.code': 'RPT_DCT_CD', 'actor.author.name': 'RPT_DCT_NM', 'actor.verifier.code': 'ADT_DCT_CD', 'actor.verifier.name': ['ADT_DCT_SGNT'],
       },
-      values: { 'encounter.setting': { 1: 'AMB', 2: 'IMP' } },
+      domains: { 'encounter.setting': 'regional-platform/exam-patient-source', status: 'regional-platform/exam-status' },
       codeSystems: { std: { name: 'exam-item-std' }, modality: { name: 'exam-modality' } },
     },
     {
@@ -114,6 +114,7 @@ export default {
         'dept.code': 'OPRT_DPT_CD', 'dept.name': 'OPRT_DPT_NM',
         'actor.surgeon.code': 'OPRT_DCT_CD', 'actor.surgeon.name': 'OPRT_DCT_NM', 'actor.anesthetist.code': 'ATHS_DCT_CD', 'actor.anesthetist.name': 'ATHS_DCT_NM',
       },
+      domains: { level: 'regional-platform/procedure-level', incision: 'regional-platform/incision-class', anesthesia: 'regional-platform/anesthesia-method' },
       codeSystems: { code: { name: 'procedure-code', scope: 'org' }, reason: { name: 'icd-10-cn' } },
     },
     {
@@ -152,6 +153,7 @@ export default {
         'category.code': ['FEE_CGY_CD_STD', 'FEE_CGY_CD'], 'category.display': ['FEE_CGY_NM_STD', 'FEE_CGY_NM'], 'time.occurrence': 'CHRG_DT', 'refund.flag': 'CHRG_RTRN_FLG',
         'dept.code': 'OPN_DPT_CD', 'dept.name': 'OPN_DPT_NM',
       },
+      domains: { category: 'regional-platform/fee-category', 'refund.flag': 'regional-platform/charge-refund' },
       codeSystems: { item: { name: 'charge-item', scope: 'org' }, category: { name: 'fee-category' } },
     },
     {
@@ -170,31 +172,31 @@ export default {
     obs('bmi', 'p_doc_dwd_bmi.json', [{ field: 'BMI', measure: 'bmi' }]),
     obs('waist', 'p_doc_dwd_waist.json', [{ field: 'WAIST', measure: 'waist' }]),
     obs('blood-type', 'p_doc_dwd_blood.json', [
-      { coded: { code: 'ABO_CD', display: 'ABO_NM' }, loinc: '883-9', loincDisplay: 'ABO group [Type] in Blood', local: 'abo', text: 'ABO血型', category: 'laboratory', unknownWhen: ['不详'] },
-      { coded: { code: 'RH_CD', display: 'RH_NM' }, loinc: '10331-7', loincDisplay: 'Rh [Type] in Blood', local: 'rh', text: 'Rh血型', category: 'laboratory', unknownWhen: ['不详'] },
+      { coded: { code: 'ABO_CD', display: 'ABO_NM' }, loinc: '883-9', loincDisplay: 'ABO group [Type] in Blood', local: 'abo', text: 'ABO血型', category: 'laboratory', domain: 'abo' },
+      { coded: { code: 'RH_CD', display: 'RH_NM' }, loinc: '10331-7', loincDisplay: 'Rh [Type] in Blood', local: 'rh', text: 'Rh血型', category: 'laboratory', domain: 'rh' },
     ]),
     obs('smoking', 'p_doc_dwd_smock.json', [
-      { coded: { code: 'SMK_STTS_CD', display: 'SMK_STTS_NM' }, loinc: '72166-2', loincDisplay: 'Tobacco smoking status', local: 'smoking-status', text: '吸烟状况', category: 'social-history' },
+      { coded: { code: 'SMK_STTS_CD', display: 'SMK_STTS_NM' }, loinc: '72166-2', loincDisplay: 'Tobacco smoking status', local: 'smoking-status', text: '吸烟状况', category: 'social-history', domain: 'regional-platform/smoking-status' },
       { field: 'SMK_QTY', local: 'cigarettes-per-day', text: '日吸烟量', unit: '支/天', category: 'social-history' },
       { field: 'STRT_SMK_AGE', local: 'smoking-start-age', text: '开始吸烟年龄', unit: '岁', category: 'social-history' },
       { field: 'QUIT_SMK_AGE', local: 'smoking-quit-age', text: '戒烟年龄', unit: '岁', category: 'social-history' },
-      { field: 'SMK_FLG', local: 'smoking-flag', text: '吸烟标志', category: 'social-history', asString: true },
+      { field: 'SMK_FLG', local: 'smoking-flag', text: '吸烟标志', category: 'social-history', asString: true, domain: 'yes-no' },
     ]),
     obs('drinking', 'p_doc_dwd_drink.json', [
-      { coded: { code: 'DRNK_STTS_CD', display: 'DRNK_STTS_NM' }, loinc: '11331-6', loincDisplay: 'History of Alcohol use', local: 'drinking-status', text: '饮酒状况', category: 'social-history' },
-      { coded: { code: 'DRNK_FRQ_CD', display: 'DRNK_FRQ_NM' }, local: 'drinking-frequency', text: '饮酒频率', category: 'social-history' },
+      { coded: { code: 'DRNK_STTS_CD', display: 'DRNK_STTS_NM' }, loinc: '11331-6', loincDisplay: 'History of Alcohol use', local: 'drinking-status', text: '饮酒状况', category: 'social-history', domain: 'regional-platform/drinking-status' },
+      { coded: { code: 'DRNK_FRQ_CD', display: 'DRNK_FRQ_NM' }, local: 'drinking-frequency', text: '饮酒频率', category: 'social-history', domain: 'regional-platform/drinking-frequency' },
       { field: 'DRNK_QTY', local: 'drinking-amount', text: '日饮酒量', unit: '两/天', category: 'social-history' },
-      { coded: { code: 'DRNK_TP_CD', display: 'DRNK_TP_NM' }, local: 'drinking-type', text: '饮酒种类', category: 'social-history' },
+      { coded: { code: 'DRNK_TP_CD', display: 'DRNK_TP_NM' }, local: 'drinking-type', text: '饮酒种类', category: 'social-history', domain: 'regional-platform/drinking-type' },
       { field: 'STRT_DRNK_AGE', local: 'drinking-start-age', text: '开始饮酒年龄', unit: '岁', category: 'social-history' },
       { field: 'ABSTNC_AGE', local: 'drinking-quit-age', text: '戒酒年龄', unit: '岁', category: 'social-history' },
-      { field: 'DRNK_FLG', local: 'drinking-flag', text: '饮酒标志', category: 'social-history', asString: true },
+      { field: 'DRNK_FLG', local: 'drinking-flag', text: '饮酒标志', category: 'social-history', asString: true, domain: 'yes-no' },
     ]),
     obs('exercise', 'p_doc_dwd_sport.json', [
-      { coded: { code: 'EXRC_FRQ_CD', display: 'EXRC_FRQ_NM' }, local: 'exercise-frequency', text: '锻炼频率', category: 'social-history' },
+      { coded: { code: 'EXRC_FRQ_CD', display: 'EXRC_FRQ_NM' }, local: 'exercise-frequency', text: '锻炼频率', category: 'social-history', domain: 'regional-platform/exercise-frequency' },
       { field: 'EXRC_DRT', local: 'exercise-duration', text: '每次锻炼时间', unit: 'min', category: 'social-history' },
       { field: 'INSST_EXRC_DRT_YEAR', local: 'exercise-years', text: '坚持锻炼时间', unit: '年', category: 'social-history' },
-      { coded: { code: 'EXRC_WAY_CD', display: 'EXRC_WAY_NM' }, local: 'exercise-type', text: '锻炼方式', category: 'social-history' },
-      { field: 'EXRC_FLG', local: 'exercise-flag', text: '锻炼标志', category: 'social-history', asString: true },
+      { coded: { code: 'EXRC_WAY_CD', display: 'EXRC_WAY_NM' }, local: 'exercise-type', text: '锻炼方式', category: 'social-history', domain: 'regional-platform/exercise-type' },
+      { field: 'EXRC_FLG', local: 'exercise-flag', text: '锻炼标志', category: 'social-history', asString: true, domain: 'yes-no' },
     ]),
     obs('occupation', 'p_doc_dwd_occp.json', [
       { coded: { code: 'STD_WRK_PFS_CD', display: 'STD_WRK_PFS_NM' }, loinc: '11341-5', loincDisplay: 'History of Occupation', local: 'occupation', text: '职业', category: 'social-history' },

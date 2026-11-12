@@ -1,0 +1,16 @@
+{
+  "version": "1.0.0",
+  "id": "exam-item",
+  "name": "检查项目 → LOINC",
+  "description": "按检查项目名称对照 LOINC 影像/检查文档代码。",
+  "target": {
+    "system": "http://loinc.org",
+    "name": "LOINC"
+  },
+  "extract": {
+    "kind": "imaging",
+    "display": "item.display"
+  },
+  "lands": "DiagnosticReport.code.coding",
+  "mappings": []
+}

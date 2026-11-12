@@ -1,0 +1,16 @@
+{
+  "version": "1.0.0",
+  "id": "specimen",
+  "name": "标本类型 → SNOMED CT",
+  "description": "按标本名称对照（本数据源 SPCM_CD 取值 400+ 个、名称只有约 20 种，代码不像标本类型码）。",
+  "target": {
+    "system": "http://snomed.info/sct",
+    "name": "SNOMED CT"
+  },
+  "extract": {
+    "kind": "lab",
+    "display": "specimen.display"
+  },
+  "lands": "Specimen.type.coding",
+  "mappings": []
+}

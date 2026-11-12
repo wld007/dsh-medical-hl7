@@ -1,0 +1,15 @@
+{
+  "version": "1.0.0",
+  "id": "occupation",
+  "name": "职业 → GB/T 6565",
+  "description": "职业代码对照国家职业分类。",
+  "target": {
+    "system": "{ns}/CodeSystem/std/gbt-6565",
+    "name": "GB/T 6565 职业分类与代码"
+  },
+  "extract": {
+    "item": "occupation"
+  },
+  "lands": "Observation.valueCodeableConcept.coding",
+  "mappings": []
+}

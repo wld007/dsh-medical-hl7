@@ -6,7 +6,12 @@ import { join } from 'node:path'
 import { writeFictionalPatient, fakeIdCard } from './fixtures/fictional.mjs'
 import { createService } from '../lib/service.js'
 import { loadProfiles, findUnits, readUnit } from '../lib/source.js'
-import { convertPatient, createContext } from '../lib/convert.js'
+import { createContext } from '../lib/convert.js'
+import { processPatient } from '../lib/pipeline.js'
+import { createSchemaStats } from '../lib/stages/harmonize.js'
+import { createNormalizer } from '../lib/stages/normalize.js'
+import { createTerminology } from '../lib/stages/terminology.js'
+import { loadVocab } from '../lib/stages/vocab.js'
 import { validateResources } from '../lib/fhir/validate.js'
 import { parseTime, parseNumber, referenceRange } from '../lib/fhir/datatypes.js'
 import { scanResidual } from '../lib/gates.js'
@@ -28,7 +33,9 @@ async function convertFixture(opts) {
   const [unit] = await findUnits(join(base, 'in'), () => false, profiles)
   const r = await readUnit(unit, profiles, join(base, 'in'))
   const [[key, p]] = [...r.patients]
-  return convertPatient(key, p.records, createContext({ profileId: 'regional-platform' }))
+  const vocab = await loadVocab(null)
+  const ctx = createContext({ profileId: 'regional-platform' })
+  return processPatient(key, p.records, ctx, { schemaStats: createSchemaStats(), normalizer: createNormalizer({ vocab }), terminology: createTerminology({ vocab, resolveSystem: ctx.resolve }) })
 }
 const find = (out, type, pred = () => true) => out.resources.filter((r) => r.resourceType === type && pred(r))
 const fieldExt = (r, name) => r.extension?.find((e) => e.url.endsWith('/source-field') && e.extension[0].valueString === name)?.extension[1].valueString
@@ -86,7 +93,10 @@ test('区域平台：各类记录转成对应资源，值不变，未映射字�
   assert.equal(crea.interpretation, undefined, '含义不明的结果标志不换算')
   assert.equal(crea.extension.find((e) => e.url.endsWith('/result-flag')).valueCoding.code, '1')
   assert.equal(fieldExt(crea, 'AGE'), '70')
-  assert.equal(labs.find((o) => o.code.text === '尿酸').valueString, '阴性')
+  const neg = labs.find((o) => o.code.text === '尿酸').valueCodeableConcept
+  assert.equal(neg.text, '阴性', '原文保留')
+  assert.equal(neg.coding[0].code, 'negative', '值域归一：定性结果规范值')
+  assert.ok(neg.coding.some((c) => c.system === 'http://snomed.info/sct' && c.code === '260385009'), '术语对照：SNOMED CT')
   assert.equal(labs.find((o) => o.code.text === '葡萄糖').valueQuantity.comparator, '<')
   const reports = find(out, 'DiagnosticReport', (d) => d.category?.[0].coding?.[0].code === 'LAB')
   assert.equal(reports.length, 2, '按报告号归并')

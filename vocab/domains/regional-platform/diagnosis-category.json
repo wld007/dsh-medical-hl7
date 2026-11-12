@@ -1,0 +1,70 @@
+{
+  "version": "1.0.0",
+  "kind": "enum",
+  "id": "regional-platform/diagnosis-category",
+  "name": "诊断类别（DIAG_CGY_NM）",
+  "description": "诊断类别名称是拼音缩写；DIAG_CGY_CD 的 0001/0002/0003 与名称不对应，不使用。",
+  "target": {
+    "system": "{ns}/CodeSystem/canonical/diagnosis-category",
+    "name": "诊断类别（规范值）",
+    "values": [
+      {
+        "code": "admission",
+        "display": "入院诊断",
+        "label": "入院诊断"
+      },
+      {
+        "code": "preliminary",
+        "display": "初步诊断",
+        "label": "初步诊断"
+      },
+      {
+        "code": "discharge",
+        "display": "出院诊断",
+        "label": "出院诊断"
+      },
+      {
+        "code": "supplementary",
+        "display": "补充诊断",
+        "label": "补充诊断"
+      },
+      {
+        "code": "revised",
+        "display": "修正诊断",
+        "label": "修正诊断"
+      }
+    ]
+  },
+  "entries": [
+    {
+      "display": "ryzd",
+      "to": "admission",
+      "status": "confirmed",
+      "basis": "拼音缩写：入院诊断"
+    },
+    {
+      "display": "cbzd",
+      "to": "preliminary",
+      "status": "confirmed",
+      "basis": "拼音缩写：初步诊断"
+    },
+    {
+      "display": "cyzd",
+      "to": "discharge",
+      "status": "confirmed",
+      "basis": "拼音缩写：出院诊断"
+    },
+    {
+      "display": "bczd",
+      "to": "supplementary",
+      "status": "confirmed",
+      "basis": "拼音缩写：补充诊断"
+    },
+    {
+      "display": "xzzd",
+      "to": "revised",
+      "status": "confirmed",
+      "basis": "拼音缩写：修正诊断"
+    }
+  ]
+}

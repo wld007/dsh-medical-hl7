@@ -1,0 +1,409 @@
+{
+  "version": "1.0.0",
+  "kind": "enum",
+  "id": "qualitative-result",
+  "name": "定性结果",
+  "match": "display",
+  "description": "检验非数值结果的写法统一。阴性/阳性/弱阳性/等级归一到规范值；颜色、性状等描述性结果按原文保留（不属于定性判断）。",
+  "target": {
+    "system": "{ns}/CodeSystem/canonical/qualitative-result",
+    "name": "定性结果（规范值）",
+    "values": [
+      {
+        "code": "negative",
+        "display": "阴性",
+        "label": "阴性"
+      },
+      {
+        "code": "positive",
+        "display": "阳性",
+        "label": "阳性"
+      },
+      {
+        "code": "weakly-positive",
+        "display": "弱阳性",
+        "label": "弱阳性"
+      },
+      {
+        "code": "1+",
+        "display": "1+",
+        "label": "1+"
+      },
+      {
+        "code": "2+",
+        "display": "2+",
+        "label": "2+"
+      },
+      {
+        "code": "3+",
+        "display": "3+",
+        "label": "3+"
+      },
+      {
+        "code": "4+",
+        "display": "4+",
+        "label": "4+"
+      },
+      {
+        "code": "not-detected",
+        "display": "未检出",
+        "label": "未检出"
+      },
+      {
+        "code": "not-seen",
+        "display": "未见",
+        "label": "未见"
+      }
+    ]
+  },
+  "entries": [
+    {
+      "display": "阴性",
+      "to": "negative",
+      "status": "confirmed",
+      "basis": "写法统一"
+    },
+    {
+      "display": "阴性(-)",
+      "to": "negative",
+      "status": "confirmed",
+      "basis": "写法统一"
+    },
+    {
+      "display": "阴性（-）",
+      "to": "negative",
+      "status": "confirmed",
+      "basis": "写法统一"
+    },
+    {
+      "display": "阴性（－）",
+      "to": "negative",
+      "status": "confirmed",
+      "basis": "写法统一"
+    },
+    {
+      "display": "-",
+      "to": "negative",
+      "status": "confirmed",
+      "basis": "写法统一"
+    },
+    {
+      "display": "－",
+      "to": "negative",
+      "status": "confirmed",
+      "basis": "写法统一"
+    },
+    {
+      "display": "(-)",
+      "to": "negative",
+      "status": "confirmed",
+      "basis": "写法统一"
+    },
+    {
+      "display": "Negative",
+      "to": "negative",
+      "status": "confirmed",
+      "basis": "写法统一"
+    },
+    {
+      "display": "negative",
+      "to": "negative",
+      "status": "confirmed",
+      "basis": "写法统一"
+    },
+    {
+      "display": "NEG",
+      "to": "negative",
+      "status": "confirmed",
+      "basis": "写法统一"
+    },
+    {
+      "display": "阳性",
+      "to": "positive",
+      "status": "confirmed",
+      "basis": "写法统一"
+    },
+    {
+      "display": "阳性(+)",
+      "to": "positive",
+      "status": "confirmed",
+      "basis": "写法统一"
+    },
+    {
+      "display": "阳性（+）",
+      "to": "positive",
+      "status": "confirmed",
+      "basis": "写法统一"
+    },
+    {
+      "display": "+",
+      "to": "positive",
+      "status": "confirmed",
+      "basis": "写法统一"
+    },
+    {
+      "display": "(+)",
+      "to": "positive",
+      "status": "confirmed",
+      "basis": "写法统一"
+    },
+    {
+      "display": "Positive",
+      "to": "positive",
+      "status": "confirmed",
+      "basis": "写法统一"
+    },
+    {
+      "display": "positive",
+      "to": "positive",
+      "status": "confirmed",
+      "basis": "写法统一"
+    },
+    {
+      "display": "POS",
+      "to": "positive",
+      "status": "confirmed",
+      "basis": "写法统一"
+    },
+    {
+      "display": "弱阳性",
+      "to": "weakly-positive",
+      "status": "confirmed",
+      "basis": "写法统一"
+    },
+    {
+      "display": "弱阳性(±)",
+      "to": "weakly-positive",
+      "status": "confirmed",
+      "basis": "写法统一"
+    },
+    {
+      "display": "弱阳性（±）",
+      "to": "weakly-positive",
+      "status": "confirmed",
+      "basis": "写法统一"
+    },
+    {
+      "display": "±",
+      "to": "weakly-positive",
+      "status": "confirmed",
+      "basis": "写法统一"
+    },
+    {
+      "display": "+-",
+      "to": "weakly-positive",
+      "status": "confirmed",
+      "basis": "写法统一"
+    },
+    {
+      "display": "+/-",
+      "to": "weakly-positive",
+      "status": "confirmed",
+      "basis": "写法统一"
+    },
+    {
+      "display": "1+",
+      "to": "1+",
+      "status": "confirmed",
+      "basis": "写法统一"
+    },
+    {
+      "display": "2+",
+      "to": "2+",
+      "status": "confirmed",
+      "basis": "写法统一"
+    },
+    {
+      "display": "++",
+      "to": "2+",
+      "status": "confirmed",
+      "basis": "写法统一"
+    },
+    {
+      "display": "3+",
+      "to": "3+",
+      "status": "confirmed",
+      "basis": "写法统一"
+    },
+    {
+      "display": "+++",
+      "to": "3+",
+      "status": "confirmed",
+      "basis": "写法统一"
+    },
+    {
+      "display": "4+",
+      "to": "4+",
+      "status": "confirmed",
+      "basis": "写法统一"
+    },
+    {
+      "display": "++++",
+      "to": "4+",
+      "status": "confirmed",
+      "basis": "写法统一"
+    },
+    {
+      "display": "未检出",
+      "to": "not-detected",
+      "status": "confirmed",
+      "basis": "写法统一"
+    },
+    {
+      "display": "未见",
+      "to": "not-seen",
+      "status": "confirmed",
+      "basis": "写法统一"
+    },
+    {
+      "display": "黄",
+      "to": null,
+      "status": "text",
+      "note": "描述性结果，按原文保留"
+    },
+    {
+      "display": "黄色",
+      "to": null,
+      "status": "text",
+      "note": "描述性结果，按原文保留"
+    },
+    {
+      "display": "淡黄色",
+      "to": null,
+      "status": "text",
+      "note": "描述性结果，按原文保留"
+    },
+    {
+      "display": "黄褐色",
+      "to": null,
+      "status": "text",
+      "note": "描述性结果，按原文保留"
+    },
+    {
+      "display": "清",
+      "to": null,
+      "status": "text",
+      "note": "描述性结果，按原文保留"
+    },
+    {
+      "display": "清亮",
+      "to": null,
+      "status": "text",
+      "note": "描述性结果，按原文保留"
+    },
+    {
+      "display": "清晰",
+      "to": null,
+      "status": "text",
+      "note": "描述性结果，按原文保留"
+    },
+    {
+      "display": "微浊",
+      "to": null,
+      "status": "text",
+      "note": "描述性结果，按原文保留"
+    },
+    {
+      "display": "软便",
+      "to": null,
+      "status": "text",
+      "note": "描述性结果，按原文保留"
+    },
+    {
+      "display": "稀便",
+      "to": null,
+      "status": "text",
+      "note": "描述性结果，按原文保留"
+    },
+    {
+      "display": "烂",
+      "to": null,
+      "status": "text",
+      "note": "描述性结果，按原文保留"
+    },
+    {
+      "display": "软",
+      "to": null,
+      "status": "text",
+      "note": "描述性结果，按原文保留"
+    },
+    {
+      "display": "正常",
+      "to": null,
+      "status": "text",
+      "note": "描述性结果，按原文保留"
+    },
+    {
+      "display": "Normal",
+      "to": null,
+      "status": "text",
+      "note": "描述性结果，按原文保留"
+    },
+    {
+      "display": "偶见",
+      "to": null,
+      "status": "text",
+      "note": "描述性结果，按原文保留"
+    },
+    {
+      "display": "O型",
+      "to": null,
+      "status": "text",
+      "note": "血型结果，按原文保留"
+    },
+    {
+      "display": "A型",
+      "to": null,
+      "status": "text",
+      "note": "血型结果，按原文保留"
+    },
+    {
+      "display": "B型",
+      "to": null,
+      "status": "text",
+      "note": "血型结果，按原文保留"
+    },
+    {
+      "display": "AB型",
+      "to": null,
+      "status": "text",
+      "note": "血型结果，按原文保留"
+    },
+    {
+      "display": "UNKNOW",
+      "to": null,
+      "status": "pending",
+      "note": "含义不明"
+    },
+    {
+      "display": ".....",
+      "to": null,
+      "status": "pending",
+      "note": "含义不明"
+    },
+    {
+      "display": "GOOD",
+      "to": null,
+      "status": "pending",
+      "note": "含义不明"
+    },
+    {
+      "display": "L",
+      "to": null,
+      "status": "pending",
+      "note": "含义不明"
+    },
+    {
+      "display": "2+(1.0)",
+      "to": null,
+      "status": "pending",
+      "note": "含义不明"
+    },
+    {
+      "display": "+-(10)",
+      "to": null,
+      "status": "pending",
+      "note": "含义不明"
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "version": "1.0.0",
+  "id": "symptom",
+  "name": "症状 → SNOMED CT",
+  "description": "症状词对照 SNOMED CT。",
+  "target": {
+    "system": "http://snomed.info/sct",
+    "name": "SNOMED CT"
+  },
+  "extract": {
+    "item": "symptom"
+  },
+  "lands": "Observation.valueCodeableConcept.coding",
+  "mappings": []
+}

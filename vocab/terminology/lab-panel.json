@@ -1,0 +1,18 @@
+{
+  "version": "1.0.0",
+  "id": "lab-panel",
+  "name": "检验组合 → LOINC",
+  "description": "检验组合（申请项目）对照 LOINC 组合。组合项“A+B+C”是多个组合拼接，应先拆开再对照。",
+  "target": {
+    "system": "http://loinc.org",
+    "name": "LOINC"
+  },
+  "extract": {
+    "kind": "lab",
+    "code": "panel.code",
+    "display": "panel.display",
+    "scope": "org"
+  },
+  "lands": "DiagnosticReport.code.coding",
+  "mappings": []
+}

@@ -1,0 +1,104 @@
+{
+  "version": "1.0.0",
+  "kind": "enum",
+  "id": "gender",
+  "name": "性别",
+  "description": "源数据性别代码与名称 → FHIR AdministrativeGender。",
+  "target": {
+    "system": "http://hl7.org/fhir/administrative-gender",
+    "name": "FHIR 管理性别",
+    "values": [
+      {
+        "code": "male",
+        "display": "Male",
+        "label": "男"
+      },
+      {
+        "code": "female",
+        "display": "Female",
+        "label": "女"
+      },
+      {
+        "code": "other",
+        "display": "Other",
+        "label": "其他"
+      },
+      {
+        "code": "unknown",
+        "display": "Unknown",
+        "label": "未知"
+      }
+    ]
+  },
+  "entries": [
+    {
+      "code": "1",
+      "display": "男性",
+      "to": "male",
+      "status": "confirmed",
+      "basis": "GB/T 2261.1"
+    },
+    {
+      "code": "2",
+      "display": "女性",
+      "to": "female",
+      "status": "confirmed",
+      "basis": "GB/T 2261.1"
+    },
+    {
+      "code": "1",
+      "to": "male",
+      "status": "confirmed",
+      "basis": "GB/T 2261.1"
+    },
+    {
+      "code": "2",
+      "to": "female",
+      "status": "confirmed",
+      "basis": "GB/T 2261.1"
+    },
+    {
+      "code": "0",
+      "to": "unknown",
+      "status": "confirmed",
+      "basis": "GB/T 2261.1：0 未知的性别"
+    },
+    {
+      "display": "男",
+      "to": "male",
+      "status": "confirmed",
+      "basis": "以名称为准"
+    },
+    {
+      "display": "女",
+      "to": "female",
+      "status": "confirmed",
+      "basis": "以名称为准"
+    },
+    {
+      "display": "男性",
+      "to": "male",
+      "status": "confirmed",
+      "basis": "以名称为准"
+    },
+    {
+      "display": "女性",
+      "to": "female",
+      "status": "confirmed",
+      "basis": "以名称为准"
+    },
+    {
+      "code": "9",
+      "display": "其他",
+      "to": null,
+      "status": "pending",
+      "note": "GB/T 2261.1 中 9 = 未说明的性别（应为 unknown），但源数据名称写作“其他”（other）；代码与名称冲突，待确认"
+    },
+    {
+      "code": "9",
+      "to": "unknown",
+      "status": "confirmed",
+      "basis": "GB/T 2261.1：9 未说明的性别"
+    }
+  ]
+}

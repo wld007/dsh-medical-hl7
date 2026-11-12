@@ -76,7 +76,7 @@ window.__ModuleLoader__.load({
 .hx-field{display:flex;flex-direction:column;gap:4px;font-size:11.5px;color:var(--ink2)}
 .hx-err{color:var(--bad);border:1px solid color-mix(in srgb,var(--bad) 40%,transparent);background:color-mix(in srgb,var(--bad) 8%,transparent);padding:6px 10px;border-radius:5px;cursor:pointer}
 .hx-empty{color:var(--ink3);padding:30px;text-align:center}
-.hx-st{position:relative;flex:1;min-width:120px;border:1px solid var(--line2);border-radius:8px;background:linear-gradient(180deg,var(--tint),var(--panel));padding:10px;min-height:118px}
+.hx-st{position:relative;flex:1;min-width:96px;border:1px solid var(--line2);border-radius:8px;background:linear-gradient(180deg,var(--tint),var(--panel));padding:10px;min-height:118px}
 .hx-st .no{font-family:var(--mono);font-size:9.5px;color:var(--ink3);letter-spacing:1px}.hx-st .nm{font-size:14px;font-weight:700;margin:2px 0}
 .hx-st .sub{font-size:10.5px;color:var(--ink3);line-height:14px;min-height:28px}.hx-st .big{font-family:var(--mono);font-size:19px;font-weight:700;margin-top:6px}
 .hx-st .big small{font-size:10px;color:var(--ink3);font-weight:400;margin-left:3px}
@@ -216,7 +216,9 @@ window.__ModuleLoader__.load({
 
       const openPatient = (name, next = 'resources') => { setPatient(name); setTab(next) }
       const t = run?.totals
-      const tabs = [['overview', '◈ 概览'], ['patients', '病人', t?.held || null], ['resources', '资源浏览'], ['mapping', '映射与定义'], ['report', '报告']]
+      const st = run?.stages
+      const tabs = [['overview', '◈ 概览'], ['schema', '① Schema 同构'], ['domains', '② 值域归一', st ? (st.domains.pending + st.domains.unmapped) || null : null], ['terms', '③ 术语对照'], ['patients', '病人', t?.held || null], ['resources', '资源浏览'], ['report', '报告']]
+      const rerun = () => call('rerun', { runId: run.id }).then((v) => { setRunId(v.runId); setRun(null); refreshList() }).catch((e) => setError(msg(e)))
       return h('div', { className: `hx ${dark ? 'hx-dark' : 'hx-light'}`, ref: rootRef },
         h('style', {}, CSS),
         h('div', { className: 'hx-frame hx-top' },
@@ -236,10 +238,12 @@ window.__ModuleLoader__.load({
         showNew ? h(NewRun, { onStarted: (id) => { setShowNew(false); setRunId(id); setRun(null); setPatient(null); refreshList(); setTab('overview') }, onError: setError }) : null,
         h('div', { className: 'hx-body' },
           !run ? h('div', { className: 'hx-frame hx-empty', style: { flex: 1 } }, runs.length ? '加载中…' : '还没有批次。点右上角「＋ 新批次」，选择匿名化后的数据目录开始转换。')
-            : tab === 'overview' ? h(Overview, { run, openPatient })
+            : tab === 'overview' ? h(Overview, { run, openPatient, onTab: setTab })
               : tab === 'patients' ? h(Patients, { run, patient, setPatient, openPatient })
                 : tab === 'resources' ? h(Resources, { run, patient, setPatient })
-                  : tab === 'mapping' ? h(Mapping, { run })
+                  : tab === 'schema' ? h(SchemaTab, { run })
+                  : tab === 'domains' ? h(DomainsTab, { run, onRerun: rerun })
+                  : tab === 'terms' ? h(TermsTab, { run, onRerun: rerun })
                     : h(Report, { run })))
     }
 
@@ -261,7 +265,7 @@ window.__ModuleLoader__.load({
     }
 
     /* --------------------------------------------------------------- overview */
-    function Overview({ run, openPatient }) {
+    function Overview({ run, openPatient, onTab }) {
       const P = run.patients
       const t = run.totals
       const running = run.status === 'running'
@@ -272,7 +276,8 @@ window.__ModuleLoader__.load({
       const max = Math.max(1, ...types.map(([, n]) => n))
       const tables = Object.keys(run.tables ?? {}).length
       const inferred = run.inferred?.length ?? 0
-      const st = (no, nm, sub, big, unit, state, f) => h('div', { className: `hx-st ${state}` },
+      const S = run.stages
+      const st = (no, nm, sub, big, unit, state, f, onClick) => h('div', { className: `hx-st ${state}`, style: onClick ? { cursor: 'pointer' } : undefined, onClick, title: onClick ? '点开查看' : undefined },
         h('div', { className: 'bar' }, h('span', { style: { width: `${Math.round((f ?? frac) * 100)}%` } })),
         h('div', { className: 'no' }, no), h('div', { className: 'nm' }, nm), h('div', { className: 'sub' }, sub),
         h('div', { className: 'big' }, big, h('small', {}, unit)))
@@ -282,15 +287,19 @@ window.__ModuleLoader__.load({
         h('div', { className: 'hx-frame hx-pad' },
           h('div', { className: 'hx-h' }, h('b', {}, '处理流程'), h('span', { className: 'hx-cap' }, 'PIPELINE'), h('span', { className: 'hx-sp' }), h('span', { className: 'hx-faint' }, run.input)),
           h('div', { style: { display: 'flex', gap: 6 } },
-            st('01', '读取', '按目录分组、按病人编号归并；源文件只读', `${fmt(run.units?.length)}/${fmt(t.units)}`, '目录', s),
+            st('读取', '读取分组', '按目录、按病人编号归并；源文件只读', `${fmt(run.units?.length)}/${fmt(t.units)}`, '目录', s),
             arrow(1),
-            st('02', '映射', '字段 → 语义角色；无规格的表自动推断', fmt(tables), `张表${inferred ? ` · ${inferred} 张自动推断` : ''}`, s),
+            st('①', 'Schema 同构', '表 → 类别，字段 → 角色；只搬不改', S ? fmt(S.schema.tables) : fmt(tables), S ? `张表 · 保留 ${fmt(S.schema.extrasFields)} 字段` : '张表', s, undefined, () => onTab('schema')),
             arrow(2),
-            st('03', '构建', '固定构建器生成 FHIR R4 资源', fmt(t.resources), '资源', s),
+            st('②', '值域归一', '写法统一到规范值；不确定的待确认', S ? `${(S.domains.coverage * 100).toFixed(1)}%` : '—', S ? `待确认 ${fmt(S.domains.pending)}` : '', S && S.domains.pending + S.domains.unmapped ? 'hold' : s, 1, () => onTab('domains')),
             arrow(3),
-            st('04', '验收', '结构、引用完整性、残留身份证号/手机号', t.held ? `${t.held} 暂扣` : `${fmt(t.done)} 通过`, '', t.held ? 'hold' : s, 1),
+            st('③', '术语对照', '本地概念 → LOINC / SNOMED CT 等', S ? `${fmt(S.terminology.mappedConcepts)}/${fmt(S.terminology.concepts)}` : '—', '概念已对照', s, 1, () => onTab('terms')),
             arrow(4),
-            st('05', '交付', 'Bundle · Bulk NDJSON · 定义', run.output ? '✓' : '—', run.output ? '已交付' : '未交付', run.output ? 'done' : 'idle', run.output ? 1 : 0)),
+            st('④', 'FHIR 组装', '只拼装，不解析', fmt(t.resources), '资源', s),
+            arrow(5),
+            st('验收', '验收', '结构、引用、残留身份证号/手机号', t.held ? `${t.held} 暂扣` : `${fmt(t.done)} 通过`, '', t.held ? 'hold' : s, 1),
+            arrow(6),
+            st('交付', '交付', 'Bundle · NDJSON · 定义', run.output ? '✓' : '—', run.output ? '已交付' : '未交付', run.output ? 'done' : 'idle', run.output ? 1 : 0)),
           (run.warnings ?? []).length ? h('div', { style: { marginTop: 10 } }, [...new Set(run.warnings)].slice(0, 8).map((w, i) => h('div', { key: i, className: 'hx-warn' }, `⚠ ${w}`))) : null,
           run.error ? h('div', { className: 'hx-err', style: { marginTop: 8 } }, String(run.error).split('\n')[0]) : null,
           run.output ? h('div', { className: 'hx-muted', style: { marginTop: 8 } }, '交付目录：', h('span', { className: 'hx-num' }, run.output)) : null),
@@ -394,46 +403,173 @@ window.__ModuleLoader__.load({
             h(Json, { value: detail.value.resource }))))
     }
 
-    /* ---------------------------------------------------------------- mapping */
-    function Mapping({ run }) {
-      const d = useAsync(() => call('mapping', { runId: run.id }), [run.id, run.status])
-      const [open, setOpen] = useState(null)
+    /* ------------------------------------------------------- ① Schema 同构 */
+    function SchemaTab({ run }) {
+      const d = useAsync(() => call('schema', { runId: run.id }), [run.id, run.status])
+      const [sel, setSel] = useState(null)
       if (!d.value) return h('div', { className: 'hx-frame hx-pad', style: { flex: 1 } }, h('span', { className: 'hx-faint' }, d.error ?? '加载中…'))
-      const m = d.value
-      const specs = new Map()
-      for (const p of m.profiles) for (const t of p.tables) specs.set(t.id, { ...t, profile: p.id })
-      const inferredBy = new Map(m.inferred.map((s) => [s.id, s]))
-      const rows = Object.entries(m.tables).sort((a, b) => b[1] - a[1])
+      const tables = d.value.tables
+      const t = tables.find((x) => x.table === sel) ?? tables[0]
       return h('div', { style: { display: 'flex', gap: 8, flex: 1, minHeight: 0 } },
-        h('div', { className: 'hx-frame hx-scroll hx-pad', style: { flex: 1.3 } },
-          h('div', { className: 'hx-h' }, h('b', {}, '表 → 资源'), h('span', { className: 'hx-cap' }, 'MAPPING'), h('span', { className: 'hx-faint' }, `规格：${m.profiles.map((p) => `${p.id}@${p.version ?? '?'}`).join('、') || '—'}`)),
-          h('table', {},
-            h('thead', {}, h('tr', {}, ['表', '来源', '处理方式', '行数'].map((x) => h('th', { key: x }, x)))),
-            h('tbody', {}, rows.map(([id, n]) => {
-              const s = specs.get(id); const inf = inferredBy.get(id)
-              return h(React.Fragment, { key: id },
-                h('tr', { className: inf ? 'click' : '', onClick: () => inf && setOpen(open === id ? null : id) },
-                  h('td', { className: 'hx-num' }, id),
-                  h('td', { className: 'hx-faint' }, s ? s.file : inf ? inf.match?.file : '—'),
-                  h('td', {}, s ? h('span', { className: 'hx-chip t' }, `${s.kind} · ${s.roles} 个角色`) : inf ? h(React.Fragment, {}, h('span', { className: 'hx-chip w' }, '自动推断 → Basic'), inf.suggestedKind ? h('span', { className: 'hx-faint' }, `建议 ${inf.suggestedKind}`) : null) : '—'),
-                  h('td', { className: 'hx-num' }, fmt(n))),
-                open === id && inf ? h('tr', {}, h('td', { colSpan: 4 },
-                  h('div', { className: 'hx-muted', style: { marginBottom: 4 } }, '推断出的角色：'),
-                  inf.reasons.length ? inf.reasons.map((r, i) => h('div', { key: i, className: 'hx-num', style: { fontSize: 11.5 } }, r)) : h('div', { className: 'hx-faint' }, '无'),
-                  h('div', { className: 'hx-muted', style: { margin: '6px 0 4px' } }, `字段（${inf.fields.length}）：`),
-                  h('div', {}, inf.fields.map((f) => h('span', { key: f.name, className: `hx-chip${f.pseudonym ? ' w' : f.time ? ' t' : ''}`, title: `填充 ${f.fill}%${f.pseudonym ? ` · ${f.pseudonym}假名` : ''}${f.time ? ' · 时间' : ''}` }, f.name))))) : null)
-            })))),
-        h('div', { className: 'hx-frame hx-scroll hx-pad', style: { flex: 1 } },
-          h('div', { className: 'hx-h' }, h('b', {}, '附带的定义'), h('span', { className: 'hx-cap' }, 'DEFINITIONS')),
-          m.definitions ? h('div', { className: 'hx-kv' },
-            h('span', { className: 'hx-faint' }, '扩展定义'), h('span', { className: 'hx-num' }, fmt(m.definitions.StructureDefinition)),
-            h('span', { className: 'hx-faint' }, '本地代码体系'), h('span', { className: 'hx-num' }, fmt(m.definitions.CodeSystem)),
-            h('span', { className: 'hx-faint' }, '一码多名'), h('span', { className: `hx-num ${m.definitions.multiDisplay ? 'hx-warn' : ''}` }, fmt(m.definitions.multiDisplay))) : h('div', { className: 'hx-faint' }, '批次完成后生成'),
-          (m.definitions?.multiDisplaySample ?? []).length ? h(React.Fragment, {},
-            h('div', { className: 'hx-sec' }, h('b', {}, '一个代码多种名称'), h('span', { className: 'hx-faint' }, '数据质量提示')),
-            m.definitions.multiDisplaySample.slice(0, 20).map((x, i) => h('div', { key: i, style: { fontSize: 11.5, marginBottom: 5 } }, h('span', { className: 'hx-num hx-muted' }, `${x.code} `), h('span', { className: 'hx-faint' }, `${x.system.split('/').slice(-2).join('/')}：`), x.names.join('、')))) : null,
-          h('div', { className: 'hx-sec' }, h('b', {}, '原样保留的字段'), h('span', { className: 'hx-faint' }, '出现多的值得补进规格')),
-          m.leftovers.length ? h('table', {}, h('tbody', {}, m.leftovers.slice(0, 120).map(([k, n]) => h('tr', { key: k }, h('td', { className: 'hx-num' }, k), h('td', { className: 'hx-num hx-muted' }, fmt(n)))))) : h('div', { className: 'hx-faint' }, '无')))
+        h('div', { className: 'hx-frame hx-scroll', style: { width: 380, flex: 'none' } },
+          h('div', { className: 'hx-pad', style: { paddingBottom: 4 } }, h('div', { className: 'hx-h' }, h('b', {}, '① Schema 同构'), h('span', { className: 'hx-cap' }, 'HARMONIZE')),
+            h('div', { className: 'hx-muted', style: { fontSize: 11.5, lineHeight: 1.6 } }, '表 → 记录类别，字段 → 语义角色。只搬不改：这一步不解释任何取值。没有对应角色的字段原样保留。')),
+          h('table', {}, h('thead', {}, h('tr', {}, ['表', '类别', '行数', '保留字段'].map((x) => h('th', { key: x }, x)))),
+            h('tbody', {}, tables.map((x) => h('tr', { key: x.table, className: `click${x === t ? ' sel' : ''}`, onClick: () => setSel(x.table) },
+              h('td', { className: 'hx-num' }, x.table, x.inferred ? h('span', { className: 'hx-chip w', style: { marginLeft: 6 } }, '自动推断') : null),
+              h('td', {}, h('span', { className: 'hx-chip t' }, x.kind)), h('td', { className: 'hx-num' }, fmt(x.rows)), h('td', { className: 'hx-num hx-faint' }, fmt(x.extras.length))))))),
+        !t ? h('div', { className: 'hx-frame hx-pad', style: { flex: 1 } }, '—') : h('div', { className: 'hx-frame hx-scroll hx-pad', style: { flex: 1 } },
+          h('div', { className: 'hx-h' }, h('b', { className: 'hx-num' }, t.table), h('span', { className: 'hx-chip t' }, t.kind), h('span', { className: 'hx-faint' }, `${t.profile === 'auto' ? '自动推断' : `规格 ${t.profile}`} · ${t.file ?? ''} · ${fmt(t.rows)} 行${t.invalid ? ` · 作废 ${t.invalid}` : ''}`)),
+          t.inferred ? h('div', { className: 'hx-text', style: { fontSize: 12 } }, `没有现成规格，按 Basic 保留全部字段。建议类别：${t.suggestedKind ?? '—'}。推断依据：\n${t.reasons.join('\n') || '—'}`) : null,
+          h('div', { className: 'hx-sec' }, h('b', {}, '角色'), h('span', { className: 'hx-faint' }, '字段 → 语义角色；多个字段时取第一个有值的')),
+          h('table', {}, h('thead', {}, h('tr', {}, ['角色', '来源字段', '有值', '填充率', '值域'].map((x) => h('th', { key: x }, x)))),
+            h('tbody', {}, t.roles.map((r) => h('tr', { key: r.role },
+              h('td', { className: 'hx-num' }, r.role), h('td', { className: 'hx-num hx-muted' }, r.fields.join(' → ')),
+              h('td', { className: 'hx-num' }, fmt(r.filled)),
+              h('td', {}, h('div', { className: 'hx-bars', style: { gridTemplateColumns: '1fr auto' } }, h('div', { className: 'track' }, h('span', { style: { width: `${t.rows ? (r.filled / t.rows) * 100 : 0}%` } })), h('span', { className: 'hx-num hx-faint' }, `${t.rows ? Math.round((r.filled / t.rows) * 100) : 0}%`))),
+              h('td', { className: 'hx-num hx-faint' }, r.domain ?? ''))))),
+          h('div', { className: 'hx-sec' }, h('b', {}, '原样保留的字段'), h('span', { className: 'hx-faint' }, 'source-field 扩展；出现多的值得补进规格')),
+          t.extras.length ? h('div', {}, t.extras.map(([f, n]) => h('span', { key: f, className: 'hx-chip' }, `${f} · ${fmt(n)}`))) : h('div', { className: 'hx-faint' }, '无'),
+          t.fields ? h(React.Fragment, {}, h('div', { className: 'hx-sec' }, h('b', {}, '字段画像')), h('div', {}, t.fields.map((f) => h('span', { key: f.name, className: `hx-chip${f.pseudonym ? ' w' : f.time ? ' t' : ''}`, title: `填充 ${f.fill}%${f.pseudonym ? ` · ${f.pseudonym}假名` : ''}${f.time ? ' · 时间' : ''}` }, f.name)))) : null))
+    }
+
+    /* ---------------------------------------------------------- ② 值域归一 */
+    const DST = { normalized: ['已归一', 'ok'], text: ['原文保留', 't'], pending: ['待确认', 'w'], unmapped: ['无对照', 'w'], invalid: ['不属于本值域', 'b'] }
+    const ENTRY_ST = { confirmed: '已确认', pending: '待确认', invalid: '不属于本值域', text: '按原文保留' }
+    const dchip = (s) => h('span', { className: `hx-chip ${DST[s]?.[1] ?? ''}` }, DST[s]?.[0] ?? s)
+    function Coverage({ value }) {
+      const p = value == null ? null : Math.round(value * 1000) / 10
+      return h('div', { className: 'hx-bars', style: { gridTemplateColumns: '1fr auto' } }, h('div', { className: 'track' }, h('span', { style: { width: `${p ?? 0}%`, background: p == null ? 'var(--line2)' : p >= 90 ? 'var(--ok)' : p >= 60 ? 'var(--warn)' : 'var(--bad)' } })), h('span', { className: 'hx-num hx-faint' }, p == null ? '—' : `${p}%`))
+    }
+    function RerunBar({ run, changed, onRerun }) {
+      if (!changed) return null
+      return h('div', { className: 'hx-frame hx-pad', style: { display: 'flex', gap: 10, alignItems: 'center', borderColor: 'var(--warn)' } },
+        h('span', { className: 'hx-warn' }, `已复核 ${changed} 处，与本批结果不同；对照已存本机，下次运行生效。`), h('span', { className: 'hx-sp' }),
+        h('button', { className: 'hx-btn pri', disabled: run.status === 'running', onClick: onRerun }, '用新对照重跑本批'))
+    }
+    function DomainsTab({ run, onRerun }) {
+      const [tick, setTick] = useState(0)
+      const d = useAsync(() => call('domains', { runId: run.id }), [run.id, run.status, tick])
+      const [sel, setSel] = useState(null)
+      const [filter, setFilter] = useState('open')
+      const [edit, setEdit] = useState(null)
+      const [err, setErr] = useState('')
+      if (!d.value) return h('div', { className: 'hx-frame hx-pad', style: { flex: 1 } }, h('span', { className: 'hx-faint' }, d.error ?? '加载中…'))
+      const doms = d.value.domains
+      const dom = doms.find((x) => x.id === sel) ?? doms.find((x) => x.kind === 'enum') ?? doms[0]
+      const changed = doms.reduce((n, x) => n + x.changed, 0)
+      const open = (v) => ['pending', 'unmapped', 'invalid'].includes(v.status) || v.changed
+      const rows = (dom?.values ?? []).filter((v) => filter === 'all' || (filter === 'open' ? open(v) : v.status === filter))
+      const save = async () => {
+        setErr('')
+        try { await call('reviewDomain', { domain: dom.id, code: edit.code, display: edit.display, to: edit.status === 'confirmed' ? edit.to : null, status: edit.status, note: edit.note }); setEdit(null); setTick((x) => x + 1) } catch (e) { setErr(msg(e)) }
+      }
+      const startEdit = (v) => setEdit({ key: `${v.code ?? ''}|${v.display ?? ''}`, code: v.code ?? undefined, display: v.display ?? undefined, to: v.current?.to ?? v.to ?? (dom.target?.values?.[0]?.code ?? ''), status: v.current?.status ?? 'confirmed', note: v.current?.note ?? '' })
+      return h('div', { className: 'hx-col', style: { flex: 1 } },
+        h(RerunBar, { run, changed, onRerun }),
+        h('div', { style: { display: 'flex', gap: 8, flex: 1, minHeight: 0 } },
+          h('div', { className: 'hx-frame hx-scroll', style: { width: 360, flex: 'none' } },
+            h('div', { className: 'hx-pad', style: { paddingBottom: 4 } }, h('div', { className: 'hx-h' }, h('b', {}, '② 值域归一'), h('span', { className: 'hx-cap' }, 'NORMALIZE')),
+              h('div', { className: 'hx-muted', style: { fontSize: 11.5, lineHeight: 1.6 } }, '同一件事写法不统一 → 规范值。原值始终保留；含义未确认的标“待确认”，不猜。'),
+              d.value.summary ? h('div', { className: 'hx-muted', style: { fontSize: 11.5, marginTop: 6 } }, `覆盖率 ${(d.value.summary.coverage * 100).toFixed(1)}% · 待确认 ${fmt(d.value.summary.pending)} · 无对照 ${fmt(d.value.summary.unmapped)} · 不属于/无法解析 ${fmt(d.value.summary.invalid)}`) : null),
+            h('table', {}, h('thead', {}, h('tr', {}, ['值域', '取值', '覆盖率', ''].map((x, i) => h('th', { key: i }, x)))),
+              h('tbody', {}, doms.map((x) => h('tr', { key: x.id, className: `click${x === dom ? ' sel' : ''}`, onClick: () => { setSel(x.id); setEdit(null) } },
+                h('td', {}, x.name, h('div', { className: 'hx-faint hx-num', style: { fontSize: 10 } }, x.kind === 'enum' ? '对照' : '格式')),
+                h('td', { className: 'hx-num' }, fmt(x.total)), h('td', { style: { width: 110 } }, h(Coverage, { value: x.coverage })),
+                h('td', {}, (x.byStatus.pending ?? 0) + (x.byStatus.unmapped ?? 0) ? h('span', { className: 'hx-chip w' }, fmt((x.byStatus.pending ?? 0) + (x.byStatus.unmapped ?? 0))) : null, x.changed ? h('span', { className: 'hx-chip t' }, `改 ${x.changed}`) : null)))))),
+          !dom ? null : h('div', { className: 'hx-frame hx-col', style: { flex: 1, minWidth: 0 } },
+            h('div', { className: 'hx-pad', style: { paddingBottom: 6 } },
+              h('div', { className: 'hx-h' }, h('b', {}, dom.name), h('span', { className: 'hx-faint hx-num' }, dom.id), dom.version ? h('span', { className: 'hx-chip' }, `v${dom.version}`) : null, dom.reviewed ? h('span', { className: 'hx-chip t' }, `本机复核 ${dom.reviewed}`) : null),
+              h('div', { className: 'hx-muted', style: { fontSize: 12, lineHeight: 1.6 } }, dom.description),
+              dom.target ? h('div', { className: 'hx-faint', style: { fontSize: 11.5, marginTop: 4 } }, `目标：${dom.target.name}（${dom.target.system}）`) : null,
+              h('div', { style: { display: 'flex', gap: 6, marginTop: 8, flexWrap: 'wrap', alignItems: 'center' } },
+                Object.entries(dom.byStatus).map(([k, n]) => h('span', { key: k }, dchip(k), h('span', { className: 'hx-num hx-muted' }, fmt(n)))),
+                h('span', { className: 'hx-sp' }),
+                dom.kind === 'enum' ? h('select', { className: 'hx-input', value: filter, onChange: (e) => setFilter(e.target.value) }, h('option', { value: 'open' }, '待处理（待确认/无对照/不属于/已改）'), h('option', { value: 'all' }, '全部'), ...Object.keys(DST).map((k) => h('option', { key: k, value: k }, DST[k][0]))) : null),
+              dom.kind === 'format' ? h('div', { style: { marginTop: 10 } }, h('div', { className: 'hx-cap', style: { marginBottom: 4 } }, '写法分布'), h('div', {}, Object.entries(dom.forms ?? {}).sort((a, b) => b[1] - a[1]).map(([f, n]) => h('span', { key: f, className: 'hx-chip' }, `${f} · ${fmt(n)}`)))) : null,
+              err ? h('div', { className: 'hx-err', style: { marginTop: 6 } }, err) : null),
+            h('div', { className: 'hx-scroll', style: { flex: 1 } },
+              h('table', {}, h('thead', {}, h('tr', {}, ['代码', '名称 / 原值', '次数', '本批', '对照', '说明', ''].map((x, i) => h('th', { key: i }, x)))),
+                h('tbody', {}, (dom.kind === 'format' ? dom.values : rows).slice(0, 500).flatMap((v) => {
+                  const k = `${v.code ?? ''}|${v.display ?? ''}`
+                  const cur = v.current
+                  const tv = (code) => dom.target?.values?.find((x) => x.code === code)
+                  const row = h('tr', { key: k, className: edit?.key === k ? 'sel' : '' },
+                    h('td', { className: 'hx-num' }, v.code ?? ''), h('td', {}, v.display ?? ''), h('td', { className: 'hx-num' }, fmt(v.count)),
+                    h('td', {}, dchip(v.status)),
+                    h('td', {}, cur ? h(React.Fragment, {}, h('span', { className: `hx-chip ${cur.status === 'confirmed' ? 'ok' : cur.status === 'invalid' ? 'b' : cur.status === 'text' ? 't' : 'w'}` }, ENTRY_ST[cur.status]), cur.to ? h('span', { className: 'hx-num' }, `→ ${cur.to}${tv(cur.to)?.label ? ` ${tv(cur.to).label}` : ''}`) : null, cur.source === 'review' ? h('span', { className: 'hx-chip t', style: { marginLeft: 4 } }, '本机复核') : null, v.changed ? h('span', { className: 'hx-chip w', style: { marginLeft: 4 } }, '下次生效') : null) : h('span', { className: 'hx-faint' }, '—')),
+                    h('td', { className: 'hx-faint', style: { fontSize: 11.5, maxWidth: 280 } }, cur?.note ?? v.note ?? ''),
+                    h('td', {}, dom.kind === 'enum' ? h('button', { className: 'hx-btn sm', onClick: () => (edit?.key === k ? setEdit(null) : startEdit(v)) }, edit?.key === k ? '收起' : '复核') : null))
+                  if (edit?.key !== k) return [row]
+                  const vals = dom.target?.values ?? []
+                  return [row, h('tr', { key: `${k}-e` }, h('td', { colSpan: 7 },
+                    h('div', { style: { display: 'flex', gap: 8, alignItems: 'flex-end', flexWrap: 'wrap', padding: '4px 0 8px' } },
+                      h('label', { className: 'hx-field' }, '结论', h('select', { className: 'hx-input', value: edit.status, onChange: (e) => setEdit({ ...edit, status: e.target.value }) }, Object.entries(ENTRY_ST).map(([s2, l]) => h('option', { key: s2, value: s2 }, l)))),
+                      edit.status === 'confirmed' ? h('label', { className: 'hx-field' }, `规范值（${dom.target?.name ?? ''}）`,
+                        vals.length && !dom.target?.open ? h('select', { className: 'hx-input', value: edit.to, onChange: (e) => setEdit({ ...edit, to: e.target.value }) }, vals.map((x) => h('option', { key: x.code, value: x.code }, `${x.code} · ${x.label ?? x.display}`)))
+                          : h('input', { className: 'hx-input', value: edit.to ?? '', placeholder: '规范代码', onChange: (e) => setEdit({ ...edit, to: e.target.value }) })) : null,
+                      h('label', { className: 'hx-field', style: { flex: 1, minWidth: 200 } }, '依据 / 说明', h('input', { className: 'hx-input', value: edit.note ?? '', onChange: (e) => setEdit({ ...edit, note: e.target.value }) })),
+                      h('button', { className: 'hx-btn pri', onClick: save }, '保存'))))]
+                })))))))
+    }
+
+    /* ---------------------------------------------------------- ③ 术语对照 */
+    const EQ = { equivalent: '等价', wider: '目标更宽', narrower: '目标更窄', inexact: '近似', unmatched: '无对应' }
+    function TermsTab({ run, onRerun }) {
+      const [tick, setTick] = useState(0)
+      const d = useAsync(() => call('terminology', { runId: run.id }), [run.id, run.status, tick])
+      const [sel, setSel] = useState(null)
+      const [filter, setFilter] = useState('unmapped')
+      const [q, setQ] = useState('')
+      const [edit, setEdit] = useState(null)
+      const [err, setErr] = useState('')
+      if (!d.value) return h('div', { className: 'hx-frame hx-pad', style: { flex: 1 } }, h('span', { className: 'hx-faint' }, d.error ?? '加载中…'))
+      const bs = d.value.bindings
+      const b = bs.find((x) => x.id === sel) ?? bs[0]
+      const changed = bs.reduce((n, x) => n + x.changed, 0)
+      const mapped = (c) => c.current?.status === 'confirmed' && (c.current.to || c.current.equivalence === 'unmatched')
+      const rows = (b?.items ?? []).filter((c) => (filter === 'all' || (filter === 'mapped' ? mapped(c) : !mapped(c))) && (!q || `${c.code ?? ''} ${c.display ?? ''}`.toLowerCase().includes(q.toLowerCase())))
+      const save = async () => {
+        setErr('')
+        try { await call('reviewTerm', { binding: b.id, key: edit.key, from: edit.from, to: edit.equivalence === 'unmatched' ? null : { code: edit.code, display: edit.display }, equivalence: edit.equivalence, status: edit.status, note: edit.note }); setEdit(null); setTick((x) => x + 1) } catch (e) { setErr(msg(e)) }
+      }
+      return h('div', { className: 'hx-col', style: { flex: 1 } },
+        h(RerunBar, { run, changed, onRerun }),
+        h('div', { style: { display: 'flex', gap: 8, flex: 1, minHeight: 0 } },
+          h('div', { className: 'hx-frame hx-scroll', style: { width: 360, flex: 'none' } },
+            h('div', { className: 'hx-pad', style: { paddingBottom: 4 } }, h('div', { className: 'hx-h' }, h('b', {}, '③ 术语对照'), h('span', { className: 'hx-cap' }, 'TERMINOLOGY')),
+              h('div', { className: 'hx-muted', style: { fontSize: 11.5, lineHeight: 1.6 } }, '本地概念 → 外部标准术语（LOINC、SNOMED CT、国家标准代码表）。不改原值，已确认的对照另加一个标准编码；没对照的照常交付。')),
+            h('table', {}, h('thead', {}, h('tr', {}, ['对照', '概念', '覆盖（按次数）'].map((x) => h('th', { key: x }, x)))),
+              h('tbody', {}, bs.map((x) => h('tr', { key: x.id, className: `click${x === b ? ' sel' : ''}`, onClick: () => { setSel(x.id); setEdit(null) } },
+                h('td', {}, x.name, x.changed ? h('span', { className: 'hx-chip t', style: { marginLeft: 4 } }, `改 ${x.changed}`) : null),
+                h('td', { className: 'hx-num' }, `${fmt(x.mappedConcepts)}/${fmt(x.conceptCount)}`), h('td', { style: { width: 110 } }, h(Coverage, { value: x.coverage }))))))),
+          !b ? null : h('div', { className: 'hx-frame hx-col', style: { flex: 1, minWidth: 0 } },
+            h('div', { className: 'hx-pad', style: { paddingBottom: 6 } },
+              h('div', { className: 'hx-h' }, h('b', {}, b.name), b.version ? h('span', { className: 'hx-chip' }, `v${b.version}`) : null, b.reviewed ? h('span', { className: 'hx-chip t' }, `本机复核 ${b.reviewed}`) : null),
+              h('div', { className: 'hx-muted', style: { fontSize: 12, lineHeight: 1.6 } }, b.description),
+              h('div', { className: 'hx-faint', style: { fontSize: 11.5, marginTop: 4 } }, `目标：${b.target?.name ?? ''}（${b.target?.system ?? ''}）· 落在 ${b.lands ?? ''}`),
+              h('div', { style: { display: 'flex', gap: 6, marginTop: 8, alignItems: 'center' } },
+                h('select', { className: 'hx-input', value: filter, onChange: (e) => setFilter(e.target.value) }, h('option', { value: 'unmapped' }, '未对照'), h('option', { value: 'mapped' }, '已对照'), h('option', { value: 'all' }, '全部')),
+                h('input', { className: 'hx-input', placeholder: '筛选代码/名称…', value: q, onChange: (e) => setQ(e.target.value) }), h('span', { className: 'hx-faint' }, `${fmt(rows.length)} 个`)),
+              err ? h('div', { className: 'hx-err', style: { marginTop: 6 } }, err) : null),
+            h('div', { className: 'hx-scroll', style: { flex: 1 } },
+              h('table', {}, h('thead', {}, h('tr', {}, ['机构', '本地代码', '名称', '次数', '对照', ''].map((x, i) => h('th', { key: i }, x)))),
+                h('tbody', {}, rows.slice(0, 500).flatMap((c) => {
+                  const cur = c.current
+                  const row = h('tr', { key: c.key, className: edit?.key === c.key ? 'sel' : '' },
+                    h('td', { className: 'hx-num hx-faint' }, c.scope ?? ''), h('td', { className: 'hx-num' }, c.code ?? ''), h('td', {}, c.display ?? ''), h('td', { className: 'hx-num' }, fmt(c.count)),
+                    h('td', {}, cur ? h(React.Fragment, {}, h('span', { className: `hx-chip ${cur.status === 'confirmed' ? 'ok' : 'w'}` }, cur.status === 'confirmed' ? EQ[cur.equivalence] ?? cur.equivalence : '待确认'), cur.to ? h('span', { className: 'hx-num' }, `${cur.to.code} ${cur.to.display ?? ''}`) : null, cur.source === 'review' ? h('span', { className: 'hx-chip t', style: { marginLeft: 4 } }, '本机复核') : null, c.changed ? h('span', { className: 'hx-chip w', style: { marginLeft: 4 } }, '下次生效') : null) : h('span', { className: 'hx-faint' }, '—')),
+                    h('td', {}, h('button', { className: 'hx-btn sm', onClick: () => (edit?.key === c.key ? setEdit(null) : setEdit({ key: c.key, from: { scope: c.scope ?? undefined, code: c.code ?? undefined, display: c.display ?? undefined }, code: cur?.to?.code ?? '', display: cur?.to?.display ?? '', equivalence: cur?.equivalence ?? 'equivalent', status: cur?.status ?? 'confirmed', note: cur?.note ?? '' })) }, edit?.key === c.key ? '收起' : '对照')))
+                  if (edit?.key !== c.key) return [row]
+                  return [row, h('tr', { key: `${c.key}-e` }, h('td', { colSpan: 6 },
+                    h('div', { style: { display: 'flex', gap: 8, alignItems: 'flex-end', flexWrap: 'wrap', padding: '4px 0 8px' } },
+                      h('label', { className: 'hx-field' }, '关系', h('select', { className: 'hx-input', value: edit.equivalence, onChange: (e) => setEdit({ ...edit, equivalence: e.target.value }) }, Object.entries(EQ).map(([k2, l]) => h('option', { key: k2, value: k2 }, l)))),
+                      edit.equivalence !== 'unmatched' ? h('label', { className: 'hx-field' }, `${b.target?.name ?? ''} 代码`, h('input', { className: 'hx-input', value: edit.code, onChange: (e) => setEdit({ ...edit, code: e.target.value }), style: { width: 130 } })) : null,
+                      edit.equivalence !== 'unmatched' ? h('label', { className: 'hx-field', style: { flex: 1, minWidth: 180 } }, '名称', h('input', { className: 'hx-input', value: edit.display, onChange: (e) => setEdit({ ...edit, display: e.target.value }) })) : null,
+                      h('label', { className: 'hx-field' }, '状态', h('select', { className: 'hx-input', value: edit.status, onChange: (e) => setEdit({ ...edit, status: e.target.value }) }, h('option', { value: 'confirmed' }, '已确认'), h('option', { value: 'pending' }, '待确认'))),
+                      h('label', { className: 'hx-field', style: { flex: 1, minWidth: 160 } }, '说明', h('input', { className: 'hx-input', value: edit.note, onChange: (e) => setEdit({ ...edit, note: e.target.value }) })),
+                      h('button', { className: 'hx-btn pri', onClick: save }, '保存'))))]
+                })))))))
     }
 
     function Report({ run }) {

@@ -1,0 +1,75 @@
+{
+  "version": "1.0.0",
+  "kind": "enum",
+  "id": "regional-platform/incision-class",
+  "name": "切口类别",
+  "description": "国标 0 类、Ⅰ类、Ⅱ类、Ⅲ类。本数据源代码与名称错位（代码 2 = Ⅰ类），以名称为准。",
+  "target": {
+    "system": "{ns}/CodeSystem/canonical/incision-class",
+    "name": "切口类别（规范值）",
+    "values": [
+      {
+        "code": "0",
+        "display": "0类切口",
+        "label": "0类切口"
+      },
+      {
+        "code": "I",
+        "display": "Ⅰ类切口",
+        "label": "Ⅰ类切口"
+      },
+      {
+        "code": "II",
+        "display": "Ⅱ类切口",
+        "label": "Ⅱ类切口"
+      },
+      {
+        "code": "III",
+        "display": "Ⅲ类切口",
+        "label": "Ⅲ类切口"
+      }
+    ]
+  },
+  "entries": [
+    {
+      "display": "0类切口",
+      "to": "0",
+      "status": "confirmed",
+      "basis": "以名称为准"
+    },
+    {
+      "display": "Ⅰ类切口",
+      "to": "I",
+      "status": "confirmed",
+      "basis": "以名称为准"
+    },
+    {
+      "display": "Ⅱ类切口",
+      "to": "II",
+      "status": "confirmed",
+      "basis": "以名称为准"
+    },
+    {
+      "display": "Ⅲ类切口",
+      "to": "III",
+      "status": "confirmed",
+      "basis": "以名称为准"
+    },
+    {
+      "code": "2",
+      "display": "Ⅰ类切口",
+      "to": "I",
+      "status": "confirmed",
+      "basis": "以名称为准",
+      "note": "代码 2 与名称冲突"
+    },
+    {
+      "code": "1",
+      "display": "0类切口",
+      "to": "0",
+      "status": "confirmed",
+      "basis": "以名称为准",
+      "note": "代码 1 与名称冲突"
+    }
+  ]
+}

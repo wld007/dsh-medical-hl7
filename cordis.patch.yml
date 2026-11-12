@@ -12,6 +12,12 @@
         profilesDir: ''
         # 交付格式：both = 按人 bundles/ 与按资源类型 ndjson/ 都存；bundles = 只存按人；ndjson = 只存按资源类型
         outputFormat: 'both'
+        # 页面复核的值域/术语对照存放目录；空 = 插件数据目录下的 vocab（所有批次共用，下次运行生效）
+        vocabDir: ''
+        # 保存每位病人的中间结果（同构记录、归一记录，gzip），放在 _records/runs/<批次>/stages
+        keepIntermediate: true
+        # 值域归一覆盖率低于这个比例时在报告里告警（不阻断交付）
+        domainCoverageWarn: 0.9
         # 交付前发现像真实身份证号/手机号的内容：block = 该病人暂扣不交付；warn = 只在报告里提示
         residualGate: 'block'
         # 官方 HL7 FHIR Validator（validator_cli.jar）路径；空 = 只做内置校验

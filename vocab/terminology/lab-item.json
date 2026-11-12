@@ -1,0 +1,18 @@
+{
+  "version": "1.0.0",
+  "id": "lab-item",
+  "name": "检验项目 → LOINC",
+  "description": "机构内检验子项代码对照 LOINC。按机构区分（同一代码在不同医院含义可能不同）。",
+  "target": {
+    "system": "http://loinc.org",
+    "name": "LOINC"
+  },
+  "extract": {
+    "kind": "lab",
+    "code": "item.code",
+    "display": "item.display",
+    "scope": "org"
+  },
+  "lands": "Observation.code.coding",
+  "mappings": []
+}

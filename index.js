@@ -145,7 +145,7 @@ export function apply(ctx, config = {}) {
       entry ??= entries.find((item) => item.options?.id === ENTRY_ID)
     }
     if (!entry) throw new Error(`找不到插件配置行 ${ENTRY_ID}`)
-    const allowed = ['outputRoot', 'outputFormat', 'namespace', 'timezone', 'profilesDir', 'residualGate', 'validatorJar', 'validatorSample', 'javaPath']
+    const allowed = ['outputRoot', 'outputFormat', 'vocabDir', 'keepIntermediate', 'domainCoverageWarn', 'namespace', 'timezone', 'profilesDir', 'residualGate', 'validatorJar', 'validatorSample', 'javaPath']
     const clean = Object.fromEntries(Object.entries(patch ?? {}).filter(([k]) => allowed.includes(k)))
     await editor.edit(entry, (current) => ({ ...current, ...clean }))
     return { saved: true }
@@ -166,6 +166,12 @@ export function apply(ctx, config = {}) {
           case 'resources': return service.resources(r.runId, r.patient, r.type)
           case 'resource': return service.resource(r.runId, r.patient, r.type, r.id)
           case 'mapping': return service.mapping(r.runId)
+          case 'schema': return service.schemaView(r.runId)
+          case 'domains': return service.domainsView(r.runId)
+          case 'terminology': return service.terminologyView(r.runId)
+          case 'reviewDomain': return service.reviewDomain(r)
+          case 'reviewTerm': return service.reviewTerm(r)
+          case 'rerun': return service.rerun(r.runId)
           case 'pickFolder': {
             const ws = ctx.get('uiWorkspace')
             return { path: ws?.pickDirectory ? await ws.pickDirectory() : null }

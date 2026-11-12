@@ -1,0 +1,50 @@
+{
+  "version": "1.0.0",
+  "kind": "enum",
+  "id": "regional-platform/visit-type",
+  "name": "就诊类型（就诊表 VST_TP）",
+  "target": {
+    "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+    "name": "HL7 v3 就诊类别",
+    "values": [
+      {
+        "code": "AMB",
+        "display": "ambulatory",
+        "label": "门诊"
+      },
+      {
+        "code": "IMP",
+        "display": "inpatient encounter",
+        "label": "住院"
+      },
+      {
+        "code": "EMER",
+        "display": "emergency",
+        "label": "急诊"
+      }
+    ]
+  },
+  "entries": [
+    {
+      "code": "1",
+      "to": "AMB",
+      "status": "confirmed",
+      "basis": "区域平台：1 门诊",
+      "label": "门诊"
+    },
+    {
+      "code": "2",
+      "to": "IMP",
+      "status": "confirmed",
+      "basis": "区域平台：2 住院",
+      "label": "住院"
+    },
+    {
+      "code": "3",
+      "to": "AMB",
+      "status": "confirmed",
+      "basis": "区域平台：3 体检；FHIR 无体检类别，归门诊",
+      "label": "体检"
+    }
+  ]
+}

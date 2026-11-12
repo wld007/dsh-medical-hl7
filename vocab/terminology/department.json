@@ -1,0 +1,17 @@
+{
+  "version": "1.0.0",
+  "id": "department",
+  "name": "科室 → 诊疗科目",
+  "description": "各院自编科室对照《医疗机构诊疗科目名录》。按机构区分。",
+  "target": {
+    "system": "{ns}/CodeSystem/std/clinical-department",
+    "name": "医疗机构诊疗科目名录"
+  },
+  "extract": {
+    "code": "dept.code",
+    "display": "dept.name",
+    "scope": "org"
+  },
+  "lands": "Organization（科室）.type",
+  "mappings": []
+}

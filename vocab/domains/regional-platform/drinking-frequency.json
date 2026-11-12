@@ -1,0 +1,73 @@
+{
+  "version": "1.0.0",
+  "kind": "enum",
+  "id": "regional-platform/drinking-frequency",
+  "name": "饮酒频率",
+  "description": "WS 364 CV03.00.104：1 从不、2 偶尔、3 经常、4 每天。本数据源的“频率”字段里填的是饮酒状况（过去饮酒已戒酒 / 饮酒），与标准冲突。",
+  "target": {
+    "system": "{ns}/CodeSystem/canonical/drinking-frequency",
+    "name": "饮酒频率（规范值）",
+    "values": [
+      {
+        "code": "never",
+        "display": "从不",
+        "label": "从不"
+      },
+      {
+        "code": "occasionally",
+        "display": "偶尔",
+        "label": "偶尔"
+      },
+      {
+        "code": "often",
+        "display": "经常",
+        "label": "经常"
+      },
+      {
+        "code": "daily",
+        "display": "每天",
+        "label": "每天"
+      }
+    ]
+  },
+  "entries": [
+    {
+      "display": "从不",
+      "to": "never",
+      "status": "confirmed",
+      "basis": "以名称为准"
+    },
+    {
+      "display": "偶尔",
+      "to": "occasionally",
+      "status": "confirmed",
+      "basis": "以名称为准"
+    },
+    {
+      "display": "经常",
+      "to": "often",
+      "status": "confirmed",
+      "basis": "以名称为准"
+    },
+    {
+      "display": "每天",
+      "to": "daily",
+      "status": "confirmed",
+      "basis": "以名称为准"
+    },
+    {
+      "code": "2",
+      "display": "过去饮酒，已戒酒",
+      "to": null,
+      "status": "invalid",
+      "note": "是饮酒状况，不是频率"
+    },
+    {
+      "code": "3",
+      "display": "饮酒",
+      "to": null,
+      "status": "invalid",
+      "note": "是饮酒状况，不是频率"
+    }
+  ]
+}

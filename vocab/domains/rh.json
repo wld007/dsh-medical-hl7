@@ -1,0 +1,66 @@
+{
+  "version": "1.0.0",
+  "kind": "enum",
+  "id": "rh",
+  "name": "Rh 血型",
+  "description": "WS 364 CV04.50.020：1 阴性、2 阳性、3 不详。",
+  "target": {
+    "system": "{ns}/CodeSystem/canonical/rh",
+    "name": "Rh 血型（规范值）",
+    "values": [
+      {
+        "code": "negative",
+        "display": "Rh阴性",
+        "label": "Rh阴性"
+      },
+      {
+        "code": "positive",
+        "display": "Rh阳性",
+        "label": "Rh阳性"
+      },
+      {
+        "code": "unknown",
+        "display": "不详",
+        "label": "不详"
+      }
+    ]
+  },
+  "entries": [
+    {
+      "code": "1",
+      "to": "negative",
+      "status": "confirmed",
+      "basis": "WS 364"
+    },
+    {
+      "code": "2",
+      "to": "positive",
+      "status": "confirmed",
+      "basis": "WS 364"
+    },
+    {
+      "code": "3",
+      "to": "unknown",
+      "status": "confirmed",
+      "basis": "WS 364"
+    },
+    {
+      "display": "不详",
+      "to": "unknown",
+      "status": "confirmed",
+      "basis": "以名称为准"
+    },
+    {
+      "display": "阴性",
+      "to": "negative",
+      "status": "confirmed",
+      "basis": "以名称为准"
+    },
+    {
+      "display": "阳性",
+      "to": "positive",
+      "status": "confirmed",
+      "basis": "以名称为准"
+    }
+  ]
+}

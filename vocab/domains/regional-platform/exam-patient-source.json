@@ -1,0 +1,43 @@
+{
+  "version": "1.0.0",
+  "kind": "enum",
+  "id": "regional-platform/exam-patient-source",
+  "name": "病人来源（检查表 PTT_SRC_CD）",
+  "target": {
+    "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+    "name": "HL7 v3 就诊类别",
+    "values": [
+      {
+        "code": "AMB",
+        "display": "ambulatory",
+        "label": "门诊"
+      },
+      {
+        "code": "IMP",
+        "display": "inpatient encounter",
+        "label": "住院"
+      },
+      {
+        "code": "EMER",
+        "display": "emergency",
+        "label": "急诊"
+      }
+    ]
+  },
+  "entries": [
+    {
+      "code": "1",
+      "display": "门诊",
+      "to": "AMB",
+      "status": "confirmed",
+      "basis": "以名称为准"
+    },
+    {
+      "code": "2",
+      "display": "住院",
+      "to": "IMP",
+      "status": "confirmed",
+      "basis": "以名称为准"
+    }
+  ]
+}

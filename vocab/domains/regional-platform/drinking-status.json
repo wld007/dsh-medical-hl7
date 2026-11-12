@@ -1,0 +1,47 @@
+{
+  "version": "1.0.0",
+  "kind": "enum",
+  "id": "regional-platform/drinking-status",
+  "name": "饮酒状况",
+  "target": {
+    "system": "{ns}/CodeSystem/canonical/drinking-status",
+    "name": "饮酒状况（规范值）",
+    "values": [
+      {
+        "code": "never",
+        "display": "从不饮酒",
+        "label": "从不饮酒"
+      },
+      {
+        "code": "former",
+        "display": "已戒酒",
+        "label": "已戒酒"
+      },
+      {
+        "code": "current",
+        "display": "饮酒",
+        "label": "饮酒"
+      }
+    ]
+  },
+  "entries": [
+    {
+      "display": "从不饮酒",
+      "to": "never",
+      "status": "confirmed",
+      "basis": "以名称为准"
+    },
+    {
+      "display": "过去饮酒，已戒酒",
+      "to": "former",
+      "status": "confirmed",
+      "basis": "以名称为准"
+    },
+    {
+      "display": "饮酒",
+      "to": "current",
+      "status": "confirmed",
+      "basis": "以名称为准"
+    }
+  ]
+}

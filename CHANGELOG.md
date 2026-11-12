@@ -1,5 +1,18 @@
 # 更新记录
 
+## 0.4.0 — 2026-11-12
+
+流程拆细：读取分组 → ① Schema 同构 → ② 值域归一 → ③ 术语对照 → ④ FHIR 组装 → 验收 → 交付。
+
+- **Schema 同构**（`lib/stages/harmonize.js`）：只搬不改；备选字段取值不同的原样保留（以前会丢）；同一就诊号后续登记里与首条不同的字段原样保留（以前会丢）。
+- **值域归一**（`lib/stages/normalize.js`）：29 个对照类值域做成带版本的数据文件 `vocab/domains/`，8 个格式类值域；每个取值带状态（已归一 / 按原文保留 / 待确认 / 无对照 / 不属于本值域），含义未确认的不猜。映射规格的 `values` 改为 `domains`（角色 → 值域）。
+- **术语对照**（`lib/stages/terminology.js`）：9 组对照（检验项目/组合/检查项目 → LOINC，标本/症状/定性结果 → SNOMED CT，科室、收费项目、职业 → 国家标准），已确认的另加标准编码；本批用到的对照输出为 `definitions/ConceptMap-*.json`。内置：阴性/阳性 → SNOMED CT。
+- **FHIR 组装**（`lib/convert.js`）只读归一结果；CodeableConcept 顺序：规范值、原代码、标准术语。
+- **复核**：页面新增「① Schema 同构」「② 值域归一」「③ 术语对照」三页；值域与术语可逐条复核，存本机（`vocabDir`），下次运行生效，可一键重跑。批次记录对照表版本。
+- **中间结果**：默认保存每位病人的同构记录、归一记录（`stages/*.ndjson.gz`）；新增 `schema.json`、`domains.json`、`terminology.json` 统计；报告按阶段分节，值域覆盖率低于阈值告警（不阻断）。
+- **修正**：性别 9/其他 不再映射成 other（待确认）；检验表病人来源 2、9 不再漏掉；全角“＜”的数值和参考范围能解析；诊断类别补上 ryzd（入院诊断）；剑号星号组合拆分；中医病证/证候代码单独成体系；无法识别的诊断代码不再进 ICD 体系；婚姻状况“未知”改用 v3-NullFlavor；参考范围带 UCUM 单位。
+- 新文档 `docs/pipeline.md`；`docs/bundle-fields.md` 更新。
+
 ## 0.3.0 — 2026-11-12
 
 - 新设置「交付格式」`outputFormat`：`both`（默认，按人 bundles/ 与按资源类型 ndjson/ 都存）、`bundles`（只存按人）、`ndjson`（只存按资源类型）。definitions/ 与 manifest.json 总是保留；manifest 新增 `outputFormat`、`bundles` 列表。

@@ -1,0 +1,81 @@
+{
+  "version": "1.0.0",
+  "kind": "enum",
+  "id": "regional-platform/lab-result-decision",
+  "name": "检验结果判定（RSLT_DCD_CD）",
+  "description": "对照结果值与参考范围推断：-2 → 低于下限、0 → 在范围内、2 → 高于上限；±1、9 样本太少。推断，待确认。",
+  "target": {
+    "system": "http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation",
+    "name": "HL7 v3 结果解释",
+    "values": [
+      {
+        "code": "L",
+        "display": "Low",
+        "label": "偏低"
+      },
+      {
+        "code": "N",
+        "display": "Normal",
+        "label": "正常"
+      },
+      {
+        "code": "H",
+        "display": "High",
+        "label": "偏高"
+      },
+      {
+        "code": "LL",
+        "display": "Critical low",
+        "label": "危急偏低"
+      },
+      {
+        "code": "HH",
+        "display": "Critical high",
+        "label": "危急偏高"
+      },
+      {
+        "code": "A",
+        "display": "Abnormal",
+        "label": "异常"
+      }
+    ]
+  },
+  "entries": [
+    {
+      "code": "-2",
+      "to": null,
+      "status": "pending",
+      "note": "数据推断为 L"
+    },
+    {
+      "code": "0",
+      "to": null,
+      "status": "pending",
+      "note": "数据推断为 N"
+    },
+    {
+      "code": "2",
+      "to": null,
+      "status": "pending",
+      "note": "数据推断为 H"
+    },
+    {
+      "code": "1",
+      "to": null,
+      "status": "pending",
+      "note": "样本少（10 条），可能是轻度偏高"
+    },
+    {
+      "code": "-1",
+      "to": null,
+      "status": "pending",
+      "note": "样本少（6 条），可能是轻度偏低"
+    },
+    {
+      "code": "9",
+      "to": null,
+      "status": "pending",
+      "note": "含义不明"
+    }
+  ]
+}

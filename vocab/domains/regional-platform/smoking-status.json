@@ -1,0 +1,65 @@
+{
+  "version": "1.0.0",
+  "kind": "enum",
+  "id": "regional-platform/smoking-status",
+  "name": "吸烟状况",
+  "target": {
+    "system": "{ns}/CodeSystem/canonical/smoking-status",
+    "name": "吸烟状况（规范值）",
+    "values": [
+      {
+        "code": "never",
+        "display": "从不吸烟",
+        "label": "从不吸烟"
+      },
+      {
+        "code": "former",
+        "display": "已戒烟",
+        "label": "已戒烟"
+      },
+      {
+        "code": "current",
+        "display": "吸烟",
+        "label": "吸烟"
+      }
+    ]
+  },
+  "entries": [
+    {
+      "code": "1",
+      "to": "never",
+      "status": "confirmed",
+      "basis": "WS 364 CV03.00.101"
+    },
+    {
+      "code": "2",
+      "to": "former",
+      "status": "confirmed",
+      "basis": "WS 364"
+    },
+    {
+      "code": "3",
+      "to": "current",
+      "status": "confirmed",
+      "basis": "WS 364"
+    },
+    {
+      "display": "吸烟",
+      "to": "current",
+      "status": "confirmed",
+      "basis": "以名称为准"
+    },
+    {
+      "display": "过去吸，已戒烟",
+      "to": "former",
+      "status": "confirmed",
+      "basis": "以名称为准"
+    },
+    {
+      "display": "从不吸烟",
+      "to": "never",
+      "status": "confirmed",
+      "basis": "以名称为准"
+    }
+  ]
+}

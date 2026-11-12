@@ -1,0 +1,42 @@
+{
+  "version": "1.0.0",
+  "id": "qualitative-result",
+  "name": "定性结果 → SNOMED CT",
+  "description": "值域归一后的定性结果规范值对照 SNOMED CT。",
+  "target": {
+    "system": "http://snomed.info/sct",
+    "name": "SNOMED CT"
+  },
+  "extract": {
+    "domain": "qualitative-result"
+  },
+  "lands": "Observation.valueCodeableConcept.coding",
+  "mappings": [
+    {
+      "key": "negative",
+      "from": {
+        "code": "negative",
+        "display": "阴性"
+      },
+      "to": {
+        "code": "260385009",
+        "display": "Negative"
+      },
+      "equivalence": "equivalent",
+      "status": "confirmed"
+    },
+    {
+      "key": "positive",
+      "from": {
+        "code": "positive",
+        "display": "阳性"
+      },
+      "to": {
+        "code": "10828004",
+        "display": "Positive"
+      },
+      "equivalence": "equivalent",
+      "status": "confirmed"
+    }
+  ]
+}

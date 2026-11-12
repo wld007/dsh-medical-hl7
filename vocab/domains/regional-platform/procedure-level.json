@@ -1,0 +1,82 @@
+{
+  "version": "1.0.0",
+  "kind": "enum",
+  "id": "regional-platform/procedure-level",
+  "name": "手术级别",
+  "target": {
+    "system": "{ns}/CodeSystem/canonical/procedure-level",
+    "name": "手术级别（规范值）",
+    "values": [
+      {
+        "code": "1",
+        "display": "一级手术",
+        "label": "一级手术"
+      },
+      {
+        "code": "2",
+        "display": "二级手术",
+        "label": "二级手术"
+      },
+      {
+        "code": "3",
+        "display": "三级手术",
+        "label": "三级手术"
+      },
+      {
+        "code": "4",
+        "display": "四级手术",
+        "label": "四级手术"
+      }
+    ]
+  },
+  "entries": [
+    {
+      "code": "1",
+      "display": "一级手术",
+      "to": "1",
+      "status": "confirmed"
+    },
+    {
+      "code": "2",
+      "display": "二级手术",
+      "to": "2",
+      "status": "confirmed"
+    },
+    {
+      "code": "3",
+      "display": "三级手术",
+      "to": "3",
+      "status": "confirmed"
+    },
+    {
+      "code": "4",
+      "display": "四级手术",
+      "to": "4",
+      "status": "confirmed"
+    },
+    {
+      "display": "一级手术",
+      "to": "1",
+      "status": "confirmed",
+      "basis": "以名称为准"
+    },
+    {
+      "display": "二级手术",
+      "to": "2",
+      "status": "confirmed",
+      "basis": "以名称为准"
+    },
+    {
+      "display": "三级手术",
+      "to": "3",
+      "status": "confirmed",
+      "basis": "以名称为准"
+    },
+    {
+      "display": "四级手术",
+      "to": "4",
+      "status": "confirmed",
+      "basis": "以名称为准"
+    }
+  ]
+}

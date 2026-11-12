@@ -1,0 +1,18 @@
+{
+  "version": "1.0.0",
+  "id": "charge-item",
+  "name": "收费项目 → 医疗服务项目",
+  "description": "机构收费项目对照全国医疗服务价格项目 / 医保编码。按机构区分。",
+  "target": {
+    "system": "{ns}/CodeSystem/std/medical-service-item",
+    "name": "全国医疗服务价格项目规范"
+  },
+  "extract": {
+    "kind": "charge",
+    "code": "item.code",
+    "display": "item.display",
+    "scope": "org"
+  },
+  "lands": "ChargeItem.code.coding",
+  "mappings": []
+}

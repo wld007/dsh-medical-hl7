@@ -1,0 +1,59 @@
+{
+  "version": "1.0.0",
+  "kind": "enum",
+  "id": "regional-platform/exercise-frequency",
+  "name": "锻炼频率",
+  "description": "WS 364 CV03.00.111：1 每天、2 每周一次以上、3 偶尔、4 不锻炼。本数据源代码与标准冲突（1 = 从不、4 = 每天），以名称为准。",
+  "target": {
+    "system": "{ns}/CodeSystem/canonical/exercise-frequency",
+    "name": "锻炼频率（规范值）",
+    "values": [
+      {
+        "code": "daily",
+        "display": "每天",
+        "label": "每天"
+      },
+      {
+        "code": "weekly",
+        "display": "每周一次以上",
+        "label": "每周一次以上"
+      },
+      {
+        "code": "occasionally",
+        "display": "偶尔",
+        "label": "偶尔"
+      },
+      {
+        "code": "never",
+        "display": "不锻炼",
+        "label": "不锻炼"
+      }
+    ]
+  },
+  "entries": [
+    {
+      "display": "每天",
+      "to": "daily",
+      "status": "confirmed",
+      "basis": "以名称为准"
+    },
+    {
+      "display": "偶尔",
+      "to": "occasionally",
+      "status": "confirmed",
+      "basis": "以名称为准"
+    },
+    {
+      "display": "从不",
+      "to": "never",
+      "status": "confirmed",
+      "basis": "以名称为准"
+    },
+    {
+      "display": "每周一次以上",
+      "to": "weekly",
+      "status": "confirmed",
+      "basis": "以名称为准"
+    }
+  ]
+}

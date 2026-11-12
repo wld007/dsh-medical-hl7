@@ -1,0 +1,26 @@
+{
+  "version": "1.0.0",
+  "kind": "enum",
+  "id": "regional-platform/exercise-type",
+  "name": "锻炼方式",
+  "target": {
+    "system": "{ns}/CodeSystem/canonical/exercise-type",
+    "name": "锻炼方式（规范值）",
+    "open": true,
+    "values": [
+      {
+        "code": "walking",
+        "display": "散步",
+        "label": "散步"
+      }
+    ]
+  },
+  "entries": [
+    {
+      "display": "散步",
+      "to": "walking",
+      "status": "confirmed",
+      "basis": "以名称为准"
+    }
+  ]
+}

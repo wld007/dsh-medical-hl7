@@ -1,6 +1,6 @@
 # 按人存储（bundles/）字段说明
 
-适用版本：dsh-medical-hl7 0.2.x，FHIR R4（4.0.1）。
+适用版本：dsh-medical-hl7 0.4.x，FHIR R4（4.0.1）。处理流程（Schema 同构 → 值域归一 → 术语对照 → FHIR 组装）见 [pipeline.md](pipeline.md)。
 「来源字段」一栏以内置规格 `regional-platform`（区域平台 `p_doc_*.json`）为准。换成其他数据源时，来源字段名会变，但资源结构和各元素的含义不变。
 
 文中 `{ns}` 指设置里的命名空间，默认是 `http://dsh.local/fhir`。
@@ -47,6 +47,14 @@
 
 ### 2.3 代码
 
+**一个 CodeableConcept 里 coding 的顺序**（凡是经过值域归一或术语对照的元素都如此）：
+
+1. 规范值（值域归一已确认时才有）：标准体系（如 v3-MaritalStatus、v3-ActCode、DICOM、UCUM）或规范值体系 `{ns}/CodeSystem/canonical/<值域>`；
+2. 原代码：本地代码体系，代码和名称都是源数据原值；
+3. 标准术语编码（术语对照已确认时才有）：LOINC、SNOMED CT 等。
+
+`text`：已归一时是规范值的中文名称，否则是源数据原文（检验定性结果的 `text` 始终是原文）。值域归一状态不是“已归一”的（待确认、无对照、不属于本值域）一律只有原代码，不猜。
+
 - **标准代码**：只在含义确定时才加，包括：体征和部分观察项的 LOINC、单位的 UCUM、性别、婚姻状况、就诊类别（v3 ActCode）、各类分类代码。
 - **本地代码**：一律原样放进本地代码体系，`system = {ns}/CodeSystem/<规格>/<名称>`。
   - 机构自编的代码（检验项目、收费项目、标本、科室等）在后面再加 `/org-<10位>`，用来区分不同医院；`org-` 后面是该医院 Organization id 的哈希。
@@ -91,7 +99,7 @@
 | `address[].line[]` | 乡镇、村、单元、门牌 | `*_TWN_NM`、`*_VLG_NM`、`CURR_ADDR_UNT`、`CURR_ADDR_HUS_NO` | |
 | `address[].period.start` | 这条地址的记录时间 | `RCD_TIME` | |
 | `address[].extension` | `address-kind`（户籍地址/现住址）、`admin-division-code`（最细一级的行政区划代码）、`source-system`（`SOURCE_NM`） | | |
-| `maritalStatus` | 婚姻状况 | 就诊表的 `MRY_CDT_NM` | 取最近一次就诊登记的值。`text` 是原文；能识别的另加 v3 MaritalStatus 编码 |
+| `maritalStatus` | 婚姻状况 | 就诊表 `MRY_CDT_CD` / `MRY_CDT_NM` | 取最近一次**已归一**的登记（都没归一时取最近一次原值）。值域 `marital`：已确认的加 v3 MaritalStatus 编码（“未知”用 v3-NullFlavor `UNK`） |
 | `deceasedDateTime` | 死亡时间 | 死亡报卡 `DTH_DT_TM` | |
 | `extension` | 人口信息表里没有对应元素的字段（`source-field`），以及记录时间 | | |
 
@@ -104,17 +112,17 @@
 | `identifier[]` | 门诊号 `{ns}/id/outpatient-no` 或住院号 `{ns}/id/inpatient-no`，`assigner` 指向机构 | `OTPT_EMG_NO` / `INHOS_NO` | 住院就诊取住院号 |
 | `identifier[]` | 记录标识（见 2.1） | `PRM_KEY` | 合并了几条登记就有几个 |
 | `status` | `finished`；作废记录为 `entered-in-error`；登记缺失的就诊（见下）为 `unknown` | | |
-| `class` | v3 ActCode：`AMB` 门诊、`IMP` 住院 | `VST_TP` | 1 门诊 → AMB，2 住院 → IMP，3 体检 → AMB |
-| `type[]` | 就诊类型原值，本地代码体系 `encounter-setting` | `VST_TP` | 显示为 门诊 / 住院 / 体检 |
+| `class` | v3 ActCode：`AMB` 门诊、`IMP` 住院 | `VST_TP` | 值域 `regional-platform/visit-type`：1 门诊 → AMB，2 住院 → IMP，3 体检 → AMB；未归一时默认 AMB |
+| `type[]` | 就诊类型原值，本地代码体系 `encounter-setting` | `VST_TP` | 显示为来源原意（门诊 / 住院 / 体检） |
 | `participant[]` | 接诊医生 `ATND`、收治医生 `ADM`（v3 ParticipationType） | `VST_DCT_*`、`ATD_DCT_*`、`ADMN_DCT_*` | |
 | `period.start` | 开始时间 | `VST_DT_TM` → `ADMN_DT_TM` → `VST_STRT_TM` → `VST_DT`，取第一个有值的 | |
 | `period.end` | 结束（出院）时间 | `DSCG_DT_TM` | 如果早于开始时间，不写在这里，原值放进扩展 `period-end-as-recorded` |
 | `reasonCode[].text` | 入院诊断原文 | `ADMN_TNTTV_DIAG_DSCPT` | |
-| `hospitalization.dischargeDisposition.text` | 离院方式 | `PTT_WHRABT_NM` | |
+| `hospitalization.dischargeDisposition` | 离院方式（原代码 + 名称；值域 `regional-platform/discharge-disposition`） | `PTT_WHRABT_CD` / `PTT_WHRABT_NM` | |
 | `location[].location.display` | 病区、床号 | `CURR_WRD_NM`、`CURR_BED_NO` | |
 | `serviceProvider` | 科室（没有科室时为机构） | `VST_DPT_*` / `ADMN_DPT_NM` 等；`MDC_ORG_*` | |
 | `diagnosis[].condition` | 这次就诊的诊断 | | 由诊断表回挂，不含作废的诊断。源数据没有写明诊断用途和排序，所以没有 `use` / `rank` |
-| `extension` | `flag-emergency`（`EMG_FLG`）、`flag-first-visit`（`FST_VST_FLG`）、`marital-status-at-visit`、记录时间、`source-field` | | |
+| `extension` | `flag-emergency`（`EMG_FLG`）、`flag-first-visit`（`FST_VST_FLG`）：值域 `yes-no` 已归一时为 `valueBoolean`，否则 `valueString` 原值；`marital-status-at-visit`、记录时间、`source-field` | | 同一就诊号的后续登记里与首条不同的字段（含角色字段）原样挂 `source-field` |
 
 **登记缺失的就诊**：检验、诊断等记录写了门诊号或住院号，但就诊表里找不到这次就诊时，会按号码生成一条 Encounter，并加上标记：
 
@@ -134,7 +142,7 @@
 | `identifier[]` | 记录标识 | `PRM_KEY` | |
 | `verificationStatus` | 作废记录才有，值为 `entered-in-error` | `INVLD_FLG` | |
 | `category[]` | 固定为 `encounter-diagnosis` | | |
-| `code.coding[]` | ① ICD-10（国家临床版，含扩展码），代码体系 `icd-10-cn` | `DIAG_ICD10_CD` / `DIAG_ICD10_NM` | |
+| `code.coding[]` | ① ICD-10（国家临床版，含扩展码），代码体系 `icd-10-cn` | `DIAG_ICD10_CD` / `DIAG_ICD10_NM` | 经“ICD-10 代码”值域清洗：剑号星号组合（`N18.900x012+D63.8*`）只放剑号码，星号码放扩展 `icd-asterisk-code`；中医代码归 `tcm-disease` / `tcm-syndrome`；无法识别的（如 `1\|G47.900,`）不进 coding，原值放 `code-as-recorded` |
 | | ② 机构内诊断代码，代码体系 `diagnosis-local/org-…` | `DIAG_CD` | |
 | | ③ 中医证候（仅中医诊断），代码体系 `tcm-diagnosis/org-…` | `TCM_SPTM_*` / `TCM_DSES_*` | 条件是 `TCM_DIAG_FLG = 1` |
 | `code.text` | 诊断描述原文 | `DIAG_DSCPT` | |
@@ -143,7 +151,7 @@
 | `asserter` | 诊断医生 | `DIAG_DCT_*` | |
 | `recorder` | 记录人 | `CRT_STFF_*` | |
 | `note[].text` | 备注 | `RMRK` | |
-| `extension` | `diagnosis-category`（诊断类别：cbzd 初步诊断、cyzd 出院诊断、bczd 补充诊断、xzzd 修正诊断）、`flag-main-diagnosis`（`MAIN_DIAG_FLG` 原值）、`flag-tcm`、`diagnosis-sequence`（`DIAG_SRL_NO`）、`organization`、`department`、`source-field` 等 | | 诊断类别以 `DIAG_CGY_NM` 为准，`DIAG_CGY_CD` 在不同机构间对应不一致，原样保留 |
+| `extension` | `diagnosis-category`（值域 `regional-platform/diagnosis-category`：ryzd 入院、cbzd 初步、cyzd 出院、bczd 补充、xzzd 修正；规范值 + 原代码）、`flag-main-diagnosis`（`MAIN_DIAG_FLG`：1/0 → boolean，N 待确认 → 原值）、`flag-tcm`（boolean）、`diagnosis-sequence`（`DIAG_SRL_NO`）、`organization`、`department`、`source-field` 等 | | 诊断类别以 `DIAG_CGY_NM` 为准，`DIAG_CGY_CD` 在不同机构间对应不一致，原样保留 |
 
 另有一类 Condition 来自人口信息表的病史标志（`HYPTSN_MDC_HST_FLG`、`DBTZ_MDC_HST_FLG`）：`category` 为 `problem-list-item`，`code` 为本地代码 `history-flag`（高血压病史 / 糖尿病病史），`recordedDate` 取标志附带的记录时间。
 
@@ -158,19 +166,21 @@
 | `identifier[]` | 记录标识 | `PRM_KEY` | |
 | `status` | `final`；作废记录为 `entered-in-error` | | |
 | `category[]` | `laboratory` | | |
-| `code.coding[]` | ① 机构内检验子项代码，代码体系 `lab-item/org-…` | `TEST_CHD_ITM_CD` / `TEST_CHD_ITM_NM` | 还没有对照 LOINC |
+| `code.coding[]` | ① 机构内检验子项代码，代码体系 `lab-item/org-…` | `TEST_CHD_ITM_CD` / `TEST_CHD_ITM_NM` | 术语对照 `lab-item` 已确认时另加 LOINC |
 | | ② 平台标准项目代码，代码体系 `lab-item-std` | `STD_TEST_CHD_ITM_CD` / `STD_TEST_CHD_ITM_NM` | |
 | `code.text` | 项目名称 | `TEST_CHD_ITM_NM` | |
 | `encounter` | 所属就诊 | `INHOS_NO` / `OTPT_EMG_NO`；`PTT_SRC_CD`（0 门诊、1 住院） | |
 | `effectiveDateTime` | 检验时间 | `TEST_DT`，没有时取 `CRT_TM` | |
 | `issued` | 审核时间 | `ADT_TM` | |
 | `performer[]` | 检验机构、检验者 | `MDC_ORG_*`、`TEST_DCT_NM` | |
-| `valueQuantity` | 数值结果：`value`、`comparator`（`<` `>` `<=` `>=`）、`unit` | `TEST_RSLT_VLU`、`TEST_RSLT_VLU_UNT` | 单位能识别时另加 UCUM 的 `system` / `code`，`unit` 保留原文 |
-| `valueString` | 非数值结果（如"阴性"） | `TEST_RSLT_VLU` | 这时单位放在扩展 `unit-as-recorded` |
+| `valueQuantity` | 数值结果：`value`、`comparator`（`<` `>` `<=` `>=`，全角写法已统一）、`unit` | `TEST_RSLT_VLU`、`TEST_RSLT_VLU_UNT` | 单位经值域 `ucum-unit` 归一后另加 UCUM 的 `system` / `code`，`unit` 保留原文 |
+| `valueCodeableConcept` | 定性结果（阴性、阳性、弱阳性、1+…）：规范值（`canonical/qualitative-result`）+ 已确认的 SNOMED CT；`text` 是原文 | `TEST_RSLT_VLU` | 值域 `qualitative-result` 已归一时 |
+| `valueString` | 其他非数值结果（颜色、性状、待确认的写法） | `TEST_RSLT_VLU` | 这时单位放在扩展 `unit-as-recorded` |
+| `interpretation` | 结果解释（v3 ObservationInterpretation L / N / H / LL / HH） | `RSLT_FLG` / `RSLT_DCD_CD` | **只有值域复核确认后才有**；内置对照里两者都是“待确认” |
 | `dataAbsentReason` | 结果为空时为 `unknown` | | |
 | `referenceRange[]` | 参考范围：`text` 是原文；能解析的另填 `low` / `high` | `RFRC_VLU` | |
 | `specimen` | 标本 | `SPCM_*` | 见 3.6 |
-| `extension` | `result-flag`（检验结果标志原值，**未换算成 interpretation**）、`actor-verifier`（`ADT_DCT_NM`）、`actor-requester`（`APL_DCT_NM`）、`actor-collector`（`CLLT_SPCM_PSN_NM`）、`department`（送检科室）、`source-field`（如 `AGE`、`RSLT_DCD_CD`） | | |
+| `extension` | `result-flag`（`RSLT_FLG` 原值）、`result-decision`（`RSLT_DCD_CD` 原值）、`actor-verifier`（`ADT_DCT_NM`）、`actor-requester`（`APL_DCT_NM`）、`actor-collector`（`CLLT_SPCM_PSN_NM`）、`department`（送检科室）、`source-field`（如 `AGE`、`RSLT_DCD_CD`） | | |
 
 #### b) 体征与测量
 
@@ -197,11 +207,11 @@
 
 | 来源表 | 项目（`code.text`） | LOINC | 值 |
 |---|---|---|---|
-| 吸烟 | 吸烟状况、日吸烟量、开始吸烟年龄、戒烟年龄、吸烟标志 | 吸烟状况 72166-2 | 状况为 `valueCodeableConcept`（本地代码 + 原名称）；数量为 `valueQuantity`；标志为 `valueString` |
+| 吸烟 | 吸烟状况、日吸烟量、开始吸烟年龄、戒烟年龄、吸烟标志 | 吸烟状况 72166-2 | 状况为 `valueCodeableConcept`（规范值 + 原代码）；数量为 `valueQuantity`；标志经 `yes-no` 归一为 `valueBoolean` |
 | 饮酒 | 饮酒状况、饮酒频率、日饮酒量、饮酒种类、开始饮酒年龄、戒酒年龄、饮酒标志 | 饮酒状况 11331-6 | 同上 |
 | 运动 | 锻炼频率、每次锻炼时间、坚持锻炼时间、锻炼方式、锻炼标志 | — | 同上 |
-| 职业 | 职业 | 11341-5 | `valueCodeableConcept`（`STD_WRK_PFS_*`） |
-| 症状 | 症状 | — | `valueCodeableConcept`（`SMP_*`） |
+| 职业 | 职业 | 11341-5 | `valueCodeableConcept`（`STD_WRK_PFS_*`；术语对照 `occupation` 已确认时另加 GB/T 6565） |
+| 症状 | 症状 | — | `valueCodeableConcept`（`SMP_*`；术语对照 `symptom` 已确认时另加 SNOMED CT） |
 | 血型 | ABO血型、Rh血型 | 883-9、10331-7 | `valueCodeableConcept`（`ABO_*`、`RH_*`） |
 
 - 吸烟、饮酒、运动、职业的 `category` 为 `social-history`，症状为 `exam`，血型为 `laboratory`。
@@ -258,7 +268,7 @@
 
 | 元素 | 含义 | 来源字段 |
 |---|---|---|
-| `type` | 标本类型，代码体系 `specimen/org-…`，`text` 为名称 | `SPCM_CD` / `SPCM_NM` |
+| `type` | 标本类型，代码体系 `specimen/org-…`，`text` 为名称；术语对照 `specimen`（按名称）已确认时另加 SNOMED CT | `SPCM_CD` / `SPCM_NM` |
 | `subject` | 病人 | |
 
 注意：标本代码在同一机构内存在一码多名，报告的"一码多名"一节有列出。
@@ -279,7 +289,7 @@
 | `outcome.text` | 术后诊断 | `OPRT_AFTR_DIAG_NM` | |
 | `bodySite[].text` | 手术部位 | `OPRT_PRT_NM` | |
 | `note[].text` | 手术经过 | `OPRT_PRCS_DSCPT` | |
-| 扩展 | `procedure-level`（手术级别）、`incision-class`（切口类别）、`anesthesia-method`（麻醉方式）、`time-scheduled`（`OPRT_DT_TM`，与实际开始时间不同时才有）、`department` | | |
+| 扩展 | `procedure-level`（手术级别）、`incision-class`（切口类别，以名称为准）、`anesthesia-method`（麻醉方式；“会诊”不属于本值域，只留原值）——均为规范值 + 原代码、`time-scheduled`（`OPRT_DT_TM`，与实际开始时间不同时才有）、`department` | | |
 
 ### 3.8 DocumentReference（病历文书）
 
@@ -320,7 +330,7 @@
 | `performingOrganization` / `requestingOrganization` | 机构 / 开单科室 | `MDC_ORG_*` / `OPN_DPT_*` |
 | `quantity` | 数量、单位 | `ITM_QTY`、`ITM_UNT` |
 | `enterer` | 录入人 | `CRT_STFF_*` |
-| 扩展 | `unit-price`（单价，人民币）、`total-price`（金额）、`fee-category`（费用类别，优先用 `*_STD` 字段）、`flag-refund`（`CHRG_RTRN_FLG` 原值；数据里 2 伴随负数量和负金额，应是退费） | `ITM_UNT_PRICE`、`ITM_FEE`、`FEE_CGY_*` |
+| 扩展 | `unit-price`（单价，人民币）、`total-price`（金额）、`fee-category`（费用类别，规范值 + 原代码，优先用 `*_STD` 字段）、`flag-refund`（`CHRG_RTRN_FLG` 原值；值域确认后改为 `charge-refund` 规范值） | `ITM_UNT_PRICE`、`ITM_FEE`、`FEE_CGY_*` |
 
 ### 3.10 Organization（医疗机构 / 科室）
 
@@ -365,7 +375,10 @@
 | `actor-recorder` / `actor-updater` | Reference | 所有资源 | 源记录的创建人 / 更新人 |
 | `actor-verifier` / `actor-requester` / `actor-collector` | Reference | Observation、DiagnosticReport | 审核人 / 申请人 / 采集人 |
 | `department` / `organization` | Reference | 多种 | 科室 / 机构 |
-| `code-as-recorded` | string | 多种 | 不符合 FHIR 代码格式的源代码原值 |
+| `code-as-recorded` | string | 多种 | 不符合 FHIR 代码格式、或无法识别的诊断代码原值 |
+| `icd-asterisk-code` | Coding | Condition | ICD-10 星号码（剑号星号组合拆分出来的） |
+| `result-decision` | Coding | Observation | 检验结果判定原值（`RSLT_DCD_CD`） |
+| `charge-refund` | CodeableConcept | ChargeItem | 收退费（值域确认后） |
 | `source-system` | string | Observation、Patient.address | 源数据的来源系统名称 |
 | `address-kind` / `admin-division-code` | string | Patient.address | 地址类别 / 最细一级的行政区划代码 |
 | `marital-status-at-visit` | string | Encounter | 就诊时登记的婚姻状况 |
@@ -403,6 +416,7 @@
 ## 6. 怎么读
 
 - **导入服务器**：把文件 POST 到 FHIR 服务器根地址（如 `http://localhost:8080/fhir`），`Content-Type: application/fhir+json`。导入前先把 `definitions/` 加载到服务器，或者关闭服务器对未知扩展、代码的严格校验。
+- **找标准编码**：按 `system` 挑 coding——规范值体系 `{ns}/CodeSystem/canonical/…` 或标准体系是归一结果，`http://loinc.org`、`http://snomed.info/sct` 是术语对照结果；本批用到的对照在 `definitions/ConceptMap-*.json`。
 - **用程序读**：遍历 `entry[].resource`，按 `resourceType` 分组；引用 `"Type/id"` 都能在同一个文件里找到。
 - **看文书正文**：对 `content[0].attachment.data` 或 `presentedForm[].data` 做 base64 解码（UTF-8）。
 - **回查源记录**：用 `meta.source` 找到源文件，用记录标识（`{ns}/id/record/…`）的值找到源记录主键 `PRM_KEY`。

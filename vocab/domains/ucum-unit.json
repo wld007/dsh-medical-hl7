@@ -1,0 +1,670 @@
+{
+  "version": "1.0.0",
+  "kind": "enum",
+  "id": "ucum-unit",
+  "name": "计量单位",
+  "match": "display",
+  "description": "检验、体征等单位写法 → UCUM。大小写、μ/u、上标写法等统一；无法确定含义的标“待确认”；不是单位的标“不属于本值域”。",
+  "target": {
+    "system": "http://unitsofmeasure.org",
+    "name": "UCUM",
+    "open": true,
+    "values": []
+  },
+  "entries": [
+    {
+      "display": "10^9/L",
+      "to": "10*9/L",
+      "status": "confirmed",
+      "basis": "单位写法统一"
+    },
+    {
+      "display": "10*9/L",
+      "to": "10*9/L",
+      "status": "confirmed",
+      "basis": "单位写法统一"
+    },
+    {
+      "display": "×10^9/L",
+      "to": "10*9/L",
+      "status": "confirmed",
+      "basis": "单位写法统一"
+    },
+    {
+      "display": "x10^9/L",
+      "to": "10*9/L",
+      "status": "confirmed",
+      "basis": "单位写法统一"
+    },
+    {
+      "display": "10^12/L",
+      "to": "10*12/L",
+      "status": "confirmed",
+      "basis": "单位写法统一"
+    },
+    {
+      "display": "×10^12/L",
+      "to": "10*12/L",
+      "status": "confirmed",
+      "basis": "单位写法统一"
+    },
+    {
+      "display": "x10^12/L",
+      "to": "10*12/L",
+      "status": "confirmed",
+      "basis": "单位写法统一"
+    },
+    {
+      "display": "mmol/L",
+      "to": "mmol/L",
+      "status": "confirmed",
+      "basis": "单位写法统一"
+    },
+    {
+      "display": "mmol/l",
+      "to": "mmol/L",
+      "status": "confirmed",
+      "basis": "单位写法统一"
+    },
+    {
+      "display": "μmol/L",
+      "to": "umol/L",
+      "status": "confirmed",
+      "basis": "单位写法统一"
+    },
+    {
+      "display": "µmol/L",
+      "to": "umol/L",
+      "status": "confirmed",
+      "basis": "单位写法统一"
+    },
+    {
+      "display": "umol/L",
+      "to": "umol/L",
+      "status": "confirmed",
+      "basis": "单位写法统一"
+    },
+    {
+      "display": "umol/l",
+      "to": "umol/L",
+      "status": "confirmed",
+      "basis": "单位写法统一"
+    },
+    {
+      "display": "nmol/L",
+      "to": "nmol/L",
+      "status": "confirmed",
+      "basis": "单位写法统一"
+    },
+    {
+      "display": "nmol/l",
+      "to": "nmol/L",
+      "status": "confirmed",
+      "basis": "单位写法统一"
+    },
+    {
+      "display": "pmol/L",
+      "to": "pmol/L",
+      "status": "confirmed",
+      "basis": "单位写法统一"
+    },
+    {
+      "display": "PMOL/L",
+      "to": "pmol/L",
+      "status": "confirmed",
+      "basis": "单位写法统一"
+    },
+    {
+      "display": "g/L",
+      "to": "g/L",
+      "status": "confirmed",
+      "basis": "单位写法统一"
+    },
+    {
+      "display": "g/l",
+      "to": "g/L",
+      "status": "confirmed",
+      "basis": "单位写法统一"
+    },
+    {
+      "display": "g/dL",
+      "to": "g/dL",
+      "status": "confirmed",
+      "basis": "单位写法统一"
+    },
+    {
+      "display": "g/dl",
+      "to": "g/dL",
+      "status": "confirmed",
+      "basis": "单位写法统一"
+    },
+    {
+      "display": "mg/L",
+      "to": "mg/L",
+      "status": "confirmed",
+      "basis": "单位写法统一"
+    },
+    {
+      "display": "mg/l",
+      "to": "mg/L",
+      "status": "confirmed",
+      "basis": "单位写法统一"
+    },
+    {
+      "display": "mg/dL",
+      "to": "mg/dL",
+      "status": "confirmed",
+      "basis": "单位写法统一"
+    },
+    {
+      "display": "mg/dl",
+      "to": "mg/dL",
+      "status": "confirmed",
+      "basis": "单位写法统一"
+    },
+    {
+      "display": "μg/L",
+      "to": "ug/L",
+      "status": "confirmed",
+      "basis": "单位写法统一"
+    },
+    {
+      "display": "ug/L",
+      "to": "ug/L",
+      "status": "confirmed",
+      "basis": "单位写法统一"
+    },
+    {
+      "display": "ng/mL",
+      "to": "ng/mL",
+      "status": "confirmed",
+      "basis": "单位写法统一"
+    },
+    {
+      "display": "ng/ml",
+      "to": "ng/mL",
+      "status": "confirmed",
+      "basis": "单位写法统一"
+    },
+    {
+      "display": "ng/L",
+      "to": "ng/L",
+      "status": "confirmed",
+      "basis": "单位写法统一"
+    },
+    {
+      "display": "pg/mL",
+      "to": "pg/mL",
+      "status": "confirmed",
+      "basis": "单位写法统一"
+    },
+    {
+      "display": "pg/ml",
+      "to": "pg/mL",
+      "status": "confirmed",
+      "basis": "单位写法统一"
+    },
+    {
+      "display": "pg",
+      "to": "pg",
+      "status": "confirmed",
+      "basis": "单位写法统一"
+    },
+    {
+      "display": "fL",
+      "to": "fL",
+      "status": "confirmed",
+      "basis": "单位写法统一"
+    },
+    {
+      "display": "fl",
+      "to": "fL",
+      "status": "confirmed",
+      "basis": "单位写法统一"
+    },
+    {
+      "display": "U/L",
+      "to": "U/L",
+      "status": "confirmed",
+      "basis": "单位写法统一"
+    },
+    {
+      "display": "u/L",
+      "to": "U/L",
+      "status": "confirmed",
+      "basis": "单位写法统一"
+    },
+    {
+      "display": "U/mL",
+      "to": "U/mL",
+      "status": "confirmed",
+      "basis": "单位写法统一"
+    },
+    {
+      "display": "U/ml",
+      "to": "U/mL",
+      "status": "confirmed",
+      "basis": "单位写法统一"
+    },
+    {
+      "display": "U/ML",
+      "to": "U/mL",
+      "status": "confirmed",
+      "basis": "单位写法统一"
+    },
+    {
+      "display": "KU/L",
+      "to": "kU/L",
+      "status": "confirmed",
+      "basis": "单位写法统一"
+    },
+    {
+      "display": "kU/L",
+      "to": "kU/L",
+      "status": "confirmed",
+      "basis": "单位写法统一"
+    },
+    {
+      "display": "IU/L",
+      "to": "[IU]/L",
+      "status": "confirmed",
+      "basis": "单位写法统一"
+    },
+    {
+      "display": "IU/mL",
+      "to": "[IU]/mL",
+      "status": "confirmed",
+      "basis": "单位写法统一"
+    },
+    {
+      "display": "IU/ml",
+      "to": "[IU]/mL",
+      "status": "confirmed",
+      "basis": "单位写法统一"
+    },
+    {
+      "display": "IU/ML",
+      "to": "[IU]/mL",
+      "status": "confirmed",
+      "basis": "单位写法统一"
+    },
+    {
+      "display": "mIU/mL",
+      "to": "m[IU]/mL",
+      "status": "confirmed",
+      "basis": "单位写法统一"
+    },
+    {
+      "display": "mIU/ML",
+      "to": "m[IU]/mL",
+      "status": "confirmed",
+      "basis": "单位写法统一"
+    },
+    {
+      "display": "mIU/L",
+      "to": "m[IU]/L",
+      "status": "confirmed",
+      "basis": "单位写法统一"
+    },
+    {
+      "display": "uIU/mL",
+      "to": "u[IU]/mL",
+      "status": "confirmed",
+      "basis": "单位写法统一"
+    },
+    {
+      "display": "uIU/ml",
+      "to": "u[IU]/mL",
+      "status": "confirmed",
+      "basis": "单位写法统一"
+    },
+    {
+      "display": "μIU/mL",
+      "to": "u[IU]/mL",
+      "status": "confirmed",
+      "basis": "单位写法统一"
+    },
+    {
+      "display": "kIU/L",
+      "to": "k[IU]/L",
+      "status": "confirmed",
+      "basis": "单位写法统一"
+    },
+    {
+      "display": "KIU/L",
+      "to": "k[IU]/L",
+      "status": "confirmed",
+      "basis": "单位写法统一"
+    },
+    {
+      "display": "μEq/L",
+      "to": "ueq/L",
+      "status": "confirmed",
+      "basis": "单位写法统一"
+    },
+    {
+      "display": "%",
+      "to": "%",
+      "status": "confirmed",
+      "basis": "单位写法统一"
+    },
+    {
+      "display": "s",
+      "to": "s",
+      "status": "confirmed",
+      "basis": "单位写法统一"
+    },
+    {
+      "display": "S",
+      "to": "s",
+      "status": "confirmed",
+      "basis": "单位写法统一"
+    },
+    {
+      "display": "秒",
+      "to": "s",
+      "status": "confirmed",
+      "basis": "单位写法统一"
+    },
+    {
+      "display": "sec",
+      "to": "s",
+      "status": "confirmed",
+      "basis": "单位写法统一"
+    },
+    {
+      "display": "ml/min",
+      "to": "mL/min",
+      "status": "confirmed",
+      "basis": "单位写法统一"
+    },
+    {
+      "display": "mL/min",
+      "to": "mL/min",
+      "status": "confirmed",
+      "basis": "单位写法统一"
+    },
+    {
+      "display": "mL/min/1.73m2",
+      "to": "mL/min/{1.73_m2}",
+      "status": "confirmed",
+      "basis": "单位写法统一"
+    },
+    {
+      "display": "ml/min/1.73m2",
+      "to": "mL/min/{1.73_m2}",
+      "status": "confirmed",
+      "basis": "单位写法统一"
+    },
+    {
+      "display": "mm/h",
+      "to": "mm/h",
+      "status": "confirmed",
+      "basis": "单位写法统一"
+    },
+    {
+      "display": "mm/H",
+      "to": "mm/h",
+      "status": "confirmed",
+      "basis": "单位写法统一"
+    },
+    {
+      "display": "mmHg",
+      "to": "mm[Hg]",
+      "status": "confirmed",
+      "basis": "单位写法统一"
+    },
+    {
+      "display": "Kpa",
+      "to": "kPa",
+      "status": "confirmed",
+      "basis": "单位写法统一"
+    },
+    {
+      "display": "kPa",
+      "to": "kPa",
+      "status": "confirmed",
+      "basis": "单位写法统一"
+    },
+    {
+      "display": "℃",
+      "to": "Cel",
+      "status": "confirmed",
+      "basis": "单位写法统一"
+    },
+    {
+      "display": "°C",
+      "to": "Cel",
+      "status": "confirmed",
+      "basis": "单位写法统一"
+    },
+    {
+      "display": "cm",
+      "to": "cm",
+      "status": "confirmed",
+      "basis": "单位写法统一"
+    },
+    {
+      "display": "kg",
+      "to": "kg",
+      "status": "confirmed",
+      "basis": "单位写法统一"
+    },
+    {
+      "display": "kg/m2",
+      "to": "kg/m2",
+      "status": "confirmed",
+      "basis": "单位写法统一"
+    },
+    {
+      "display": "kg/m²",
+      "to": "kg/m2",
+      "status": "confirmed",
+      "basis": "单位写法统一"
+    },
+    {
+      "display": "次/分",
+      "to": "/min",
+      "status": "confirmed",
+      "basis": "单位写法统一"
+    },
+    {
+      "display": "bpm",
+      "to": "/min",
+      "status": "confirmed",
+      "basis": "单位写法统一"
+    },
+    {
+      "display": "mL",
+      "to": "mL",
+      "status": "confirmed",
+      "basis": "单位写法统一"
+    },
+    {
+      "display": "ml",
+      "to": "mL",
+      "status": "confirmed",
+      "basis": "单位写法统一"
+    },
+    {
+      "display": "个/μL",
+      "to": "/uL",
+      "status": "confirmed",
+      "basis": "单位写法统一"
+    },
+    {
+      "display": "个/ul",
+      "to": "/uL",
+      "status": "confirmed",
+      "basis": "单位写法统一"
+    },
+    {
+      "display": "个/uL",
+      "to": "/uL",
+      "status": "confirmed",
+      "basis": "单位写法统一"
+    },
+    {
+      "display": "/uL",
+      "to": "/uL",
+      "status": "confirmed",
+      "basis": "单位写法统一"
+    },
+    {
+      "display": "/μL",
+      "to": "/uL",
+      "status": "confirmed",
+      "basis": "单位写法统一"
+    },
+    {
+      "display": "Cell/uL",
+      "to": "/uL",
+      "status": "confirmed",
+      "basis": "单位写法统一"
+    },
+    {
+      "display": "cell/ul",
+      "to": "/uL",
+      "status": "confirmed",
+      "basis": "单位写法统一"
+    },
+    {
+      "display": "/HP",
+      "to": "/[HPF]",
+      "status": "confirmed",
+      "basis": "单位写法统一"
+    },
+    {
+      "display": "/LP",
+      "to": "/[LPF]",
+      "status": "confirmed",
+      "basis": "单位写法统一"
+    },
+    {
+      "display": "mmol/24H",
+      "to": "mmol/(24.h)",
+      "status": "confirmed",
+      "basis": "单位写法统一"
+    },
+    {
+      "display": "mmol/24h",
+      "to": "mmol/(24.h)",
+      "status": "confirmed",
+      "basis": "单位写法统一"
+    },
+    {
+      "display": "g/24H",
+      "to": "g/(24.h)",
+      "status": "confirmed",
+      "basis": "单位写法统一"
+    },
+    {
+      "display": "g/24h",
+      "to": "g/(24.h)",
+      "status": "confirmed",
+      "basis": "单位写法统一"
+    },
+    {
+      "display": "mg/mmol",
+      "to": "mg/mmol",
+      "status": "confirmed",
+      "basis": "单位写法统一"
+    },
+    {
+      "display": "μm^2",
+      "to": "um2",
+      "status": "confirmed",
+      "basis": "单位写法统一"
+    },
+    {
+      "display": "ratio",
+      "to": "{ratio}",
+      "status": "confirmed",
+      "basis": "单位写法统一"
+    },
+    {
+      "display": "COI",
+      "to": "{COI}",
+      "status": "confirmed",
+      "basis": "单位写法统一"
+    },
+    {
+      "display": "COR",
+      "to": "{COR}",
+      "status": "confirmed",
+      "basis": "单位写法统一"
+    },
+    {
+      "display": "S/CO",
+      "to": "{S/CO}",
+      "status": "confirmed",
+      "basis": "单位写法统一"
+    },
+    {
+      "display": "AU/mL",
+      "to": "[arb'U]/mL",
+      "status": "confirmed",
+      "basis": "单位写法统一"
+    },
+    {
+      "display": "mml/L",
+      "to": null,
+      "status": "pending",
+      "note": "疑为 mmol/L 的笔误，待确认"
+    },
+    {
+      "display": "M/L",
+      "to": null,
+      "status": "pending",
+      "note": "含义不明"
+    },
+    {
+      "display": "APL",
+      "to": null,
+      "status": "pending",
+      "note": "抗磷脂类专用单位，UCUM 无对应，待确认表示方式"
+    },
+    {
+      "display": "MPL",
+      "to": null,
+      "status": "pending",
+      "note": "抗磷脂类专用单位，UCUM 无对应，待确认表示方式"
+    },
+    {
+      "display": "GPL",
+      "to": null,
+      "status": "pending",
+      "note": "抗磷脂类专用单位，UCUM 无对应，待确认表示方式"
+    },
+    {
+      "display": "SAU",
+      "to": null,
+      "status": "pending",
+      "note": "抗磷脂类专用单位，UCUM 无对应，待确认表示方式"
+    },
+    {
+      "display": "SGU",
+      "to": null,
+      "status": "pending",
+      "note": "抗磷脂类专用单位，UCUM 无对应，待确认表示方式"
+    },
+    {
+      "display": "SMU",
+      "to": null,
+      "status": "pending",
+      "note": "抗磷脂类专用单位，UCUM 无对应，待确认表示方式"
+    },
+    {
+      "display": "无",
+      "to": null,
+      "status": "invalid",
+      "note": "不是单位"
+    },
+    {
+      "display": "斑点",
+      "to": null,
+      "status": "invalid",
+      "note": "不是单位"
+    }
+  ]
+}

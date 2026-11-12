@@ -1,0 +1,79 @@
+{
+  "version": "1.0.0",
+  "kind": "enum",
+  "id": "regional-platform/lab-patient-source",
+  "name": "病人来源（检验表 PTT_SRC_CD）",
+  "description": "检验表与检查表的同名字段编码不同。代码与名称冲突时以名称为准。",
+  "target": {
+    "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+    "name": "HL7 v3 就诊类别",
+    "values": [
+      {
+        "code": "AMB",
+        "display": "ambulatory",
+        "label": "门诊"
+      },
+      {
+        "code": "IMP",
+        "display": "inpatient encounter",
+        "label": "住院"
+      },
+      {
+        "code": "EMER",
+        "display": "emergency",
+        "label": "急诊"
+      }
+    ]
+  },
+  "entries": [
+    {
+      "code": "0",
+      "display": "门诊",
+      "to": "AMB",
+      "status": "confirmed",
+      "basis": "以名称为准"
+    },
+    {
+      "code": "1",
+      "display": "住院",
+      "to": "IMP",
+      "status": "confirmed",
+      "basis": "以名称为准"
+    },
+    {
+      "code": "1",
+      "display": "门诊",
+      "to": "AMB",
+      "status": "confirmed",
+      "basis": "以名称为准",
+      "note": "代码 1 多数为住院，这些记录名称为门诊"
+    },
+    {
+      "code": "2",
+      "display": "住院",
+      "to": "IMP",
+      "status": "confirmed",
+      "basis": "以名称为准",
+      "note": "代码 2 也表示住院"
+    },
+    {
+      "code": "9",
+      "display": "其他",
+      "to": null,
+      "status": "pending",
+      "note": "病人来源“其他”，无法确定门诊/住院"
+    },
+    {
+      "code": "2",
+      "to": null,
+      "status": "pending",
+      "note": "无名称"
+    },
+    {
+      "code": "9",
+      "to": null,
+      "status": "pending",
+      "note": "无名称"
+    }
+  ]
+}

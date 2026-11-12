@@ -1,0 +1,37 @@
+{
+  "version": "1.0.0",
+  "kind": "enum",
+  "id": "regional-platform/charge-refund",
+  "name": "收退费标志（CHRG_RTRN_FLG）",
+  "description": "数据里代码 2 的 35 条全部是负数量、负金额。",
+  "target": {
+    "system": "{ns}/CodeSystem/canonical/charge-refund",
+    "name": "收退费（规范值）",
+    "values": [
+      {
+        "code": "charge",
+        "display": "收费",
+        "label": "收费"
+      },
+      {
+        "code": "refund",
+        "display": "退费",
+        "label": "退费"
+      }
+    ]
+  },
+  "entries": [
+    {
+      "code": "1",
+      "to": null,
+      "status": "pending",
+      "note": "数据推断为收费"
+    },
+    {
+      "code": "2",
+      "to": null,
+      "status": "pending",
+      "note": "数据推断为退费（数量、金额均为负数）"
+    }
+  ]
+}

@@ -1,0 +1,176 @@
+{
+  "version": "1.0.0",
+  "kind": "enum",
+  "id": "dicom-modality",
+  "name": "检查类型",
+  "description": "检查类型 → DICOM 设备类型（Modality）。",
+  "target": {
+    "system": "http://dicom.nema.org/resources/ontology/DCM",
+    "name": "DICOM 设备类型",
+    "values": [
+      {
+        "code": "CT",
+        "display": "Computed Tomography",
+        "label": "CT"
+      },
+      {
+        "code": "MR",
+        "display": "Magnetic Resonance",
+        "label": "磁共振"
+      },
+      {
+        "code": "US",
+        "display": "Ultrasound",
+        "label": "超声"
+      },
+      {
+        "code": "CR",
+        "display": "Computed Radiography",
+        "label": "CR"
+      },
+      {
+        "code": "DX",
+        "display": "Digital Radiography",
+        "label": "DR/DX"
+      },
+      {
+        "code": "XA",
+        "display": "X-Ray Angiography",
+        "label": "血管造影"
+      },
+      {
+        "code": "NM",
+        "display": "Nuclear Medicine",
+        "label": "核医学"
+      },
+      {
+        "code": "ES",
+        "display": "Endoscopy",
+        "label": "内镜"
+      },
+      {
+        "code": "PT",
+        "display": "Positron emission tomography",
+        "label": "PET"
+      },
+      {
+        "code": "MG",
+        "display": "Mammography",
+        "label": "乳腺摄影"
+      },
+      {
+        "code": "ECG",
+        "display": "Electrocardiography",
+        "label": "心电"
+      },
+      {
+        "code": "RF",
+        "display": "Radio Fluoroscopy",
+        "label": "透视"
+      },
+      {
+        "code": "OT",
+        "display": "Other",
+        "label": "其他"
+      }
+    ]
+  },
+  "entries": [
+    {
+      "display": "CT",
+      "to": "CT",
+      "status": "confirmed",
+      "basis": "DICOM 标准代码"
+    },
+    {
+      "display": "MR",
+      "to": "MR",
+      "status": "confirmed",
+      "basis": "DICOM 标准代码"
+    },
+    {
+      "display": "US",
+      "to": "US",
+      "status": "confirmed",
+      "basis": "DICOM 标准代码"
+    },
+    {
+      "display": "CR",
+      "to": "CR",
+      "status": "confirmed",
+      "basis": "DICOM 标准代码"
+    },
+    {
+      "display": "DX",
+      "to": "DX",
+      "status": "confirmed",
+      "basis": "DICOM 标准代码"
+    },
+    {
+      "display": "XA",
+      "to": "XA",
+      "status": "confirmed",
+      "basis": "DICOM 标准代码"
+    },
+    {
+      "display": "NM",
+      "to": "NM",
+      "status": "confirmed",
+      "basis": "DICOM 标准代码"
+    },
+    {
+      "display": "ES",
+      "to": "ES",
+      "status": "confirmed",
+      "basis": "DICOM 标准代码"
+    },
+    {
+      "display": "PT",
+      "to": "PT",
+      "status": "confirmed",
+      "basis": "DICOM 标准代码"
+    },
+    {
+      "display": "MG",
+      "to": "MG",
+      "status": "confirmed",
+      "basis": "DICOM 标准代码"
+    },
+    {
+      "display": "ECG",
+      "to": "ECG",
+      "status": "confirmed",
+      "basis": "DICOM 标准代码"
+    },
+    {
+      "display": "RF",
+      "to": "RF",
+      "status": "confirmed",
+      "basis": "DICOM 标准代码"
+    },
+    {
+      "display": "OT",
+      "to": "OT",
+      "status": "confirmed",
+      "basis": "DICOM 标准代码"
+    },
+    {
+      "display": "DR",
+      "to": null,
+      "status": "pending",
+      "note": "DR 不是 DICOM 代码，通常对应 DX，待确认"
+    },
+    {
+      "display": "BRO",
+      "to": null,
+      "status": "pending",
+      "note": "支气管镜，不是 DICOM 代码；可能归 ES（内镜），待确认"
+    },
+    {
+      "display": "X线",
+      "to": null,
+      "status": "pending",
+      "note": "未区分 CR/DX"
+    }
+  ]
+}

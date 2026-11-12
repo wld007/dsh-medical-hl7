@@ -1,0 +1,66 @@
+{
+  "version": "1.0.0",
+  "kind": "enum",
+  "id": "regional-platform/exam-status",
+  "name": "检查状态（EXAM_STTS_CD）",
+  "target": {
+    "system": "http://hl7.org/fhir/diagnostic-report-status",
+    "name": "FHIR 报告状态",
+    "values": [
+      {
+        "code": "registered",
+        "display": "Registered",
+        "label": "已登记"
+      },
+      {
+        "code": "preliminary",
+        "display": "Preliminary",
+        "label": "初步"
+      },
+      {
+        "code": "final",
+        "display": "Final",
+        "label": "最终"
+      },
+      {
+        "code": "amended",
+        "display": "Amended",
+        "label": "已修改"
+      },
+      {
+        "code": "cancelled",
+        "display": "Cancelled",
+        "label": "已取消"
+      }
+    ]
+  },
+  "entries": [
+    {
+      "code": "1",
+      "to": null,
+      "status": "pending",
+      "note": "最常见（160 条），可能是已审核"
+    },
+    {
+      "code": "0",
+      "to": null,
+      "status": "pending"
+    },
+    {
+      "code": "4",
+      "to": null,
+      "status": "pending"
+    },
+    {
+      "code": "5",
+      "to": null,
+      "status": "pending"
+    },
+    {
+      "display": "已审核",
+      "to": "final",
+      "status": "confirmed",
+      "basis": "以名称为准"
+    }
+  ]
+}

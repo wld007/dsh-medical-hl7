@@ -1,0 +1,51 @@
+{
+  "version": "1.0.0",
+  "kind": "enum",
+  "id": "regional-platform/drinking-type",
+  "name": "饮酒种类",
+  "target": {
+    "system": "{ns}/CodeSystem/canonical/drinking-type",
+    "name": "饮酒种类（规范值）",
+    "values": [
+      {
+        "code": "baijiu",
+        "display": "白酒",
+        "label": "白酒"
+      },
+      {
+        "code": "beer",
+        "display": "啤酒",
+        "label": "啤酒"
+      },
+      {
+        "code": "wine",
+        "display": "红酒",
+        "label": "红酒"
+      },
+      {
+        "code": "huangjiu",
+        "display": "黄酒",
+        "label": "黄酒"
+      },
+      {
+        "code": "other",
+        "display": "其他",
+        "label": "其他"
+      }
+    ]
+  },
+  "entries": [
+    {
+      "display": "白酒",
+      "to": "baijiu",
+      "status": "confirmed",
+      "basis": "以名称为准"
+    },
+    {
+      "code": "10",
+      "to": null,
+      "status": "pending",
+      "note": "没有名称"
+    }
+  ]
+}
