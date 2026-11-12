@@ -3,7 +3,7 @@ window.__ModuleLoader__.load({
   factory(require) {
     const React = require('react')
     const h = React.createElement
-    const { useState, useEffect, useCallback, useMemo } = React
+    const { useState, useEffect, useCallback, useMemo, useRef } = React
     const CHANNEL = '/medical-hl7'
     const PANEL_ID = 'medical-hl7'
     const TITLE = 'HL7 数据交换'
@@ -35,7 +35,11 @@ window.__ModuleLoader__.load({
 .hx{--bg:var(--dsw-alias-bg-base);--panel:var(--dsw-alias-bg-layer-1);--panel2:var(--dsw-alias-bg-layer-2);--panel3:color-mix(in srgb,var(--dsw-alias-brand-primary) 10%,var(--dsw-alias-bg-layer-2));--line:var(--dsw-alias-border-l1);--line2:var(--dsw-alias-border-l2);--ink:var(--dsw-alias-label-primary);--ink2:var(--dsw-alias-label-secondary);--ink3:color-mix(in srgb,var(--dsw-alias-label-secondary) 72%,transparent);--teal:var(--dsw-alias-brand-primary);--teal2:var(--dsw-alias-brand-primary);--tealdim:color-mix(in srgb,var(--dsw-alias-brand-primary) 13%,transparent);--ok:var(--dsw-alias-state-success-primary);--warn:var(--dsw-alias-state-warn-primary);--bad:var(--dsw-alias-state-error-primary);--idle:var(--dsw-alias-state-idle-primary);--tint:color-mix(in srgb,var(--dsw-alias-brand-primary) 9%,var(--dsw-alias-bg-layer-1));--mono:"SF Mono","JetBrains Mono",Menlo,monospace;
   height:100%;box-sizing:border-box;background:var(--bg);color:var(--ink);font:12.5px -apple-system,"PingFang SC","Helvetica Neue",sans-serif;display:flex;flex-direction:column;gap:8px;padding:8px 10px 10px;overflow:hidden}
 .hx *{box-sizing:border-box}
-.hx-frame{border:1px solid var(--line);background:var(--panel);border-radius:6px}
+.hx.hx-light{--teal:#0e9f98;--teal2:#08857f;--tealdim:rgba(14,159,152,.12);--bg:color-mix(in srgb,var(--dsw-alias-bg-base) 86%,#0e9f98);--panel:color-mix(in srgb,var(--dsw-alias-bg-layer-1) 93%,#0e9f98);--panel2:color-mix(in srgb,var(--dsw-alias-bg-layer-1) 86%,#0e9f98);--panel3:color-mix(in srgb,var(--dsw-alias-bg-layer-1) 80%,#0e9f98);--line:color-mix(in srgb,var(--dsw-alias-border-l1) 85%,#0e9f98);--line2:color-mix(in srgb,var(--dsw-alias-border-l2) 80%,#0e9f98);--tint:color-mix(in srgb,var(--dsw-alias-bg-layer-1) 85%,#0e9f98)}
+.hx.hx-dark{--bg:#081116;--panel:#0d1a20;--panel2:#112128;--panel3:#16282f;--line:#1a2c34;--line2:#26404a;--ink:#e2eef0;--ink2:#8ba5ad;--ink3:#58717a;--teal:#22c7c0;--teal2:#7fe9e2;--tealdim:rgba(34,199,192,.14);--ok:#46d17f;--warn:#f5a524;--bad:#f05252;--tint:#0f2329;color-scheme:dark}
+.hx.hx-dark .hx-frame{box-shadow:none}
+
+.hx-frame{border:1px solid var(--line);background:var(--panel);border-radius:6px;box-shadow:0 1px 2px color-mix(in srgb,var(--dsw-alias-label-primary) 6%,transparent)}
 .hx-top{display:flex;align-items:center;gap:14px;padding:8px 14px;background:linear-gradient(90deg,var(--tint),var(--panel) 40%)}
 .hx-logo{width:28px;height:28px;border-radius:7px;background:var(--teal);display:grid;place-items:center;flex:none}
 .hx-brand b{display:block;font-size:14px;letter-spacing:2px}.hx-brand span{font-family:var(--mono);font-size:9.5px;color:var(--ink2);letter-spacing:1px}
@@ -135,6 +139,42 @@ window.__ModuleLoader__.load({
       return h('div', { className: 'hx-json' }, parts)
     }
 
+
+    /** Is the Harness currently dark? Reads the host background token's luminance. */
+    function hostIsDark(el) {
+      try {
+        const host = el ?? document.documentElement
+        let color = getComputedStyle(host).getPropertyValue('--dsw-alias-bg-base').trim()
+        if (!color) color = getComputedStyle(document.body).backgroundColor
+        const probe = document.createElement('span')
+        probe.style.color = color
+        document.body.appendChild(probe)
+        const rgb = getComputedStyle(probe).color
+        probe.remove()
+        const parts = (rgb.match(/[\d.]+/g) ?? []).map(Number)
+        if (parts.length < 3) throw new Error('no colour')
+        const scale = rgb.startsWith('color(') ? 255 : 1
+        const [r, g, b] = parts
+        return (0.2126 * r + 0.7152 * g + 0.0722 * b) * scale / 255 < 0.5
+      } catch {
+        return window.matchMedia?.('(prefers-color-scheme: dark)').matches ?? false
+      }
+    }
+    function useHostDark(ref) {
+      const [dark, setDark] = useState(() => hostIsDark(null))
+      useEffect(() => {
+        const check = () => setDark(hostIsDark(ref.current?.parentElement ?? null))
+        check()
+        const observer = new MutationObserver(check)
+        observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class', 'style', 'data-theme', 'data-color-scheme'] })
+        if (document.body) observer.observe(document.body, { attributes: true, attributeFilter: ['class', 'style', 'data-theme'] })
+        const media = window.matchMedia?.('(prefers-color-scheme: dark)')
+        media?.addEventListener?.('change', check)
+        return () => { observer.disconnect(); media?.removeEventListener?.('change', check) }
+      }, [])
+      return dark
+    }
+
     /* ================================================================ page */
     function Page() {
       const [tab, setTab] = useState('overview')
@@ -144,6 +184,8 @@ window.__ModuleLoader__.load({
       const [patient, setPatient] = useState(null)
       const [error, setError] = useState('')
       const [showNew, setShowNew] = useState(false)
+      const rootRef = useRef(null)
+      const dark = useHostDark(rootRef)
 
       const refreshList = useCallback(async () => {
         try {
@@ -175,7 +217,7 @@ window.__ModuleLoader__.load({
       const openPatient = (name, next = 'resources') => { setPatient(name); setTab(next) }
       const t = run?.totals
       const tabs = [['overview', '◈ 概览'], ['patients', '病人', t?.held || null], ['resources', '资源浏览'], ['mapping', '映射与定义'], ['report', '报告']]
-      return h('div', { className: 'hx' },
+      return h('div', { className: `hx ${dark ? 'hx-dark' : 'hx-light'}`, ref: rootRef },
         h('style', {}, CSS),
         h('div', { className: 'hx-frame hx-top' },
           h('div', { className: 'hx-logo' }, h('svg', { width: 17, height: 17, viewBox: '0 0 24 24', fill: 'none', style: { stroke: 'var(--dsw-alias-bg-base)' }, strokeWidth: 2.4, strokeLinecap: 'round' }, h('path', { d: 'M12 5v14M5 12h14' }))),
