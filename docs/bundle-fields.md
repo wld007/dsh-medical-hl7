@@ -33,7 +33,7 @@
 | 元素 | 含义 |
 |---|---|
 | `id` | 32 位十六进制，由"资源类型 + 来源表 + 源记录主键（`PRM_KEY`）"计算得出。**同一条源记录每次转换得到的 id 都相同** |
-| `meta.source` | 来源文件：`{ns}/source#<相对路径>`，例如 `…#HD-0189%2F检验%2F检验记录%2F202104%2Fp_doc_fact_test_rcd.json` |
+| `meta.source` | 来源文件：`{ns}/source#<相对路径>`，例如 `…#病人A%2F检验%2F检验记录%2F202104%2Fp_doc_fact_test_rcd.json` |
 | `identifier`（记录标识） | `system = {ns}/id/record/<规格>/<表>`，`value = 源记录主键`。凭它可以回查到源记录 |
 | `subject` | 一律指向本文件里的 Patient：`{ "reference": "Patient/<id>" }` |
 | 引用 | 一律写成 `"<资源类型>/<id>"`，被引用的资源都在同一个文件里 |
