@@ -98,7 +98,91 @@ export function apply(ctx, config = {}) {
     })
     cmdCtx.effect(() => dispose, 'medical-hl7: /hl7 command')
   })
+
+  /* ---------------------------------------------- browser RPC (page) */
+  ctx.inject(['connection', 'webServer'], (rpcCtx) => {
+    const route = {
+      kind: 'prefix',
+      path: CHANNEL,
+      handler: async (req, res) => {
+        const admission = rpcCtx.connection.admit(req)
+        if ('rejection' in admission) { res.writeHead(admission.rejection); res.end(admission.rejection === 401 ? 'unauthorized' : 'forbidden'); return }
+        if (req.method !== 'POST') { res.writeHead(405); res.end(); return }
+        const endpoint = new URL(req.url ?? '/', 'http://x').pathname.slice(CHANNEL.length + 1)
+        if (!endpoint) { res.writeHead(404); res.end(); return }
+        if (req.headers['content-type']?.split(';', 1)[0].trim().toLowerCase() !== 'application/json') { res.writeHead(415); res.end(); return }
+        let body
+        try {
+          const chunks = []; let size = 0
+          for await (const chunk of req) { size += chunk.length; if (size > 1_000_000) throw new Error('request body too large'); chunks.push(chunk) }
+          body = JSON.parse(Buffer.concat(chunks).toString('utf8') || '{}')
+        } catch (error) {
+          res.writeHead(400, { 'content-type': 'application/json' }); res.end(JSON.stringify({ error: String(error?.message ?? error) })); return
+        }
+        const rpcId = typeof body?.rpcId === 'string' ? body.rpcId : 'invalid-request'
+        if (body?.type !== 'client-request' || body?.method !== endpoint) {
+          res.writeHead(400, { 'content-type': 'application/json' })
+          res.end(JSON.stringify({ type: 'server-response', rpcId, result: { ok: false, error: { code: 'bad-request', message: 'invalid client-request envelope', details: {} } } }))
+          return
+        }
+        const result = await dispatch(endpoint, body.payload)
+        res.writeHead(200, { 'content-type': 'application/json' })
+        res.end(JSON.stringify({ type: 'server-response', rpcId, result }))
+      },
+    }
+    rpcCtx.effect(() => rpcCtx.webServer.register(route), 'medical-hl7: rpc route')
+  })
+
+  /** User-only (page): persists settings into the profile's patch layer. */
+  async function saveDefaults(patch) {
+    if (service.isRunning()) throw new Error('有批次在运行，保存设置会重新加载插件并中断批次；请等它结束')
+    const editor = ctx.get('configEditor')
+    if (!editor?.edit || !editor?.entries) throw new Error('当前 DSH 不支持从页面保存配置；请在 profile 的 cordis.patch.yml 中修改 medical-hl7 的 config')
+    let entry = ctx.fiber?.entry
+    if (!entry) {
+      const entries = editor.entries()
+      try { entry = entries.find((item) => item.fiber === ctx.fiber) } catch { /* fall back */ }
+      entry ??= entries.find((item) => item.options?.id === ENTRY_ID)
+    }
+    if (!entry) throw new Error(`找不到插件配置行 ${ENTRY_ID}`)
+    const allowed = ['outputRoot', 'namespace', 'timezone', 'profilesDir', 'residualGate', 'validatorJar', 'validatorSample', 'javaPath']
+    const clean = Object.fromEntries(Object.entries(patch ?? {}).filter(([k]) => allowed.includes(k)))
+    await editor.edit(entry, (current) => ({ ...current, ...clean }))
+    return { saved: true }
+  }
+
+  async function dispatch(endpoint, payload) {
+    try {
+      const r = payload && typeof payload === 'object' ? payload : {}
+      const value = await (async () => {
+        switch (endpoint) {
+          case 'config': return service.configInfo()
+          case 'list': return service.list()
+          case 'status': return service.status(r.runId)
+          case 'report': return service.report(r.runId)
+          case 'start': return service.start({ inputDir: r.inputDir, outputRoot: r.outputRoot || undefined, resumeFrom: r.resumeFrom || undefined, source: { kind: 'panel' } })
+          case 'cancel': return service.cancel(r.runId)
+          case 'patient': return service.patientDetail(r.runId, r.patient)
+          case 'resources': return service.resources(r.runId, r.patient, r.type)
+          case 'resource': return service.resource(r.runId, r.patient, r.type, r.id)
+          case 'mapping': return service.mapping(r.runId)
+          case 'pickFolder': {
+            const ws = ctx.get('uiWorkspace')
+            return { path: ws?.pickDirectory ? await ws.pickDirectory() : null }
+          }
+          case 'saveDefaults': return saveDefaults(r)
+          default: throw Object.assign(new Error(`未知方法: ${endpoint}`), { code: 'unknown-endpoint' })
+        }
+      })()
+      return { ok: true, value: JSON.parse(JSON.stringify(value ?? null)) }
+    } catch (error) {
+      return { ok: false, error: { code: error?.code ?? 'medical-hl7', message: String(error?.message ?? error), details: {} } }
+    }
+  }
 }
+
+const CHANNEL = '/medical-hl7'
+const ENTRY_ID = 'medical-hl7'
 
 function sessionIdOf(agent) {
   try { const id = agent?.session?.id; return typeof id === 'string' ? id : undefined } catch { return undefined }
