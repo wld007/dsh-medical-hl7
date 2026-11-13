@@ -147,6 +147,15 @@ window.__ModuleLoader__.load({
 .hx-t-warn{font-size:11px;fill:var(--warn)}.hx-t-vio{font-size:10.5px;fill:var(--vio)}
 .hx-gate{cursor:pointer}.hx-gate:hover .hx-gate-band{stroke-opacity:.6}
 .hx-empty-card{fill:var(--panel2);stroke:var(--line);stroke-dasharray:4 4}
+.hx-link-live{fill:none;stroke:var(--vio);stroke-width:1.2;stroke-opacity:.55;stroke-dasharray:3 4}
+.hx-link-live.run{stroke-opacity:.9;stroke-dasharray:8 6;animation:hx-flowing 1s linear infinite}
+.hx-gate.active .hx-gate-band{stroke:var(--vio);stroke-opacity:.8;fill:var(--vio);fill-opacity:.08;animation:hx-gate-pulse 1.6s ease-in-out infinite}
+@keyframes hx-gate-pulse{0%,100%{fill-opacity:.05}50%{fill-opacity:.16}}
+.hx-src.live{cursor:default}.hx-live-mark{fill:var(--neutral)}
+.hx-src.live.s-drafting .hx-live-mark,.hx-src.live.s-verifying .hx-live-mark,.hx-src.live.s-adjudicating .hx-live-mark{fill:var(--vio);animation:hx-blink 1s infinite}
+.hx-src.live.s-drafting .hx-src-box,.hx-src.live.s-verifying .hx-src-box,.hx-src.live.s-adjudicating .hx-src-box{stroke:var(--vio)}
+.hx-src.live.s-applied .hx-live-mark{fill:var(--fire1)}.hx-src.live.s-review .hx-live-mark,.hx-src.live.s-disputed .hx-live-mark{fill:var(--warn)}.hx-src.live.s-failed .hx-live-mark{fill:var(--bad)}
+.hx-live-st{fill:var(--ink3)}.hx-live-st.s-drafting,.hx-live-st.s-verifying,.hx-live-st.s-adjudicating{fill:var(--vio)}.hx-live-st.s-applied{fill:var(--fire1)}.hx-live-st.s-review,.hx-live-st.s-disputed{fill:var(--warn)}.hx-live-st.s-failed{fill:var(--bad)}.hx-live-st.s-agreed{fill:var(--ok)}
 .hx-shadow{fill:#000;opacity:.42;filter:url(#hx-soft)}.hx-light .hx-shadow{opacity:.12}
 .hx-slab-top{fill:color-mix(in srgb,var(--panel2) 70%,var(--ink) 12%)}.hx-slab-side{fill:color-mix(in srgb,var(--panel2) 75%,#000 25%)}
 .hx-light .hx-slab-top{fill:color-mix(in srgb,var(--panel2) 80%,#fff 20%)}.hx-light .hx-slab-side{fill:color-mix(in srgb,var(--panel2) 82%,#5a4030 18%)}
@@ -186,6 +195,7 @@ window.__ModuleLoader__.load({
 .hx-tiles small{display:block;color:var(--ink3);font-size:11px}.hx-tiles b{font-size:20px}
 .hx-stage-rows{display:flex;flex-direction:column;gap:2px}.hx-stage-rows>div{display:grid;grid-template-columns:92px 1fr auto;gap:8px;align-items:center;font-size:12px;padding:4px 6px;border-radius:5px;cursor:pointer}
 .hx-stage-rows>div:hover,.hx-hole:hover{background:var(--panel2)}
+.hx-stage-rows.live>div.on{background:color-mix(in srgb,var(--vio) 10%,transparent)}
 .hx-hole{display:flex;justify-content:space-between;font-size:12px;padding:3px 6px;border-radius:5px;cursor:pointer;color:var(--ink2)}
 .hx-kv-tight{gap:4px 10px;font-size:11.5px}.hx-kv-tight span:nth-child(2n){white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .hx-legend2{display:flex;flex-wrap:wrap;gap:5px 12px;font-size:11px;color:var(--ink2)}
@@ -329,7 +339,17 @@ window.__ModuleLoader__.load({
       useEffect(() => { if (!running) return undefined; const id = setInterval(() => setNow(Date.now()), 1000); return () => clearInterval(id) }, [running])
       const startedMs = run?.startedAt ? Date.parse(run.startedAt) : 0
       const elapsed = !run ? 0 : running ? now - startedMs : (run.finishedAt ? Date.parse(run.finishedAt) - startedMs : 0)
-      const percent = !run ? 0 : run.status === 'completed' || run.status === 'review' ? 100 : t?.units ? Math.floor(((run.units?.length ?? 0) / t.units) * 100) : 0
+      const percent = (() => {
+        if (!run) return 0
+        if (run.status === 'completed' || run.status === 'review') return 100
+        const L = run.live; const conv = t?.units ? (run.units?.length ?? 0) / t.units : 0
+        if (!L || !run.model?.configured) return Math.floor(conv * 100)
+        const sch = L.schema; const sf = sch?.total ? sch.tables.filter((x) => ['applied', 'review', 'failed'].includes(x.state)).length / sch.total : 1
+        const vf = L.values?.total ? L.values.done / L.values.total : ['terms', 'convert'].includes(L.phase) ? 1 : 0
+        const tf = L.terms?.total ? L.terms.done / L.terms.total : L.phase === 'convert' ? 1 : 0
+        const scan = ['values', 'terms', 'convert'].includes(L.phase) ? 1 : L.phase === 'scan' ? 0.5 : 0
+        return Math.floor((sf * 0.4 + scan * 0.05 + vf * 0.15 + tf * 0.15 + conv * 0.25) * 100)
+      })()
       const SRC = { agent: 'Agent 会话', command: '/hl7 命令', panel: '页面', rerun: '重新运行' }
       const sourceLabel = (source) => {
         const label = source.kind === 'rerun' ? `重新运行 ${String(source.of ?? '').slice(-6)}` : SRC[source.kind] ?? source.kind
@@ -447,6 +467,8 @@ window.__ModuleLoader__.load({
     /* ------------------------------------------------- 映射总览（源数据 → FHIR 资源类型） */
     const BOXES = ['Patient', 'Encounter', 'Condition', 'Observation', 'DiagnosticReport', 'Specimen', 'Procedure', 'MedicationRequest', 'DocumentReference', 'ChargeItem']
     const KIND_ZH = { patient: '病人信息', address: '地址', encounter: '就诊登记', condition: '诊断', lab: '检验', imaging: '检查', procedure: '手术操作', document: '病历文书', observation: '体征与问卷', medication: '用药医嘱', charge: '费用', death: '死亡', generic: '其他（未映射）' }
+    const KIND_TO = { patient: ['Patient'], address: ['Patient'], encounter: ['Encounter'], condition: ['Condition'], lab: ['Observation', 'DiagnosticReport', 'Specimen'], imaging: ['DiagnosticReport'], procedure: ['Procedure'], document: ['DocumentReference'], observation: ['Observation'], medication: ['MedicationRequest'], charge: ['ChargeItem'], death: ['Observation'], generic: ['__left'] }
+    const LIVE_ST = { queued: '排队', drafting: '起草中', drafted: '待核验', verifying: '盲审中', agreed: '结论一致', disputed: '有异议', adjudicating: '复判中', applied: '已采用', review: '待人工审核', failed: '起草失败' }
     const pct = (x) => (x == null ? '—' : `${(x * 100).toFixed(x > 0 && x < 0.1 ? 1 : 0)}%`)
 
     function flowModel(run) {
@@ -522,9 +544,28 @@ window.__ModuleLoader__.load({
         h('filter', { id: 'hx-soft', x: '-30%', y: '-30%', width: '160%', height: '160%' }, h('feGaussianBlur', { stdDeviation: 6 })),
         h('pattern', { id: 'hx-stripe', width: 5, height: 5, patternUnits: 'userSpaceOnUse', patternTransform: 'rotate(45)' }, h('rect', { width: 5, height: 5, style: { fill: 'var(--warn)' }, opacity: 0.25 }), h('rect', { width: 2, height: 5, style: { fill: 'var(--warn)' } }))))
       const noData = !M.sources.length
+      const L = run.live
+      const liveTables = noData && L?.schema?.tables?.length ? L.schema.tables : null
       // gates
-      for (const g of noData ? [] : gates) {
-        parts.push(h('g', { key: K(), className: 'hx-gate', onClick: () => onTab(g.tab) }, h('title', {}, `${g.name}：点击查看详情`),
+      if (liveTables) {
+        const sch = L.schema
+        const done = sch.tables.filter((t) => ['applied', 'review', 'failed'].includes(t.state)).length
+        const busy = sch.tables.filter((t) => ['drafting', 'verifying', 'adjudicating'].includes(t.state)).length
+        gates[0].sub = `模型起草 ${done} / ${sch.total}`
+        gates[0].model = busy ? `正在处理 ${busy} 张` : L.phase === 'schema' ? '等待模型' : null
+        gates[0].pile = 0
+        gates[0].active = L.phase === 'schema'
+        gates[1].sub = L.values ? `模型 ${L.values.done} / ${L.values.total}` : L.phase === 'scan' ? '扫描取值中' : '等待中'
+        gates[1].active = L.phase === 'values' || L.phase === 'scan'
+        gates[1].pile = 0
+        gates[2].sub = L.terms ? `模型 ${L.terms.done} / ${L.terms.total}` : L.phase === 'scan' ? '扫描概念中' : '等待中'
+        gates[2].active = L.phase === 'terms' || L.phase === 'scan'
+        gates[2].pile = 0
+        gates[1].model = gates[1].active && L.values ? '模型处理中' : null
+        gates[2].model = gates[2].active && L.terms ? '模型处理中' : null
+      }
+      for (const g of noData && !liveTables ? [] : gates) {
+        parts.push(h('g', { key: K(), className: `hx-gate${g.active ? ' active' : ''}`, onClick: () => onTab(g.tab) }, h('title', {}, `${g.name}：点击查看详情`),
           h('polygon', { points: P2([[g.x - 15, top - 8], [g.x + 17, top - 8], [g.x + 17 + DX * 2, top - 8 - DY * 2], [g.x - 15 + DX * 2, top - 8 - DY * 2]]), className: 'hx-glass-top' }),
           h('polygon', { points: P2([[g.x + 17, top - 8], [g.x + 17 + DX * 2, top - 8 - DY * 2], [g.x + 17 + DX * 2, H - 62 - DY * 2], [g.x + 17, H - 62]]), className: 'hx-glass-side' }),
           h('rect', { x: g.x - 17, y: top - 8, width: 34, height: H - top - 54, rx: 6, className: 'hx-gate-band' }),
@@ -571,7 +612,40 @@ window.__ModuleLoader__.load({
           h('text', { x: sx + 10, y: p.y + Math.min(p.h / 2 + 4, 15), className: 'hx-t-name' }, name.length > 9 ? `${name.slice(0, 9)}…` : name),
           h('text', { x: sx + sw - 8, y: p.y + Math.min(p.h / 2 + 4, 15), textAnchor: 'end', className: 'hx-t-num' }, fmt(p.s.n))))
       }
-      if (noData) {
+      if (liveTables) {
+        const n = liveTables.length
+        const avail = H - top - 70
+        const ch = Math.max(9, Math.min(22, avail / n - 2))
+        const gap = Math.max(1, Math.min(4, (avail - ch * n) / Math.max(1, n - 1)))
+        const fs = ch >= 15 ? 11 : ch >= 11 ? 9.5 : 8
+        parts.push(h('text', { key: K(), x: sx, y: top - 22, className: 'hx-t-cap' }, `源数据 · ${n} 张表（无映射规格，模型起草中）`))
+        const boxIdx = new Map(BOXES.map((t, i) => [t, i]))
+        const drawn = new Map()
+        liveTables.forEach((t, i) => {
+          const y0 = top + i * (ch + gap)
+          const st = t.state
+          const busy = ['drafting', 'verifying', 'adjudicating'].includes(st)
+          const finished = ['applied', 'review'].includes(st)
+          const cy = y0 + ch / 2
+          // 线：起草中的表连到关口①；起草完成的表连到对应的资源类型
+          if (busy || st === 'drafted' || st === 'agreed' || st === 'disputed') {
+            parts.push(h('path', { key: K(), d: `M${sx + sw},${cy} C${sx + sw + 70},${cy} ${gx[0] - 70},${top + 40 + (i % 12) * 8} ${gx[0] - 17},${top + 40 + (i % 12) * 8}`, className: `hx-link-live${busy ? ' run' : ''}` }))
+          }
+          if (finished && t.kind) {
+            for (const to of (KIND_TO[t.kind] ?? ['__left']).slice(0, 1)) {
+              const bi = boxIdx.get(to)
+              const ty = bi === undefined ? binY + 15 : top + bi * (bH + bGap) + 14 + ((drawn.get(to) ?? 0) % 6) * 5
+              drawn.set(to, (drawn.get(to) ?? 0) + 1)
+              parts.push(h('path', { key: K(), d: `M${sx + sw},${cy} C${sx + sw + 210},${cy} ${bx - 210},${ty} ${bx},${ty}`, className: bi === undefined ? 'hx-link bin' : 'hx-link', strokeWidth: 1.6 }))
+            }
+          }
+          parts.push(h('g', { key: K(), className: `hx-src live s-${st}` }, h('title', {}, `${t.name}：${LIVE_ST[st] ?? st}${t.kind ? `（${KIND_ZH[t.kind] ?? t.kind}）` : ''}${t.round ? ` · 第 ${t.round} 轮` : ''} · 样本 ${t.rows} 行`),
+            h('rect', { x: sx, y: y0, width: sw, height: ch, rx: 3, className: 'hx-src-box' }),
+            h('rect', { x: sx, y: y0, width: 3, height: ch, className: 'hx-live-mark' }),
+            ch >= 9 ? h('text', { x: sx + 8, y: cy + fs * 0.36, className: 'hx-t-name', style: { fontSize: fs } }, (t.name.replace(/^[A-Z]\d{4}_\d{4}_\d+/, '') || t.name).slice(0, ch >= 15 ? 12 : 14)) : null,
+            h('text', { x: sx + sw - 6, y: cy + fs * 0.36, textAnchor: 'end', className: `hx-live-st s-${st}`, style: { fontSize: fs - 0.5 } }, LIVE_ST[st] ?? st)))
+        })
+      } else if (noData) {
         const cx = (sx + bx) / 2 - 20, cy = top + 200
         parts.push(h('g', { key: K() },
           h('rect', { x: cx - 210, y: cy - 46, width: 420, height: 92, rx: 10, className: 'hx-empty-card' }),
@@ -591,7 +665,7 @@ window.__ModuleLoader__.load({
           h('rect', { x: bx, y: b.y, width: 4, height: bH, className: 'hx-box-mark' }),
           h('text', { x: bx + 12, y: b.y + 18, className: 'hx-t-strong' }, t),
           h('text', { x: bx + 12, y: b.y + 34, className: 'hx-t-sub' }, TYPE_ZH[t]),
-          h('text', { x: bx + 12, y: b.y + 47, className: empty ? 'hx-t-sub' : 'hx-t-num' }, empty ? (noData ? (running ? '等待中' : '—') : '本批没有') : fmt(n)),
+          h('text', { x: bx + 12, y: b.y + 47, className: empty ? 'hx-t-sub' : 'hx-t-num' }, empty ? (liveTables ? (() => { const k = liveTables.filter((x) => ['applied', 'review'].includes(x.state) && (KIND_TO[x.kind] ?? [])[0] === t).length; return k ? `${k} 张表映射到此` : '等待中' })() : noData ? (running ? '等待中' : '—') : '本批没有') : fmt(n)),
           cells.map((c, i) => {
             const cw2 = 24, x = cx0 + i * 37, base = b.y + bH - 10, maxH = 30
             const zero = !empty && c.rate === 0
@@ -674,7 +748,18 @@ window.__ModuleLoader__.load({
           S ? h('div', { className: 'hx-stage-rows' },
             h('div', { onClick: () => onTab('schema') }, h('span', {}, '① Schema 同构'), h(Coverage, { value: S.schema.tables ? (S.schema.tables - S.schema.inferred) / S.schema.tables : null }), h('span', { className: 'hx-faint' }, `${S.schema.tables} 表`)),
             h('div', { onClick: () => onTab('domains') }, h('span', {}, '② 值域归一'), h(Coverage, { value: S.domains.coverage }), h('span', { className: pend ? 'hx-warn' : 'hx-faint' }, pend ? `待 ${fmt(pend)}` : '全部')),
-            h('div', { onClick: () => onTab('terms') }, h('span', {}, '③ 术语对照'), h(Coverage, { value: S.terminology.coverage }), h('span', { className: 'hx-faint' }, `${fmt(S.terminology.mappedConcepts)}/${fmt(S.terminology.concepts)}`))) : h('div', { className: 'hx-faint' }, running ? '处理中…' : '—'),
+            h('div', { onClick: () => onTab('terms') }, h('span', {}, '③ 术语对照'), h(Coverage, { value: S.terminology.coverage }), h('span', { className: 'hx-faint' }, `${fmt(S.terminology.mappedConcepts)}/${fmt(S.terminology.concepts)}`))) : running && run.live ? (() => {
+              const L = run.live
+              const sch = L.schema
+              const sDone = sch ? sch.tables.filter((t) => ['applied', 'review', 'failed'].includes(t.state)).length : 0
+              const row = (label, frac, text, on) => h('div', { key: label, className: on ? 'on' : '' }, h('span', {}, label), h(Coverage, { value: frac }), h('span', { className: on ? 'hx-vio' : 'hx-faint' }, text))
+              return h('div', { className: 'hx-stage-rows live' },
+                row('① Schema 同构', sch?.total ? sDone / sch.total : null, sch?.total ? `${sDone}/${sch.total} 表` : '—', L.phase === 'schema'),
+                row('② 值域归一', L.values?.total ? L.values.done / L.values.total : null, L.values ? `${fmt(L.values.done)}/${fmt(L.values.total)}` : L.phase === 'scan' ? '扫描中' : '等待', L.phase === 'values' || L.phase === 'scan'),
+                row('③ 术语对照', L.terms?.total ? L.terms.done / L.terms.total : null, L.terms ? `${fmt(L.terms.done)}/${fmt(L.terms.total)}` : L.phase === 'scan' ? '扫描中' : '等待', L.phase === 'terms' || L.phase === 'scan'),
+                row('④ FHIR 组装', L.convert?.units ? L.convert.unitsDone / L.convert.units : null, L.phase === 'convert' ? `${L.convert?.unitsDone ?? 0}/${L.convert?.units ?? '—'} 目录` : '等待', L.phase === 'convert'),
+                L.models?.suggest ? h('div', { className: 'hx-faint', style: { fontSize: 11, gridTemplateColumns: '1fr', cursor: 'default' } }, `模型请求中：识别 ${L.inflight?.suggest ?? 0} · 核验 ${L.inflight?.verify ?? 0} · 已完成 ${fmt(L.calls ?? 0)} 次`) : null)
+            })() : h('div', { className: 'hx-faint' }, running ? '处理中…' : '—'),
           worst.length ? h(React.Fragment, {}, h('div', { className: 'hx-sec' }, h('b', {}, '填充率最低的元素')),
             worst.map((x, i) => h('div', { key: i, className: 'hx-hole', onClick: () => onTab(/标准|SNOMED/.test(x.nm) ? 'terms' : /解释/.test(x.nm) ? 'domains' : 'resources') }, h('span', {}, `${TYPE_ZH[x.type]} · ${x.nm}`), h('span', { className: 'hx-num hx-warn' }, pct(x.rate))))) : null,
           h('div', { className: 'hx-sec' }, h('b', {}, '病人'), h('span', { className: 'hx-faint' }, `交付 ${fmt(t.done)} · 暂扣 ${fmt(t.held)}`)),
