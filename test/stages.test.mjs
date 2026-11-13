@@ -85,3 +85,22 @@ test('复核：页面改对照 → 存本机 → 重跑生效；中间结果与 
   assert.ok(defs.includes('ConceptMap-term-lab-item.json'))
   assert.notEqual(second.vocab.version, first.vocab.version)
 })
+
+test('数据去向：来源表 → FHIR 资源类型的条数、箱子格子的填充率', async () => {
+  const base = await realpath(await mkdtemp(join(tmpdir(), 'hl7-flow-')))
+  await writeFictionalPatient(join(base, 'in', '病人A'))
+  const svc = createService({ config: { outputRoot: join(base, 'out') }, defaultDirectory: base, stateDir: join(base, 'state') })
+  const { runId } = await svc.start({ inputDir: join(base, 'in') })
+  let run
+  for (let i = 0; i < 400; i++) { ({ run } = await svc.status(runId)); if (run.status !== 'running') break; await new Promise((r) => setTimeout(r, 25)) }
+  const F = run.flow
+  const total = (type) => Object.entries(F.flows).filter(([k]) => k.endsWith(`|${type}`)).reduce((n, [, v]) => n + v, 0)
+  const byType = run.patients[0].byType
+  for (const t of ['Observation', 'Condition', 'DiagnosticReport', 'ChargeItem', 'DocumentReference']) assert.equal(total(t), byType[t] ?? 0, `${t} 的流入数等于资源数`)
+  assert.ok(F.tables.lab && F.tables.lab.kind === 'lab')
+  const obs = F.slots.Observation
+  assert.equal(obs.n, byType.Observation)
+  assert.equal(F.slotNames.Observation.length, obs.v.length)
+  assert.ok(run.patients[0].leftover > 0, '原样保留的字段计数')
+  assert.equal(run.patients[0].flow, undefined, '状态里不带每人的去向明细')
+})

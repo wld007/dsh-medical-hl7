@@ -35,13 +35,14 @@ window.__ModuleLoader__.load({
 .hx{--bg:var(--dsw-alias-bg-base);--panel:var(--dsw-alias-bg-layer-1);--panel2:var(--dsw-alias-bg-layer-2);--panel3:color-mix(in srgb,var(--dsw-alias-brand-primary) 10%,var(--dsw-alias-bg-layer-2));--line:var(--dsw-alias-border-l1);--line2:var(--dsw-alias-border-l2);--ink:var(--dsw-alias-label-primary);--ink2:var(--dsw-alias-label-secondary);--ink3:color-mix(in srgb,var(--dsw-alias-label-secondary) 72%,transparent);--teal:var(--dsw-alias-brand-primary);--teal2:var(--dsw-alias-brand-primary);--tealdim:color-mix(in srgb,var(--dsw-alias-brand-primary) 13%,transparent);--ok:var(--dsw-alias-state-success-primary);--warn:var(--dsw-alias-state-warn-primary);--bad:var(--dsw-alias-state-error-primary);--idle:var(--dsw-alias-state-idle-primary);--tint:color-mix(in srgb,var(--dsw-alias-brand-primary) 9%,var(--dsw-alias-bg-layer-1));--mono:"SF Mono","JetBrains Mono",Menlo,monospace;
   height:100%;box-sizing:border-box;background:var(--bg);color:var(--ink);font:12.5px -apple-system,"PingFang SC","Helvetica Neue",sans-serif;display:flex;flex-direction:column;gap:8px;padding:8px 10px 10px;overflow:hidden}
 .hx *{box-sizing:border-box}
-.hx.hx-light{--teal:#0e9f98;--teal2:#08857f;--tealdim:rgba(14,159,152,.12);--bg:color-mix(in srgb,var(--dsw-alias-bg-base) 86%,#0e9f98);--panel:color-mix(in srgb,var(--dsw-alias-bg-layer-1) 93%,#0e9f98);--panel2:color-mix(in srgb,var(--dsw-alias-bg-layer-1) 86%,#0e9f98);--panel3:color-mix(in srgb,var(--dsw-alias-bg-layer-1) 80%,#0e9f98);--line:color-mix(in srgb,var(--dsw-alias-border-l1) 85%,#0e9f98);--line2:color-mix(in srgb,var(--dsw-alias-border-l2) 80%,#0e9f98);--tint:color-mix(in srgb,var(--dsw-alias-bg-layer-1) 85%,#0e9f98)}
-.hx.hx-dark{--bg:#081116;--panel:#0d1a20;--panel2:#112128;--panel3:#16282f;--line:#1a2c34;--line2:#26404a;--ink:#e2eef0;--ink2:#8ba5ad;--ink3:#58717a;--teal:#22c7c0;--teal2:#7fe9e2;--tealdim:rgba(34,199,192,.14);--ok:#46d17f;--warn:#f5a524;--bad:#f05252;--tint:#0f2329;color-scheme:dark}
+.hx{--fire1:#F26B21;--fire2:#E3271C;--fireDim:rgba(242,107,33,.14);--vio:#A78BFA;--flame:linear-gradient(160deg,#F7A823,#F26B21 55%,#E3271C)}
+.hx.hx-light{--bg:#efe9e2;--panel:#f8f4ef;--panel2:#f1ebe4;--panel3:#ebe3da;--line:#e0d6cb;--line2:#cfc2b4;--ink:#2a211b;--ink2:#6b5d52;--ink3:#9a8b7f;--teal:#4a3b30;--teal2:#2a211b;--tealdim:rgba(74,59,48,.07);--ok:#1E9E5A;--warn:#B98900;--bad:#C2185B;--vio:#7C5CE6;--fire1:#EA6A1F;--fire2:#D23A16;--fireDim:rgba(234,106,31,.12);--neutral:#cdbfb1;--track:#e6ddd3;--tint:#f4eee8;color-scheme:light}
+.hx.hx-dark{--bg:#111213;--panel:#18191b;--panel2:#1f2023;--panel3:#26282b;--line:#2b2d30;--line2:#3a3d41;--ink:#e7e8ea;--ink2:#a2a6ab;--ink3:#6c7076;--teal:#d6d9dd;--teal2:#ffffff;--tealdim:rgba(255,255,255,.06);--ok:#3FBF7F;--warn:#E9C341;--bad:#E5487A;--vio:#A78BFA;--neutral:#45484d;--track:#2a2c30;--tint:#1c1d20;color-scheme:dark}
 .hx.hx-dark .hx-frame{box-shadow:none}
 
 .hx-frame{border:1px solid var(--line);background:var(--panel);border-radius:6px;box-shadow:0 1px 2px color-mix(in srgb,var(--dsw-alias-label-primary) 6%,transparent)}
 .hx-top{display:flex;align-items:center;gap:14px;padding:8px 14px;background:linear-gradient(90deg,var(--tint),var(--panel) 40%)}
-.hx-logo{width:28px;height:28px;border-radius:7px;background:var(--teal);display:grid;place-items:center;flex:none}
+.hx-logo{width:28px;height:28px;border-radius:7px;background:var(--flame);display:grid;place-items:center;flex:none}
 .hx-brand b{display:block;font-size:14px;letter-spacing:2px}.hx-brand span{font-family:var(--mono);font-size:9.5px;color:var(--ink2);letter-spacing:1px}
 .hx-runbox{border:1px solid var(--line2);border-radius:6px;padding:3px 10px;line-height:1.35;min-width:220px}
 .hx-sp{flex:1}
@@ -78,50 +79,12 @@ window.__ModuleLoader__.load({
 .hx-field{display:flex;flex-direction:column;gap:4px;font-size:11.5px;color:var(--ink2)}
 .hx-err{color:var(--bad);border:1px solid color-mix(in srgb,var(--bad) 40%,transparent);background:color-mix(in srgb,var(--bad) 8%,transparent);padding:6px 10px;border-radius:5px;cursor:pointer}
 .hx-empty{color:var(--ink3);padding:30px;text-align:center}
-.hx-st{position:relative;flex:1;min-width:96px;border:1px solid var(--line2);border-radius:8px;background:linear-gradient(180deg,var(--tint),var(--panel));padding:10px;min-height:118px}
-.hx-st .no{font-family:var(--mono);font-size:9.5px;color:var(--ink3);letter-spacing:1px}.hx-st .nm{font-size:14px;font-weight:700;margin:2px 0}
-.hx-st .sub{font-size:10.5px;color:var(--ink3);line-height:14px;min-height:28px}.hx-st .big{font-family:var(--mono);font-size:19px;font-weight:700;margin-top:6px}
-.hx-st .big small{font-size:10px;color:var(--ink3);font-weight:400;margin-left:3px}
-.hx-st .bar{position:absolute;left:0;right:0;top:-1px;height:3px;border-radius:8px 8px 0 0;background:var(--line2);overflow:hidden}.hx-st .bar span{display:block;height:100%;background:var(--ok)}
-.hx-st.run{border-color:var(--teal);box-shadow:0 0 0 1px color-mix(in srgb,var(--teal) 25%,transparent),0 0 24px color-mix(in srgb,var(--teal) 20%,transparent)}.hx-st.run .bar span{background:var(--teal)}
-.hx-st.hold{border-color:color-mix(in srgb,var(--warn) 70%,transparent)}.hx-st.hold .bar span{background:var(--warn)}
-.hx-st.idle{opacity:.55}
-.hx-iso-wrap{position:relative;border:1px solid var(--line);border-radius:6px;overflow:hidden;background:radial-gradient(ellipse at 45% 55%,var(--tealdim),transparent 62%),var(--panel)}
-.hx-iso{display:block;width:100%;height:auto;max-height:420px}
-.hx-st{cursor:pointer}.hx-st-hit{fill:transparent}.hx-st:hover polygon{filter:brightness(1.12)}
-@keyframes hx-blink{0%,100%{opacity:.95}50%{opacity:.35}}.hx-blink{animation:hx-blink 1.2s infinite}
-.hx-legend{display:flex;gap:12px;align-items:center;font-size:11px;color:var(--ink2);margin-top:6px}
-.hx-legend i{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:4px;vertical-align:-1px}
-.hx-lg-done{background:var(--ok)}.hx-lg-active{background:var(--teal)}.hx-lg-warn{background:var(--warn)}.hx-lg-idle{background:var(--line2)}
-.hx-ov{flex:1;min-height:0;display:flex;flex-direction:column;gap:8px}
-.hx-ov-top{flex:1;min-height:0;display:flex;gap:8px}
-.hx-ov-stage{flex:1;min-width:0;position:relative;display:flex;flex-direction:column;padding:10px 12px 8px}
-.hx-ov-head{display:flex;align-items:baseline;gap:10px;flex:none}.hx-ov-head b{font-size:13px;letter-spacing:1px}
-.hx-ov-head .hx-legend{margin:0 0 0 auto}
-.hx-ov-stage .hx-iso-wrap{flex:1;min-height:0;margin-top:6px;border:0;background:radial-gradient(ellipse at 45% 55%,var(--tealdim),transparent 62%)}
-.hx-ov-stage .hx-iso{width:100%;height:100%;max-height:none}
-.hx-ov-foot{flex:none;font-size:11px;text-align:right}
-.hx-ov-side{width:320px;flex:none}
-.hx-ov-bottom{flex:none;height:150px;display:flex;gap:8px}.hx-ov-bottom>.hx-frame{flex:1;min-width:0;overflow:hidden}
-.hx-alerts{position:absolute;bottom:28px;left:14px;width:320px;border:1px solid var(--line2);border-radius:6px;background:color-mix(in srgb,var(--panel) 92%,transparent);padding:8px 10px;display:flex;flex-direction:column;gap:6px;backdrop-filter:blur(4px)}
-.hx-alerts-h{display:flex;align-items:center;gap:6px}.hx-alerts-h i{width:7px;height:7px;border-radius:50%;background:var(--warn)}
-.hx-alert{display:flex;gap:8px;align-items:center;justify-content:space-between;border-left:3px solid var(--warn);padding:2px 0 2px 8px}
-.hx-alert.b{border-left-color:var(--bad)}
-.hx-alert-t{font-weight:600;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.hx-alert-s{font-size:11px;color:var(--ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.hx-tiles{display:grid;grid-template-columns:1fr 1fr;gap:6px}.hx-tiles>div{border:1px solid var(--line);border-radius:6px;padding:6px 10px;background:var(--panel2)}
-.hx-tiles small{display:block;color:var(--ink3);font-size:11px}.hx-tiles b{font-size:20px}
-.hx-stage-rows{display:flex;flex-direction:column;gap:4px}.hx-stage-rows>div{display:grid;grid-template-columns:96px 1fr auto;gap:8px;align-items:center;font-size:12px;padding:5px 6px;border-radius:5px;cursor:pointer}
-.hx-stage-rows>div:hover{background:var(--panel2)}
-.hx-kv-tight{gap:4px 10px;font-size:11.5px}.hx-kv-tight span:nth-child(2n){white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.hx-bars2{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px 18px}.hx-bars2>div{display:grid;grid-template-columns:72px 1fr 56px;gap:8px;align-items:center;font-size:11.5px}
-.hx-bars2 .track{height:7px;background:var(--line);border-radius:3px;overflow:hidden}.hx-bars2 .track span{display:block;height:100%;background:var(--teal)}.hx-bars2>div>span:last-child{text-align:right}
-.hx-arrow{align-self:center;color:var(--ink3)}
 .hx-cells{display:grid;grid-template-columns:repeat(auto-fill,minmax(14px,1fr));gap:3px}
 .hx-cells i{height:12px;border-radius:2px;background:var(--line2);cursor:pointer}
 .hx-cells i.o{background:var(--ok)}.hx-cells i.r{background:var(--teal)}.hx-cells i.w{background:var(--warn)}
 .hx-bigs{display:flex;gap:22px;margin:4px 0 8px;flex-wrap:wrap}.hx-bigs div small{display:block;color:var(--ink3);font-size:11px}.hx-bigs div .hx-num{font-size:24px;font-weight:700}
 .hx-bars{display:grid;grid-template-columns:auto 1fr auto;gap:4px 10px;align-items:center;font-size:11.5px}
-.hx-bars .track{height:8px;background:var(--line);border-radius:3px;overflow:hidden}.hx-bars .track span{display:block;height:100%;background:var(--teal)}
+.hx-bars .track{height:8px;background:var(--line);border-radius:3px;overflow:hidden}.hx-bars .track span{display:block;height:100%;background:var(--fire1)}
 .hx-list{display:flex;flex-direction:column;gap:1px}
 .hx-li{padding:5px 8px;border-radius:5px;cursor:pointer;display:flex;justify-content:space-between;gap:8px}
 .hx-li:hover{background:var(--panel2)}.hx-li.on{background:var(--panel3);box-shadow:inset 3px 0 0 var(--teal)}
@@ -130,6 +93,53 @@ window.__ModuleLoader__.load({
 .hx-text{white-space:pre-wrap;font-size:13px;line-height:1.8;border:1px solid var(--line2);border-radius:6px;padding:8px 10px;background:var(--panel2);margin-bottom:8px}
 .hx-md{white-space:pre-wrap;font-family:var(--mono);font-size:12px;line-height:1.6}
 .hx-kv{display:grid;grid-template-columns:auto 1fr;gap:3px 12px;font-size:11.5px}
+.hx-ov{flex:1;min-height:0;display:flex;gap:8px}
+.hx-ov-stage{flex:1;min-width:0;display:flex;flex-direction:column;padding:10px 14px 8px}
+.hx-ov-head{display:flex;align-items:baseline;gap:10px;flex:none}.hx-ov-head b{font-size:13px;letter-spacing:1px}
+.hx-steps{display:flex;gap:4px;margin-left:auto;font-size:11px}
+.hx-steps span{padding:2px 8px;border-radius:10px;border:1px solid var(--line);color:var(--ink3)}
+.hx-steps .done{color:var(--ok);border-color:color-mix(in srgb,var(--ok) 45%,transparent)}
+.hx-steps .warn{color:var(--warn);border-color:color-mix(in srgb,var(--warn) 50%,transparent)}
+.hx-steps .run{color:var(--fire1);border-color:var(--fire1);background:var(--fireDim)}
+.hx-steps .bad{color:var(--bad);border-color:color-mix(in srgb,var(--bad) 50%,transparent)}
+.hx-flow{flex:1;min-height:0;width:100%;margin-top:4px}
+.hx-flow text{font-family:inherit}
+.hx-t-strong{font-size:12.5px;font-weight:600;fill:var(--ink)}.hx-t-sub{font-size:11px;fill:var(--ink3)}.hx-t-cap{font-size:11px;fill:var(--ink3);letter-spacing:1px}
+.hx-t-name{font-size:12px;fill:var(--ink)}.hx-t-num{font-size:11px;fill:var(--ink2);font-family:var(--mono)}
+.hx-t-warn{font-size:11px;fill:var(--warn)}.hx-t-vio{font-size:10.5px;fill:var(--vio)}
+.hx-gate{cursor:pointer}.hx-gate-band{fill:var(--panel2);stroke:var(--line)}.hx-gate:hover .hx-gate-band{stroke:var(--line2)}
+.hx-link{fill:none;stroke:url(#hx-fl);stroke-opacity:.82;mix-blend-mode:normal}
+.hx-dark .hx-link{filter:drop-shadow(0 0 3px color-mix(in srgb,var(--fire1) 45%,transparent))}
+.hx-link.bin{stroke:var(--neutral);stroke-dasharray:4 4;filter:none}
+.hx-link.run{stroke-dasharray:14 8;animation:hx-flowing 1.1s linear infinite}
+@keyframes hx-flowing{to{stroke-dashoffset:-22}}
+.hx-pile{fill:var(--neutral);stroke:var(--ink3);stroke-width:.6}.hx-pile.w{fill:url(#hx-stripe);stroke:var(--warn)}
+.hx-src{cursor:pointer}.hx-src-box{fill:var(--panel2);stroke:var(--line)}.hx-src:hover .hx-src-box{stroke:var(--line2)}
+.hx-src-mark{fill:var(--neutral)}.hx-src-mark.vio{fill:var(--vio)}
+.hx-box{cursor:pointer}.hx-box-r{fill:var(--panel2);stroke:var(--line)}.hx-box:hover .hx-box-r{stroke:var(--line2)}
+.hx-box-mark{fill:var(--fire1)}.hx-box.empty .hx-box-r{fill:none;stroke-dasharray:4 3}.hx-box.empty .hx-box-mark{fill:var(--line)}.hx-box.empty .hx-t-strong{fill:var(--ink3)}
+.hx-cell{fill:var(--track)}.hx-cell-fill{fill:var(--fire1);opacity:.62}.hx-cell-fill.full{opacity:1}
+.hx-cell-empty{fill:none;stroke:var(--warn);stroke-dasharray:2 2;opacity:.85}
+.hx-cell-v{font-size:9px;font-weight:600;font-family:var(--mono);fill:var(--ink2)}.hx-cell-v.on{fill:#fff}
+.hx-cell-l{font-size:8.5px;fill:var(--ink3)}.hx-cell-l.warn{fill:var(--warn)}
+.hx-ov-foot{flex:none;font-size:11px;text-align:right}
+.hx-ov-side{width:300px;flex:none;display:flex;flex-direction:column;gap:2px}
+.hx-now{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--fire1);padding:6px 8px;border:1px solid color-mix(in srgb,var(--fire1) 40%,transparent);border-radius:6px;background:var(--fireDim);margin-top:6px}
+.hx-now i{width:7px;height:7px;border-radius:50%;background:var(--fire1);animation:hx-blink 1.2s infinite}
+.hx-alert{display:flex;gap:8px;align-items:center;justify-content:space-between;border-left:3px solid var(--warn);padding:3px 0 3px 8px;margin:3px 0}
+.hx-alert.b{border-left-color:var(--bad)}
+.hx-alert-t{font-weight:600;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.hx-alert-s{font-size:11px;color:var(--ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hx-tiles{display:grid;grid-template-columns:1fr 1fr;gap:6px}.hx-tiles>div{border:1px solid var(--line);border-radius:6px;padding:6px 10px;background:var(--panel2)}
+.hx-tiles small{display:block;color:var(--ink3);font-size:11px}.hx-tiles b{font-size:20px}
+.hx-stage-rows{display:flex;flex-direction:column;gap:2px}.hx-stage-rows>div{display:grid;grid-template-columns:92px 1fr auto;gap:8px;align-items:center;font-size:12px;padding:4px 6px;border-radius:5px;cursor:pointer}
+.hx-stage-rows>div:hover,.hx-hole:hover{background:var(--panel2)}
+.hx-hole{display:flex;justify-content:space-between;font-size:12px;padding:3px 6px;border-radius:5px;cursor:pointer;color:var(--ink2)}
+.hx-kv-tight{gap:4px 10px;font-size:11.5px}.hx-kv-tight span:nth-child(2n){white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hx-legend2{display:flex;flex-wrap:wrap;gap:5px 12px;font-size:11px;color:var(--ink2)}
+.hx-legend2 i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:4px;vertical-align:-1px}
+.c-fire{background:linear-gradient(90deg,var(--fire1),var(--fire2))}.c-neutral{background:var(--neutral)}.c-ok{background:var(--ok)}.c-warn{background:var(--warn)}.c-bad{background:var(--bad)}.c-vio{background:var(--vio)}
+.hx-vio{color:var(--vio)}
+@keyframes hx-blink{0%,100%{opacity:.95}50%{opacity:.35}}
 .hx-sec{border-left:3px solid var(--teal);background:linear-gradient(90deg,var(--tealdim),transparent 70%);padding:4px 10px;margin:12px 0 8px;display:flex;gap:8px;align-items:baseline}
 .hx-sec b{font-size:12.5px}
 .hx-settings{max-width:820px;display:flex;flex-direction:column;gap:12px;color:var(--dsw-alias-label-primary)}
@@ -146,12 +156,13 @@ window.__ModuleLoader__.load({
     const statusChip = (s) => h('span', { className: `hx-chip ${STATUS[s]?.[1] ?? ''}` }, STATUS[s]?.[0] ?? s)
     const TYPE_ZH = { Patient: '病人', Encounter: '就诊', Condition: '诊断', Observation: '观察/检验', DiagnosticReport: '报告', Specimen: '标本', Procedure: '手术操作', DocumentReference: '文书', MedicationRequest: '医嘱', ChargeItem: '费用', Basic: '通用(未映射表)', Organization: '机构/科室', Practitioner: '医务人员' }
     const TYPE_ORDER = Object.keys(TYPE_ZH)
+    const FLAME_PATH = 'M9 1c1 4 6 6 6 11a6 6 0 0 1-12 0c0-3 2-4 3-6 0 2 1 3 2 3-1-3 0-6 1-8z'
     const byOrder = (a, b) => (TYPE_ORDER.indexOf(a) + 1 || 99) - (TYPE_ORDER.indexOf(b) + 1 || 99)
     const shortTime = (s) => (s ? String(s).replace('T', ' ').replace(/:\d{2}([+-]\d{2}:\d{2}|Z)$/, '').replace(/([+-]\d{2}:\d{2}|Z)$/, '') : '—')
 
     function Icon({ size = 16 }) {
       return h('svg', { width: size, height: size, viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: 1.7, strokeLinecap: 'round', strokeLinejoin: 'round', 'aria-hidden': 'true' },
-        h('rect', { x: 4, y: 3, width: 13, height: 18, rx: 2 }), h('path', { d: 'M10.5 8v6M7.5 11h6' }), h('path', { d: 'M15 17h6m-2.5-2.5L21 17l-2.5 2.5' }))
+        h('path', { d: 'M12 2.5c1.2 4.6 6.5 6.6 6.5 12a6.5 6.5 0 0 1-13 0c0-3.4 2.1-4.7 3.2-6.8.2 2.2 1.1 3.4 2.3 3.6-.9-3.4.1-6.6 1-8.8z' }), h('path', { d: 'M12 21c-1.8 0-3-1.3-3-3 0-1.9 1.6-2.6 2.2-4 .5 1.3 1.1 1.6 1.7 1.8 1 .4 2.1 1 2.1 2.4 0 1.6-1.2 2.8-3 2.8z' }))
     }
 
     /** Tiny JSON highlighter (escapes text; no innerHTML). */
@@ -253,7 +264,7 @@ window.__ModuleLoader__.load({
       return h('div', { className: `hx ${dark ? 'hx-dark' : 'hx-light'}`, ref: rootRef },
         h('style', {}, CSS),
         h('div', { className: 'hx-frame hx-top' },
-          h('div', { className: 'hx-logo' }, h('svg', { width: 17, height: 17, viewBox: '0 0 24 24', fill: 'none', style: { stroke: 'var(--dsw-alias-bg-base)' }, strokeWidth: 2.4, strokeLinecap: 'round' }, h('path', { d: 'M12 5v14M5 12h14' }))),
+          h('div', { className: 'hx-logo' }, h('svg', { width: 15, height: 17, viewBox: '0 0 18 20' }, h('path', { d: FLAME_PATH, fill: '#fff' }))),
           h('div', { className: 'hx-brand' }, h('b', {}, TITLE), h('span', {}, 'HL7 FHIR R4 EXCHANGE')),
           run ? h('div', { className: 'hx-runbox' },
             h('b', {}, statusChip(run.status), run.current ? `${run.current.unit} · ${run.current.step}` : `${fmt(t.patients)} 位病人 · ${fmt(t.resources)} 个资源`),
@@ -269,7 +280,7 @@ window.__ModuleLoader__.load({
         showNew ? h(NewRun, { onStarted: (id) => { setShowNew(false); setRunId(id); setRun(null); setPatient(null); refreshList(); setTab('overview') }, onError: setError }) : null,
         h('div', { className: 'hx-body' },
           !run ? h('div', { className: 'hx-frame hx-empty', style: { flex: 1 } }, runs.length ? '加载中…' : '还没有批次。点右上角「＋ 新批次」，选择匿名化后的数据目录开始转换。')
-            : tab === 'overview' ? h(Overview, { run, openPatient, onTab: setTab, dark })
+            : tab === 'overview' ? h(Overview, { run, openPatient, onTab: setTab })
               : tab === 'patients' ? h(Patients, { run, patient, setPatient, openPatient })
                 : tab === 'resources' ? h(Resources, { run, patient, setPatient })
                   : tab === 'schema' ? h(SchemaTab, { run, onRerun: rerun })
@@ -296,166 +307,165 @@ window.__ModuleLoader__.load({
         h('button', { className: 'hx-btn pri', disabled: !inputDir || busy, onClick: start }, busy ? '启动中…' : '开始转换'))
     }
 
-    /* ------------------------------------------------------ 2.5D 立体产线 */
-    const ISO_DARK = { grid: '#132229', slab: '#14262d', belt: '#21363e', roller: '#2f4952', bDone: '#2c4049', bActive: '#2f4750', bWarn: '#3a3f3c', bIdle: '#1f3036', ok: '#46d17f', acc: '#22c7c0', warn: '#f5a524', vent: '#0b171c', activeTop: '#1f5a5c', warnTop: '#5a4a2a', acc2: '#7fe9e2', cross: '#3d5a64', feeder: '#1b2d33', pileWarn: '#b8781a', pile: '#178d89', pileTop: '#4fd3cb', code: '#58717a', idleText: '#6f8a92', name: '#e2eef0', line: '#8ba5ad', file: '#1aa39d', vio: '#a58bff', stroke: 'rgba(160,230,235,.10)' }
-    const ISO_LIGHT = { grid: '#c9d8dc', slab: '#cddcdf', belt: '#b2c6cb', roller: '#93acb2', bDone: '#b4c9ce', bActive: '#9fd6d0', bWarn: '#ebcf96', bIdle: '#c6d5d9', ok: '#1f9d55', acc: '#0e9f98', warn: '#d98a00', vent: '#55717a', activeTop: '#7fd8d0', warnTop: '#f3bd57', acc2: '#08857f', cross: '#86a1a8', feeder: '#a1b9bf', pileWarn: '#e0a23a', pile: '#1bb0a7', pileTop: '#7fe3dc', code: '#7d9298', idleText: '#8aa0a6', name: '#17323a', line: '#4c6870', file: '#18b3aa', vio: '#7b5cf0', stroke: 'rgba(20,60,70,.14)' }
-    const ISO_STATIONS = [
-      { id: 'read', code: 'S0', name: '读取分组' }, { id: 'schema', code: '①', name: 'Schema 同构' }, { id: 'domains', code: '②', name: '值域归一' },
-      { id: 'terms', code: '③', name: '术语对照' }, { id: 'build', code: '④', name: 'FHIR 组装' }, { id: 'gate', code: '验收', name: '验收' }, { id: 'deliver', code: '交付', name: '交付' },
-    ]
-    /** Isometric production line (same drawing language as the de-identification plugin). */
-    function IsoLine({ states, labels, piles, belt, bypass, loop, onStation, dark }) {
-      const C = dark ? ISO_DARK : ISO_LIGHT
-      const STEP = 152
-      const P = (x, y, z = 0) => [120 + x * 0.94 - y * 0.66, 236 + x * 0.26 + y * 0.58 - z]
-      const pts = (list) => list.map((p) => `${p[0].toFixed(1)},${p[1].toFixed(1)}`).join(' ')
-      const shade = (hex, f) => { const n = parseInt(hex.slice(1), 16); return `rgb(${[n >> 16, (n >> 8) & 255, n & 255].map((v) => Math.min(255, Math.round(v * f))).join(',')})` }
-      let key = 0
-      const poly = (list, fill, extra = {}) => h('polygon', { key: key++, points: pts(list), fill, stroke: C.stroke, strokeWidth: 0.8, ...extra })
-      const box = (x, y, z, w, d, hh, base, top) => [
-        poly([P(x, y + d, z), P(x + w, y + d, z), P(x + w, y + d, z + hh), P(x, y + d, z + hh)], shade(base, 0.62)),
-        poly([P(x + w, y, z), P(x + w, y + d, z), P(x + w, y + d, z + hh), P(x + w, y, z + hh)], shade(base, 0.82)),
-        poly([P(x, y, z + hh), P(x + w, y, z + hh), P(x + w, y + d, z + hh), P(x, y + d, z + hh)], top ?? base),
+    /* ------------------------------------------------- 数据去向（源头 → 固定的箱子） */
+    const BOXES = ['Patient', 'Encounter', 'Condition', 'Observation', 'DiagnosticReport', 'Specimen', 'Procedure', 'MedicationRequest', 'DocumentReference', 'ChargeItem']
+    const KIND_ZH = { patient: '病人信息', address: '地址', encounter: '就诊登记', condition: '诊断', lab: '检验', imaging: '检查', procedure: '手术操作', document: '病历文书', observation: '体征与问卷', medication: '用药医嘱', charge: '费用', death: '死亡', generic: '其他（未映射）' }
+    const pct = (x) => (x == null ? '—' : `${(x * 100).toFixed(x > 0 && x < 0.1 ? 1 : 0)}%`)
+
+    function flowModel(run) {
+      const F = run.flow
+      const byType = {}
+      for (const p of run.patients) for (const [k, n] of Object.entries(p.byType ?? {})) byType[k] = (byType[k] ?? 0) + n
+      if (!F) return { byType, sources: [], links: [], slots: {}, names: {} }
+      const tables = F.tables ?? {}
+      const byTable = Object.keys(tables).length > 14
+      const groupOf = (id) => (byTable ? KIND_ZH[tables[id]?.kind] ?? '其他' : tables[id]?.name ?? id)
+      const link = new Map(); const src = new Map()
+      for (const [k, n] of Object.entries(F.flows ?? {})) {
+        const [id, type] = k.split('|')
+        const g = groupOf(id)
+        const to = BOXES.includes(type) ? type : '__left'
+        link.set(`${g}|${to}`, (link.get(`${g}|${to}`) ?? 0) + n)
+        const s = src.get(g) ?? { name: g, n: 0, tables: new Set(), drafted: false }
+        s.n += n; s.tables.add(tables[id]?.name ?? id); if (tables[id]?.drafted) s.drafted = true
+        src.set(g, s)
+      }
+      return {
+        byType, sources: [...src.values()].sort((a, b) => b.n - a.n), grouped: byTable,
+        links: [...link].map(([k, n]) => { const [from, to] = k.split('|'); return { from, to, n } }).sort((a, b) => b.n - a.n),
+        slots: F.slots ?? {}, names: F.slotNames ?? {},
+      }
+    }
+
+    function FlowView({ run, onTab }) {
+      const M = flowModel(run)
+      const S = run.stages
+      const running = run.status === 'running'
+      const W = 1100
+      const sx = 10, sw = 170, bx = 700, bw = 390, bH = 52, bGap = 6, top = 34
+      const gx = [320, 445, 570]
+      // sources
+      const sH = (n) => Math.max(20, Math.min(120, Math.sqrt(n) * 0.85))
+      let y = top; const sPos = new Map()
+      for (const s of M.sources) { const hh = sH(s.n); sPos.set(s.name, { y, h: hh, used: 0, s }); y += hh + 6 }
+      const bPos = new Map(); BOXES.forEach((t, i) => bPos.set(t, { y: top + i * (bH + bGap), used: 0 }))
+      const binY = top + BOXES.length * (bH + bGap) + 2
+      const H = Math.max(y, binY + 34) + 64
+      const max = Math.max(1, ...M.links.map((l) => l.n))
+      const lw = (n) => Math.max(1.2, Math.sqrt(n / max) * 26)
+      const pile = (S ? S.domains.pending + S.domains.unmapped : 0)
+      const unmappedConcepts = S ? S.terminology.concepts - S.terminology.mappedConcepts : 0
+      const MP = run.model?.phases
+      const gates = [
+        { x: gx[0], no: '①', name: 'Schema 同构', tab: 'schema', sub: S ? `${S.schema.tables} 张表${S.schema.inferred ? ` · Basic ${S.schema.inferred}` : ''}` : '—', pile: S?.schema.inferred ?? 0, pileLabel: '无规格', warn: true, model: MP?.schema?.tables ? `模型起草 ${MP.schema.tables}` : null },
+        { x: gx[1], no: '②', name: '值域归一', tab: 'domains', sub: S ? `覆盖 ${pct(S.domains.coverage)}` : '—', pile, pileLabel: '待确认', warn: true, model: MP?.values?.asked ? `模型采用 ${MP.values.confirmed + MP.values.text + MP.values.invalid}` : null },
+        { x: gx[2], no: '③', name: '术语对照', tab: 'terms', sub: S ? `${fmt(S.terminology.mappedConcepts)} / ${fmt(S.terminology.concepts)} 概念` : '—', pile: unmappedConcepts, pileLabel: '未对照', warn: false, model: MP?.terms?.asked ? `模型采用 ${MP.terms.confirmed}` : null },
       ]
-      const BODY = { done: C.bDone, active: C.bActive, warn: C.bWarn, idle: C.bIdle }
-      const LED = { done: C.ok, active: C.acc, warn: C.warn, idle: C.roller }
-      const W = STEP * 6 + 150
-      const grid = []
-      for (let i = -2; i <= 12; i += 1) { const a = P(i * 100, -120); const b = P(i * 100, 260); grid.push(h('line', { key: `gx${i}`, x1: a[0], y1: a[1], x2: b[0], y2: b[1], stroke: C.grid })) }
-      for (let j = -1; j <= 3; j += 1) { const a = P(-200, j * 100 - 20); const b = P(1200, j * 100 - 20); grid.push(h('line', { key: `gy${j}`, x1: a[0], y1: a[1], x2: b[0], y2: b[1], stroke: C.grid })) }
-      const pools = []
-      const stations = ISO_STATIONS.map((s, i) => {
-        const st = states[s.id] ?? 'idle'
-        const x = i * STEP; const y = 20
-        const base = BODY[st]; const hot = st === 'active'
-        const parts = []
-        if (hot || st === 'warn') { const p = P(x + 34, y + 40); pools.push(h('ellipse', { key: `pool${s.id}`, cx: p[0], cy: p[1] + 16, rx: 70, ry: 26, fill: `url(#hx-pool-${st === 'warn' ? 'w' : 'a'})`, filter: 'url(#hx-soft)' })) }
-        parts.push(h('polygon', { key: 'hit', className: 'hx-st-hit', fill: 'transparent', points: pts([P(x - 6, y - 6), P(x + 76, y - 6), P(x + 76, y + 92), P(x - 6, y + 92)]) }))
-        parts.push(...box(x, y, 0, 70, 66, 26, base))
-        for (let v = 0; v < 4; v += 1) parts.push(poly([P(x + 8 + v * 14, y + 66, 8), P(x + 18 + v * 14, y + 66, 8), P(x + 18 + v * 14, y + 66, 18), P(x + 8 + v * 14, y + 66, 18)], C.vent, { stroke: 'none' }))
-        const mh = st === 'idle' ? 14 : 20
-        parts.push(...box(x + 12, y + 10, 26, 46, 42, mh, base, hot ? C.activeTop : st === 'warn' ? C.warnTop : undefined))
-        const zz = 26 + mh + 0.2
-        if (hot || st === 'warn') {
-          const col = hot ? C.acc2 : C.warn
-          for (let gx = 0; gx < 3; gx += 1) for (let gy = 0; gy < 3; gy += 1) {
-            const zx = x + 16 + gx * 14; const zy = y + 14 + gy * 12
-            parts.push(poly([P(zx, zy, zz), P(zx + 10, zy, zz), P(zx + 10, zy + 8, zz), P(zx, zy + 8, zz)], col, { stroke: 'none', opacity: (gx + gy) % 3 === 0 ? 0.95 : 0.5, filter: 'url(#hx-glow)', className: hot ? 'hx-blink' : '' }))
-          }
-        } else {
-          const cx = x + 35; const cy = y + 31
-          parts.push(poly([P(cx - 3, cy - 10, zz), P(cx + 3, cy - 10, zz), P(cx + 3, cy + 10, zz), P(cx - 3, cy + 10, zz)], C.cross, { stroke: 'none' }))
-          parts.push(poly([P(cx - 10, cy - 3, zz), P(cx + 10, cy - 3, zz), P(cx + 10, cy + 3, zz), P(cx - 10, cy + 3, zz)], C.cross, { stroke: 'none' }))
-        }
-        const led = P(x + 64, y + 66, 22)
-        parts.push(h('circle', { key: 'led', cx: led[0], cy: led[1], r: 3, fill: LED[st], filter: st === 'idle' ? undefined : 'url(#hx-glow)' }))
-        parts.push(...box(x + 26, y + 66, 0, 16, 18, 5, C.feeder))
-        const pile = piles[s.id] ?? { n: 0 }
-        for (let b = 0; b < Math.min(36, pile.n); b += 1) {
-          const lv = Math.floor(b / 6); const a = b % 3; const c = Math.floor((b % 6) / 3)
-          parts.push(...box(x + 14 + a * 13, 136 + c * 12, lv * 9, 11, 10, 8, pile.warn ? C.pileWarn : C.pile, pile.warn ? C.warn : C.pileTop))
-        }
-        return { s, i, st, x, y, parts, mh }
-      })
-      const labelsSvg = stations.map(({ s, st, x, y, mh }) => {
-        const [line1, line2, tone] = labels[s.id] ?? ['', '', '']
-        const tip = P(x + 35, y + 31, 26 + mh)
-        const top = tip[1] - (line2 ? 78 : 62)
-        return h('g', { key: `lb${s.id}`, pointerEvents: 'none' },
-          h('line', { x1: tip[0], y1: tip[1] - 4, x2: tip[0], y2: top + (line2 ? 56 : 42), stroke: LED[st], strokeWidth: 1, strokeDasharray: '2 3', opacity: 0.7 }),
-          h('text', { x: tip[0], y: top + 2, fill: C.code, fontSize: 11, textAnchor: 'middle', letterSpacing: 1 }, s.code),
-          h('text', { x: tip[0], y: top + 21, fill: st === 'idle' ? C.idleText : C.name, fontSize: 16, fontWeight: 600, textAnchor: 'middle' }, s.name),
-          h('text', { x: tip[0], y: top + 37, fill: st === 'warn' ? C.warn : st === 'active' ? C.acc2 : C.line, fontSize: 13, textAnchor: 'middle' }, line1),
-          line2 ? h('text', { x: tip[0], y: top + 52, fill: tone === 'warn' ? C.warn : C.line, fontSize: 12, textAnchor: 'middle' }, line2) : null)
-      })
-      const beltBoxes = []
-      for (let k = 0; k < belt; k += 1) { const x = 60 + k * 26 + (k % 3) * 3; if (x > W - 120) break; beltBoxes.push(...box(x, 109, 7, 11, 11, 8, C.file, C.acc2)) }
-      const rollers = []
-      for (let x = -30; x < W - 30; x += 22) { const a = P(x, 104, 7.2); const b = P(x, 126, 7.2); rollers.push(h('line', { key: `r${x}`, x1: a[0], y1: a[1], x2: b[0], y2: b[1], stroke: C.roller })) }
-      // 复核回流：交付之后（页面复核）→ 回到 ② 值域归一 / ③ 术语对照
-      const la = P(6 * STEP + 35, 34, 128); const lb = P(2 * STEP + 35, 34, 128)
-      const mx = (la[0] + lb[0]) / 2; const my = Math.min(la[1], lb[1]) - 50
-      // 旁路：无规格的表自动推断，原样保留为 Basic
-      const da = P(STEP * 0 + 40, 205); const db = P(STEP * 4 + 40, 205)
-      const dm = P(STEP * 1.9, 199)
-      const dAngle = (Math.atan2(db[1] - da[1], db[0] - da[0]) * 180) / Math.PI
-      return h('svg', { className: 'hx-iso', viewBox: '-75 140 1240 455', preserveAspectRatio: 'xMidYMid meet', role: 'img', 'aria-label': '处理流程' },
-        h('defs', {},
-          h('filter', { id: 'hx-glow', x: '-50%', y: '-50%', width: '200%', height: '200%' }, h('feGaussianBlur', { stdDeviation: 3.5, result: 'b' }), h('feMerge', {}, h('feMergeNode', { in: 'b' }), h('feMergeNode', { in: 'SourceGraphic' }))),
-          h('filter', { id: 'hx-soft', x: '-50%', y: '-50%', width: '200%', height: '200%' }, h('feGaussianBlur', { stdDeviation: 10 })),
-          h('radialGradient', { id: 'hx-pool-a' }, h('stop', { offset: 0, stopColor: C.acc, stopOpacity: 0.55 }), h('stop', { offset: 1, stopColor: C.acc, stopOpacity: 0 })),
-          h('radialGradient', { id: 'hx-pool-w' }, h('stop', { offset: 0, stopColor: C.warn, stopOpacity: 0.5 }), h('stop', { offset: 1, stopColor: C.warn, stopOpacity: 0 }))),
-        h('g', { opacity: 0.6 }, grid),
-        h('g', {}, box(-60, -60, -14, W, 290, 14, C.slab)),
-        h('g', {}, pools),
-        h('g', {}, box(-40, 104, 0, W - 20, 22, 7, C.belt), rollers),
-        h('line', { x1: da[0], y1: da[1], x2: db[0], y2: db[1], stroke: C.vio, strokeWidth: 1.2, strokeDasharray: '5 5', opacity: bypass.active ? 0.85 : 0.35 }),
-        h('text', { x: dm[0], y: dm[1], transform: `rotate(${dAngle.toFixed(2)} ${dm[0].toFixed(1)} ${dm[1].toFixed(1)})`, fill: C.vio, fontSize: 13, textAnchor: 'middle', opacity: bypass.active ? 1 : 0.6 }, bypass.label),
-        stations.map(({ s, parts }) => h('g', { key: s.id, className: 'hx-st', onClick: () => onStation?.(s.id) }, h('title', {}, `${s.name}（点开查看）`), parts)),
-        h('g', { pointerEvents: 'none' }, beltBoxes),
-        h('path', { d: `M${la[0]},${la[1]} Q${mx},${my} ${lb[0]},${lb[1]}`, fill: 'none', stroke: C.acc, strokeWidth: 1.3, strokeDasharray: '6 5' }),
-        h('path', { d: `M${lb[0] + 9},${lb[1] - 9} L${lb[0]},${lb[1]} L${lb[0] + 12},${lb[1] + 1}`, fill: 'none', stroke: C.acc, strokeWidth: 1.3 }),
-        h('text', { x: mx, y: my + 12, fill: C.acc2, fontSize: 13, textAnchor: 'middle' }, loop),
-        labelsSvg)
+      const key = { k: 0 }
+      const K = () => key.k++
+      const parts = []
+      parts.push(h('defs', { key: 'd' },
+        h('linearGradient', { id: 'hx-fl', gradientUnits: 'userSpaceOnUse', x1: sx + sw, x2: bx, y1: 0, y2: 0 },
+          h('stop', { offset: 0, style: { stopColor: 'var(--neutral)' } }), h('stop', { offset: (gx[0] - sx - sw) / (bx - sx - sw), style: { stopColor: 'var(--neutral)' } }),
+          h('stop', { offset: (gx[0] + 30 - sx - sw) / (bx - sx - sw), style: { stopColor: 'var(--fire1)' } }), h('stop', { offset: 1, style: { stopColor: 'var(--fire2)' } })),
+        h('pattern', { id: 'hx-stripe', width: 5, height: 5, patternUnits: 'userSpaceOnUse', patternTransform: 'rotate(45)' }, h('rect', { width: 5, height: 5, style: { fill: 'var(--warn)' }, opacity: 0.25 }), h('rect', { width: 2, height: 5, style: { fill: 'var(--warn)' } }))))
+      // gates
+      for (const g of gates) {
+        parts.push(h('g', { key: K(), className: 'hx-gate', onClick: () => onTab(g.tab) }, h('title', {}, `${g.name}：点开复核`),
+          h('rect', { x: g.x - 17, y: top - 8, width: 34, height: H - top - 54, rx: 7, className: 'hx-gate-band' }),
+          h('text', { x: g.x, y: top - 16, textAnchor: 'middle', className: 'hx-t-strong' }, `${g.no} ${g.name}`),
+          h('text', { x: g.x, y: H - 30, textAnchor: 'middle', className: 'hx-t-sub' }, g.sub),
+          g.model ? h('text', { x: g.x, y: H - 15, textAnchor: 'middle', className: 'hx-t-vio' }, `◆ ${g.model}`) : null))
+      }
+      // links
+      for (const l of M.links) {
+        const s = sPos.get(l.from); if (!s) continue
+        const toBin = l.to === '__left'
+        const b = toBin ? { y: binY - 8, used: 0 } : bPos.get(l.to)
+        const w = lw(l.n)
+        const y1 = s.y + Math.min(s.h - 2, s.used + w / 2); s.used += w * 0.62
+        const y2 = toBin ? binY + 15 : b.y + 14 + Math.min(bH - 18, b.used + w / 2); if (!toBin) b.used += w * 0.5
+        const x1 = sx + sw, x2 = bx
+        parts.push(h('path', { key: K(), d: `M${x1},${y1} C${x1 + 210},${y1} ${x2 - 210},${y2} ${x2},${y2}`, className: `hx-link${toBin ? ' bin' : ''}${running ? ' run' : ''}`, strokeWidth: toBin ? Math.min(w, 6) : w }, h('title', {}, `${l.from} → ${toBin ? '原样保留（Basic）' : `${l.to} ${TYPE_ZH[l.to] ?? ''}`}：${fmt(l.n)}`)))
+      }
+      // piles
+      for (const g of gates) {
+        if (!g.pile) continue
+        const n = Math.min(12, Math.max(1, Math.ceil(Math.log10(g.pile + 1) * 3)))
+        const items = []
+        for (let i = 0; i < n; i++) items.push(h('rect', { key: i, x: g.x - 13 + (i % 3) * 9, y: H - 76 - Math.floor(i / 3) * 9, width: 7.5, height: 7.5, rx: 1.5, className: g.warn ? 'hx-pile w' : 'hx-pile' }))
+        parts.push(h('g', { key: K(), className: 'hx-gate', onClick: () => onTab(g.tab) }, items, h('text', { x: g.x + 20, y: H - 62, className: g.warn ? 'hx-t-warn' : 'hx-t-sub' }, `${g.pileLabel} ${fmt(g.pile)}`)))
+      }
+      // sources
+      parts.push(h('text', { key: K(), x: sx, y: top - 16, className: 'hx-t-cap' }, `源头 · ${M.sources.length} ${M.grouped ? '类（按记录类别合并）' : '组表'}`))
+      for (const [name, p] of sPos) {
+        parts.push(h('g', { key: K(), className: 'hx-src', onClick: () => onTab('schema') }, h('title', {}, `${name}：${fmt(p.s.n)} 个资源${M.grouped ? `\n${[...p.s.tables].slice(0, 12).join('、')}${p.s.tables.size > 12 ? '…' : ''}` : ''}${p.s.drafted ? '\n含模型起草的映射规格' : ''}`),
+          h('rect', { x: sx, y: p.y, width: sw, height: p.h, rx: 4, className: 'hx-src-box' }),
+          h('rect', { x: sx, y: p.y, width: 3, height: p.h, rx: 1.5, className: p.s.drafted ? 'hx-src-mark vio' : 'hx-src-mark' }),
+          h('text', { x: sx + 10, y: p.y + Math.min(p.h / 2 + 4, 15), className: 'hx-t-name' }, name.length > 9 ? `${name.slice(0, 9)}…` : name),
+          h('text', { x: sx + sw - 8, y: p.y + Math.min(p.h / 2 + 4, 15), textAnchor: 'end', className: 'hx-t-num' }, fmt(p.s.n))))
+      }
+      if (!M.sources.length) parts.push(h('text', { key: K(), x: sx, y: top + 20, className: 'hx-t-sub' }, running ? '处理中…' : '这个批次没有去向统计（旧版本生成）；重跑后可见'))
+      // boxes
+      parts.push(h('text', { key: K(), x: bx, y: top - 16, className: 'hx-t-cap' }, 'FHIR R4 · 固定的箱子'))
+      for (const t of BOXES) {
+        const b = bPos.get(t); const n = M.byType[t] ?? 0; const empty = !n
+        const st = M.slots[t]; const names = M.names[t] ?? []
+        const cells = names.map((nm, i) => ({ nm, rate: st && st.n ? (st.v[i] ?? 0) / st.n : null }))
+        const cw = 34, cx0 = bx + 168
+        parts.push(h('g', { key: K(), className: `hx-box${empty ? ' empty' : ''}`, onClick: () => onTab('resources') }, h('title', {}, `${t}（${TYPE_ZH[t]}）：${empty ? '本批没有' : fmt(n)}`),
+          h('rect', { x: bx, y: b.y, width: bw, height: bH, rx: 6, className: 'hx-box-r' }),
+          h('rect', { x: bx, y: b.y, width: 4, height: bH, rx: 2, className: 'hx-box-mark' }),
+          h('text', { x: bx + 12, y: b.y + 18, className: 'hx-t-strong' }, t),
+          h('text', { x: bx + 12, y: b.y + 34, className: 'hx-t-sub' }, TYPE_ZH[t]),
+          h('text', { x: bx + 12, y: b.y + 47, className: empty ? 'hx-t-sub' : 'hx-t-num' }, empty ? '本批没有' : fmt(n)),
+          cells.map((c, i) => {
+            const x = cx0 + i * (cw + 3), cy = b.y + 8, ch = 28
+            const fh = c.rate == null ? 0 : ch * c.rate
+            const zero = !empty && c.rate === 0
+            return h('g', { key: i }, h('title', {}, `${c.nm}：${c.rate == null ? '—' : `${pct(c.rate)}（${fmt(st.v[i])} / ${fmt(st.n)}）`}`),
+              h('rect', { x, y: cy, width: cw, height: ch, rx: 3, className: 'hx-cell' }),
+              fh > 0 ? h('rect', { x, y: cy + ch - fh, width: cw, height: fh, rx: 3, className: c.rate >= 0.9 ? 'hx-cell-fill full' : 'hx-cell-fill' }) : null,
+              zero ? h('rect', { x: x + 0.5, y: cy + 0.5, width: cw - 1, height: ch - 1, rx: 3, className: 'hx-cell-empty' }) : null,
+              !empty && c.rate != null ? h('text', { x: x + cw / 2, y: cy + 18, textAnchor: 'middle', className: c.rate >= 0.5 ? 'hx-cell-v on' : 'hx-cell-v' }, Math.round(c.rate * 100)) : null,
+              h('text', { x: x + cw / 2, y: cy + ch + 11, textAnchor: 'middle', className: zero ? 'hx-cell-l warn' : 'hx-cell-l' }, c.nm))
+          })))
+      }
+      const leftover = run.patients.reduce((n, p) => n + (p.leftover ?? 0), 0)
+      const refs = ['Organization', 'Practitioner'].filter((t) => M.byType[t]).map((t) => `${TYPE_ZH[t]} ${fmt(M.byType[t])}`).join(' · ')
+      parts.push(h('g', { key: K(), className: 'hx-box empty', onClick: () => onTab('schema') }, h('title', {}, '没有对应到 FHIR 字段的源字段，原样挂 source-field 扩展；没有规格的表按 Basic 保留'),
+        h('rect', { x: bx, y: binY, width: bw, height: 30, rx: 6, className: 'hx-box-r' }),
+        h('text', { x: bx + 12, y: binY + 19, className: 'hx-t-sub' }, `原样保留 · ${fmt(leftover)} 个字段值挂 source-field · ${fmt(M.byType.Basic ?? 0)} 条按 Basic`)))
+      if (refs) parts.push(h('text', { key: K(), x: bx, y: binY + 48, className: 'hx-t-sub' }, `被引用：${refs}`))
+      return h('svg', { className: 'hx-flow', viewBox: `0 0 ${W} ${H}`, preserveAspectRatio: 'xMidYMid meet', role: 'img', 'aria-label': '数据去向' }, parts)
+    }
+
+    function stepStates(run) {
+      const running = run.status === 'running'
+      const S = run.stages
+      const cur = run.current?.step ?? ''
+      const order = ['read', 'schema', 'domains', 'terms', 'build', 'gate', 'deliver']
+      const out = {}
+      if (running) {
+        const at = run.current?.unit === '模型' ? (cur.startsWith('①') ? 'schema' : cur.startsWith('②') ? 'domains' : cur.startsWith('③') ? 'terms' : 'schema') : 'build'
+        for (const k of order) out[k] = order.indexOf(k) < order.indexOf(at) ? 'done' : k === at ? 'run' : 'idle'
+        return out
+      }
+      for (const k of order) out[k] = 'done'
+      if (S?.schema.inferred || run.model?.phases?.schema?.review) out.schema = 'warn'
+      if (S && S.domains.pending + S.domains.unmapped) out.domains = 'warn'
+      if (run.totals.held) out.gate = 'warn'
+      if (!run.output) out.deliver = ['failed', 'cancelled'].includes(run.status) ? 'bad' : 'idle'
+      return out
     }
 
     /* --------------------------------------------------------------- overview */
-    /** States, labels and piles of the seven stations, from the run record. */
-    function isoProps(run, S, onTab, dark) {
-      const t = run.totals
-      const running = run.status === 'running'
-      const unitsDone = run.units?.length ?? 0
-      const pend = S ? S.domains.pending + S.domains.unmapped : 0
-      const fin = !running
-      const st = (doneCond, warnCond) => (running ? (doneCond ? 'done' : 'active') : warnCond ? 'warn' : 'done')
-      const states = {
-        read: running ? (unitsDone >= t.units ? 'done' : 'active') : 'done',
-        schema: st(false, S && (S.schema.inferred > 0 || run.model?.phases?.schema?.review > 0)), domains: st(false, pend > 0), terms: st(false, run.model?.phases?.terms?.review > 0), build: st(false, false),
-        gate: st(false, t.held > 0), deliver: running ? 'idle' : run.output ? 'done' : 'idle',
-      }
-      if (['failed', 'cancelled'].includes(run.status)) for (const k of Object.keys(states)) if (states[k] === 'done' && !run.output) states[k] = k === 'deliver' ? 'idle' : 'warn'
-      const pc = (x) => (x == null ? '—' : `${(x * 100).toFixed(1)}%`)
-      const MP = run.model?.phases
-      const labels = {
-        read: [`${fmt(unitsDone)} / ${fmt(t.units)} 目录`, `${fmt(t.patients)} 位病人`],
-        schema: S ? [`${fmt(S.schema.tables)} 张表`, MP?.schema?.tables ? `模型起草 ${MP.schema.tables} · 分歧 ${MP.schema.review}` : S.schema.inferred ? `Basic ${S.schema.inferred} · 保留 ${S.schema.extrasFields} 字段` : `保留 ${S.schema.extrasFields} 字段`, S.schema.inferred || MP?.schema?.review ? 'warn' : ''] : ['—'],
-        domains: S ? [`覆盖 ${pc(S.domains.coverage)}`, pend ? `待处理 ${fmt(pend)}` : '全部归一', pend ? 'warn' : ''] : ['—'],
-        terms: S ? [`${fmt(S.terminology.mappedConcepts)} / ${fmt(S.terminology.concepts)} 概念`, MP?.terms?.asked ? `模型对照 ${fmt(MP.terms.confirmed)} · 分歧 ${fmt(MP.terms.review)}` : `覆盖 ${pc(S.terminology.coverage)}`] : ['—'],
-        build: [`${fmt(t.resources)} 资源`],
-        gate: [t.held ? `暂扣 ${t.held}` : `${fmt(t.done)} 通过`, t.errors ? `结构错误 ${t.errors}` : '', t.held ? 'warn' : ''],
-        deliver: [run.output ? '已交付' : running ? '处理中' : '未交付', run.outputFormat === 'bundles' ? '按人' : run.outputFormat === 'ndjson' ? '按资源' : '按人 + 按资源'],
-      }
-      if (running && run.current?.unit === '模型') {
-        const step = run.current.step ?? ''
-        const at = step.startsWith('①') ? 'schema' : step.startsWith('② ③') ? 'domains' : step.startsWith('②') ? 'domains' : step.startsWith('③') ? 'terms' : 'schema'
-        const order = ['read', 'schema', 'domains', 'terms', 'build', 'gate', 'deliver']
-        for (const k of order) states[k] = order.indexOf(k) < order.indexOf(at) ? 'done' : k === at ? 'active' : 'idle'
-        labels[at] = [step.replace(/^[①②③ ]+/, '').slice(0, 18), labels[at]?.[1] ?? '']
-      }
-      const done = run.patients.filter((p) => p.status !== 'held').length
-      const held = run.patients.filter((p) => p.status === 'held').length
-      const piles = fin ? { deliver: { n: run.output ? done : 0 }, gate: { n: held, warn: true } } : { build: { n: 1 }, deliver: { n: 0 }, read: { n: Math.max(0, t.units - unitsDone) } }
-      const nav = { read: 'patients', schema: 'schema', domains: 'domains', terms: 'terms', build: 'resources', gate: 'patients', deliver: 'report' }
-      const inferred = S?.schema.inferred ?? 0
-      return {
-        dark, states, labels, piles, belt: Math.min(26, t.patients * 3),
-        bypass: { active: inferred > 0, label: inferred ? `旁路 · ${inferred} 张无规格的表 → Basic 原样保留` : '旁路 · 无规格的表 → Basic 原样保留' },
-        loop: '复核对照 → 重跑（回到 ② ③）',
-        onStation: (id) => onTab?.(nav[id]),
-      }
-    }
-
-    function Overview({ run, openPatient, onTab, dark }) {
+    function Overview({ run, openPatient, onTab }) {
       const P = run.patients
       const t = run.totals
       const running = run.status === 'running'
       const S = run.stages
-      const byType = {}
-      for (const p of P) for (const [k, n] of Object.entries(p.byType ?? {})) byType[k] = (byType[k] ?? 0) + n
-      const types = Object.entries(byType).sort((a, b) => b[1] - a[1])
-      const max = Math.max(1, ...types.map(([, n]) => n))
-      const pc = (x) => (x == null ? '—' : `${(x * 100).toFixed(1)}%`)
-      // 待办：同类告警合并成一条
+      const M = flowModel(run)
       const warns = [...new Set(run.warnings ?? [])]
       const lowCov = warns.filter((w) => w.startsWith('值域「'))
       const others = warns.filter((w) => !w.startsWith('值域「'))
@@ -463,50 +473,49 @@ window.__ModuleLoader__.load({
       const alerts = [
         run.error && { tone: 'b', title: '批次出错', sub: String(run.error).split('\n')[0], go: 'report', btn: '报告' },
         t.held && { tone: 'w', title: `暂扣 ${t.held} 位病人`, sub: '验收门未过，不在交付目录里', go: 'patients', btn: '病人' },
-        pend && { tone: 'w', title: `值域待处理 ${fmt(pend)} 个取值`, sub: lowCov.length ? `${lowCov.length} 个值域覆盖率低于阈值（不阻断交付）` : '待确认或无对照，原值照常交付', go: 'domains', btn: '复核' },
-        ...others.map((w) => ({ tone: 'w', title: w.length > 34 ? `${w.slice(0, 34)}…` : w, sub: w.length > 34 ? w : '', go: 'report', btn: '报告' })),
+        pend && { tone: 'w', title: `值域待处理 ${fmt(pend)} 个取值`, sub: lowCov.length ? `${lowCov.length} 个值域覆盖率低于阈值（不阻断）` : '原值照常交付', go: 'domains', btn: '复核' },
+        run.model?.phases?.schema?.review && { tone: 'w', title: `模型起草的规格 ${run.model.phases.schema.review} 张有未解决问题`, sub: '请人工过目后确认', go: 'schema', btn: '查看' },
+        ...others.map((w) => ({ tone: 'w', title: w.length > 26 ? `${w.slice(0, 26)}…` : w, sub: w.length > 26 ? w : '', go: 'report', btn: '报告' })),
       ].filter(Boolean)
+      const st = stepStates(run)
+      const STEP = [['read', '读取'], ['schema', '①'], ['domains', '②'], ['terms', '③'], ['build', '④ 组装'], ['gate', '验收'], ['deliver', '交付']]
+      const holes = []
+      for (const [type, s] of Object.entries(M.slots)) (M.names[type] ?? []).forEach((nm, i) => { if (s.n) holes.push({ type, nm, rate: (s.v[i] ?? 0) / s.n, miss: s.n - (s.v[i] ?? 0) }) })
+      const worst = holes.filter((x) => x.rate < 0.5).sort((a, b) => b.miss - a.miss).slice(0, 5)
       const kv = (k, v, cls = '') => [h('span', { key: `${k}k`, className: 'hx-faint' }, k), h('span', { key: `${k}v`, className: `hx-num ${cls}`, title: typeof v === 'string' ? v : undefined }, v)]
       return h('div', { className: 'hx-ov' },
-        h('div', { className: 'hx-ov-top' },
-          h('div', { className: 'hx-frame hx-ov-stage' },
-            h('div', { className: 'hx-ov-head' }, h('b', {}, '处理流程'), h('span', { className: 'hx-cap' }, 'PIPELINE'),
-              h('span', { className: 'hx-legend' }, [['done', '已完成'], ['active', '处理中'], ['warn', '有待处理'], ['idle', '未开始']].map(([k2, l]) => h('span', { key: k2 }, h('i', { className: `hx-lg-${k2}` }), l)))),
-            h('div', { className: 'hx-iso-wrap' }, h(IsoLine, isoProps(run, S, onTab, dark))),
-            alerts.length ? h('div', { className: 'hx-alerts' },
-              h('div', { className: 'hx-alerts-h' }, h('i', {}), h('b', {}, '待办'), h('span', { className: 'hx-cap' }, 'ALERTS'), h('span', { className: 'hx-sp' }), h('span', { className: 'hx-num hx-faint' }, alerts.length)),
-              alerts.slice(0, 4).map((a, i) => h('div', { key: i, className: `hx-alert ${a.tone}`, title: a.sub || a.title },
-                h('div', { style: { minWidth: 0 } }, h('div', { className: 'hx-alert-t' }, a.title), a.sub ? h('div', { className: 'hx-alert-s' }, a.sub) : null),
-                h('button', { className: 'hx-btn sm', onClick: () => onTab(a.go) }, a.btn)))) : null,
-            h('div', { className: 'hx-ov-foot hx-faint' }, '点工位进入对应页面 · 传送带上每个方块一位病人')),
-          h('div', { className: 'hx-frame hx-pad hx-ov-side hx-scroll' },
-            h('div', { className: 'hx-h' }, h('b', {}, '批次概览'), h('span', { className: 'hx-cap' }, 'OVERVIEW')),
-            h('div', { className: 'hx-tiles' },
-              [['病人', fmt(t.patients), ''], ['资源', fmt(t.resources), ''], ['暂扣', fmt(t.held), t.held ? 'hx-warn' : ''], ['结构错误', fmt(t.errors), t.errors ? 'hx-bad' : 'hx-ok']].map(([k, v, c]) => h('div', { key: k }, h('small', {}, k), h('b', { className: `hx-num ${c}` }, v)))),
-            h('div', { className: 'hx-sec' }, h('b', {}, '三个阶段')),
-            S ? h('div', { className: 'hx-stage-rows' },
-              h('div', { onClick: () => onTab('schema') }, h('span', {}, '① Schema 同构'), h('span', { className: 'hx-num' }, `${S.schema.tables} 张表`), h('span', { className: 'hx-faint' }, `保留 ${S.schema.extrasFields} 字段`)),
-              h('div', { onClick: () => onTab('domains') }, h('span', {}, '② 值域归一'), h(Coverage, { value: S.domains.coverage }), h('span', { className: pend ? 'hx-warn' : 'hx-faint' }, pend ? `待处理 ${fmt(pend)}` : '全部归一')),
-              h('div', { onClick: () => onTab('terms') }, h('span', {}, '③ 术语对照'), h(Coverage, { value: S.terminology.coverage }), h('span', { className: 'hx-faint' }, `${fmt(S.terminology.mappedConcepts)}/${fmt(S.terminology.concepts)} 概念`))) : h('div', { className: 'hx-faint' }, running ? '处理中…' : '—'),
-            h('div', { className: 'hx-sec' }, h('b', {}, '来源与交付')),
-            h('div', { className: 'hx-kv hx-kv-tight' },
-              ...kv('输入', run.input.split('/').slice(-2).join('/')),
-              ...kv('来源', run.provenance?.kind === 'delivered' ? '匿名化正式交付' : run.provenance?.kind === 'withheld' ? '匿名化暂扣结果' : '未知来源', run.provenance?.kind === 'delivered' ? 'hx-ok' : 'hx-warn'),
-              ...kv('源文件', run.sourceCheck ? (run.sourceCheck.changed ? `${run.sourceCheck.changed} 个变化` : `${fmt(run.sourceCheck.files)} 个，只读一致`) : '—', run.sourceCheck?.changed ? 'hx-warn' : 'hx-ok'),
-              ...kv('交付', run.output ? run.output.split('/').slice(-2).join('/') : running ? '处理中' : '未交付'),
-              ...kv('格式', { both: '按人 + 按资源', bundles: '按人', ndjson: '按资源' }[run.outputFormat ?? 'both']),
-              ...kv('定义', run.definitions ? `${run.definitions.StructureDefinition} 扩展 · ${run.definitions.CodeSystem} 代码体系 · ${run.definitions.ConceptMap ?? 0} 对照` : '—'),
-              ...kv('对照表', run.vocab?.version ?? '—')))),
-        h('div', { className: 'hx-ov-bottom' },
-          h('div', { className: 'hx-frame hx-pad' },
-            h('div', { className: 'hx-h' }, h('b', {}, '病人'), h('span', { className: 'hx-cap' }, 'PATIENTS'), h('span', { className: 'hx-sp' }), h('span', { className: 'hx-faint' }, '每格 1 位，点开浏览资源')),
-            h('div', { className: 'hx-cells' }, P.map((p) => h('i', { key: p.name, title: `${p.name}：${p.status === 'held' ? '暂扣' : '交付'}，资源 ${p.resources}`, className: p.status === 'held' ? 'w' : 'o', onClick: () => openPatient(p.name) })),
-              running ? Array.from({ length: Math.max(0, t.units - (run.units?.length ?? 0)) }, (_, i) => h('i', { key: `p${i}`, className: i === 0 ? 'r' : '' })) : null),
-            h('div', { className: 'hx-faint', style: { fontSize: 11.5, marginTop: 8 } }, `交付 ${fmt(t.done)} · 暂扣 ${fmt(t.held)} · 登记缺失的就诊 ${fmt(t.unresolvedEncounters)}`)),
-          h('div', { className: 'hx-frame hx-pad', style: { flex: 2 } },
-            h('div', { className: 'hx-h' }, h('b', {}, '资源类型'), h('span', { className: 'hx-cap' }, 'FHIR RESOURCES'), h('span', { className: 'hx-sp' }), h('span', { className: 'hx-faint' }, `${types.length} 类 · ${fmt(t.resources)} 个`)),
-            types.length ? h('div', { className: 'hx-bars2' }, types.map(([k, n]) => h('div', { key: k, title: `${k} ${TYPE_ZH[k] ?? ''}` },
-              h('span', {}, TYPE_ZH[k] ?? k), h('div', { className: 'track' }, h('span', { style: { width: `${Math.max(2, (n / max) * 100)}%` } })), h('span', { className: 'hx-num hx-muted' }, fmt(n))))) : h('div', { className: 'hx-faint' }, running ? '转换中…' : '—'))))
+        h('div', { className: 'hx-frame hx-ov-stage' },
+          h('div', { className: 'hx-ov-head' }, h('b', {}, '数据去向'), h('span', { className: 'hx-cap' }, 'SOURCES → FHIR'),
+            h('div', { className: 'hx-steps' }, STEP.map(([k, l]) => h('span', { key: k, className: st[k] }, `${l}${st[k] === 'done' ? ' ✓' : st[k] === 'warn' ? ' !' : st[k] === 'run' ? ' …' : ''}`)))),
+          h(FlowView, { run, onTab }),
+          h('div', { className: 'hx-ov-foot hx-faint' }, '线越粗记录越多 · 箱子里每格是一个 FHIR 字段的填充率（%），虚线格＝这一格还空着 · 点关口、箱子进入对应页面')),
+        h('div', { className: 'hx-frame hx-pad hx-ov-side hx-scroll' },
+          h('div', { className: 'hx-tiles' },
+            [['病人', fmt(t.patients), ''], ['资源', fmt(t.resources), ''], ['暂扣', fmt(t.held), t.held ? 'hx-warn' : ''], ['结构错误', fmt(t.errors), t.errors ? 'hx-bad' : 'hx-ok']].map(([k, v, c]) => h('div', { key: k }, h('small', {}, k), h('b', { className: `hx-num ${c}` }, v)))),
+          running && run.current ? h('div', { className: 'hx-now' }, h('i', {}), `${run.current.unit} · ${run.current.step}`) : null,
+          alerts.length ? h(React.Fragment, {}, h('div', { className: 'hx-sec' }, h('b', {}, '待办'), h('span', { className: 'hx-num hx-faint' }, alerts.length)),
+            alerts.slice(0, 4).map((a, i) => h('div', { key: i, className: `hx-alert ${a.tone}`, title: a.sub || a.title },
+              h('div', { style: { minWidth: 0 } }, h('div', { className: 'hx-alert-t' }, a.title), a.sub ? h('div', { className: 'hx-alert-s' }, a.sub) : null),
+              h('button', { className: 'hx-btn sm', onClick: () => onTab(a.go) }, a.btn)))) : null,
+          h('div', { className: 'hx-sec' }, h('b', {}, '三道关')),
+          S ? h('div', { className: 'hx-stage-rows' },
+            h('div', { onClick: () => onTab('schema') }, h('span', {}, '① Schema 同构'), h(Coverage, { value: S.schema.tables ? (S.schema.tables - S.schema.inferred) / S.schema.tables : null }), h('span', { className: 'hx-faint' }, `${S.schema.tables} 表`)),
+            h('div', { onClick: () => onTab('domains') }, h('span', {}, '② 值域归一'), h(Coverage, { value: S.domains.coverage }), h('span', { className: pend ? 'hx-warn' : 'hx-faint' }, pend ? `待 ${fmt(pend)}` : '全部')),
+            h('div', { onClick: () => onTab('terms') }, h('span', {}, '③ 术语对照'), h(Coverage, { value: S.terminology.coverage }), h('span', { className: 'hx-faint' }, `${fmt(S.terminology.mappedConcepts)}/${fmt(S.terminology.concepts)}`))) : h('div', { className: 'hx-faint' }, running ? '处理中…' : '—'),
+          worst.length ? h(React.Fragment, {}, h('div', { className: 'hx-sec' }, h('b', {}, '箱子里最空的格子')),
+            worst.map((x, i) => h('div', { key: i, className: 'hx-hole', onClick: () => onTab(/标准|SNOMED/.test(x.nm) ? 'terms' : /解释/.test(x.nm) ? 'domains' : 'resources') }, h('span', {}, `${TYPE_ZH[x.type]} · ${x.nm}`), h('span', { className: 'hx-num hx-warn' }, pct(x.rate))))) : null,
+          h('div', { className: 'hx-sec' }, h('b', {}, '病人'), h('span', { className: 'hx-faint' }, `交付 ${fmt(t.done)} · 暂扣 ${fmt(t.held)}`)),
+          h('div', { className: 'hx-cells' }, P.slice(0, 300).map((p) => h('i', { key: p.name, title: `${p.name}：${p.status === 'held' ? '暂扣' : '交付'}，资源 ${p.resources}`, className: p.status === 'held' ? 'w' : 'o', onClick: () => openPatient(p.name) }))),
+          h('div', { className: 'hx-sec' }, h('b', {}, '来源与交付')),
+          h('div', { className: 'hx-kv hx-kv-tight' },
+            ...kv('输入', run.input.split('/').slice(-2).join('/')),
+            ...kv('来源', run.provenance?.kind === 'delivered' ? '匿名化正式交付' : run.provenance?.kind === 'withheld' ? '匿名化暂扣结果' : '未知来源', run.provenance?.kind === 'delivered' ? 'hx-ok' : 'hx-warn'),
+            ...kv('模型', run.model?.configured ? `${run.model.models?.suggest ?? ''}${run.model.models?.verify ? ` / ${run.model.models.verify}` : ''}` : '未使用', run.model?.configured ? 'hx-vio' : 'hx-faint'),
+            ...kv('交付', run.output ? run.output.split('/').slice(-2).join('/') : running ? '处理中' : '未交付'),
+            ...kv('格式', { both: '按人 + 按资源', bundles: '按人', ndjson: '按资源' }[run.outputFormat ?? 'both']),
+            ...kv('对照表', run.vocab?.version ?? '—')),
+          h('div', { className: 'hx-sec' }, h('b', {}, '颜色')),
+          h('div', { className: 'hx-legend2' }, [['fire', '已填 / 已过关'], ['neutral', '未经处理'], ['ok', '完成'], ['warn', '待确认'], ['bad', '错误'], ['vio', '模型']].map(([k, l]) => h('span', { key: k }, h('i', { className: `c-${k}` }), l)))))
     }
 
     /* --------------------------------------------------------------- patients */
