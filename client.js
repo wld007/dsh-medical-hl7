@@ -402,7 +402,7 @@ window.__ModuleLoader__.load({
             h('div', { className: 'hx-scroll', style: { flex: 1 } }, h(SettingsSection)))) : null,
         h('div', { className: 'hx-body' },
           !run ? h('div', { className: 'hx-frame hx-empty', style: { flex: 1 } }, runs.length ? '加载中…' : '还没有批次。点右上角「＋ 新批次」，选择匿名化后的数据目录开始转换。')
-            : tab === 'overview' ? h(Overview, { run, openPatient, onTab: setTab })
+            : tab === 'overview' ? h(Overview, { run, openPatient, onTab: (k) => (k === 'settings' ? setSettingsOpen(true) : setTab(k)) })
               : tab === 'patients' ? h(Patients, { run, patient, setPatient, openPatient })
                 : tab === 'resources' ? h(Resources, { run, patient, setPatient })
                   : tab === 'schema' ? h(SchemaTab, { run, onRerun: rerun })
@@ -646,8 +646,9 @@ window.__ModuleLoader__.load({
         run.error && { tone: 'b', title: '批次出错', sub: String(run.error).split('\n')[0], go: 'report', btn: '报告' },
         t.held && { tone: 'w', title: `暂扣 ${t.held} 位病人`, sub: '未通过验收，未交付', go: 'patients', btn: '病人' },
         pend && { tone: 'w', title: `值域待处理 ${fmt(pend)} 个取值`, sub: lowCov.length ? `${lowCov.length} 个值域覆盖率低于阈值（不阻断交付）` : '按原值交付', go: 'domains', btn: '复核' },
+        S?.schema.inferred && !run.model?.configured && { tone: 'w', title: `${S.schema.inferred} 张表未映射，已以 Basic 保存`, sub: '未配置模型；配置后重新运行，可由模型起草映射规格', go: 'settings', btn: '设置' },
         run.model?.phases?.schema?.review && { tone: 'w', title: `模型起草的规格 ${run.model.phases.schema.review} 张存在未解决问题`, sub: '需人工审核后确认', go: 'schema', btn: '查看' },
-        ...others.map((w) => ({ tone: 'w', title: w.length > 26 ? `${w.slice(0, 26)}…` : w, sub: w.length > 26 ? w : '', go: 'report', btn: '报告' })),
+        ...others.filter((w) => !/张表没有/.test(w)).map((w) => ({ tone: 'w', title: w.length > 26 ? `${w.slice(0, 26)}…` : w, sub: w.length > 26 ? w : '', go: 'report', btn: '报告' })),
       ].filter(Boolean)
       const st = stepStates(run)
       const STEP = [['read', '读取'], ['schema', '①'], ['domains', '②'], ['terms', '③'], ['build', '④ 组装'], ['gate', '验收'], ['deliver', '交付']]
