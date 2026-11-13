@@ -120,3 +120,23 @@ test('没有配置模型：行为与以前一致（无规格的表按 Basic 保�
   const R = JSON.parse(await readFile(join(run.output, 'bundles', '病人A.json'), 'utf8')).entry.map((e) => e.resource)
   assert.equal(R.filter((r) => r.resourceType === 'Basic').length, 1)
 })
+
+test('没有单独的核验模型：由识别模型盲审；盲审失败不算“结论一致”', async () => {
+  const { reviewLoop } = await import('../lib/model/loop.js')
+  const items = [{ id: 'a' }, { id: 'b' }]
+  const r1 = await reviewLoop({ items, maxRounds: 2, batch: 2,
+    propose: async (l) => new Map(l.map((x) => [x.id, { v: 1 }])), check: () => null,
+    blind: async () => { throw new Error('未配置核验模型') }, adjudicate: async () => new Map() })
+  assert.deepEqual(r1.results.map((x) => x.outcome), ['review', 'review'], '盲审失败转人工')
+  assert.equal(r1.cross.reviewed, 0)
+
+  const base = await realpath(await mkdtemp(join(tmpdir(), 'hl7-same-')))
+  await writeFictionalPatient(join(base, 'in', '病人A'))
+  const log = []
+  const svc = createService({ config: { outputRoot: join(base, 'out'), baseURL: 'x', model: 'm' }, defaultDirectory: base, stateDir: join(base, 'state'), chatImpl: { suggest: mock('suggest', log) } })
+  const run = await wait(svc, (await svc.start({ inputDir: join(base, 'in') })).runId)
+  assert.equal(run.model.sameModel, true)
+  assert.equal(run.model.phases.schema.cross.reviewed, 1, '识别模型做了盲审')
+  assert.ok(log.some((x) => x.name === 'suggest' && x.kind.includes('独立的数据映射审查员')))
+  svc.dispose()
+})

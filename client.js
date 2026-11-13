@@ -1071,7 +1071,7 @@ window.__ModuleLoader__.load({
             h('div', { className: 'hx-h' }, h('b', {}, '模型'), h('span', { className: 'hx-cap' }, 'MODELS')),
             h('div', { className: 'hx-kv hx-kv-tight' },
               h('span', { className: 'hx-faint' }, '识别'), h('span', { className: 'hx-num' }, `${m.models?.suggest ?? '—'} · ${m.endpoint ?? ''}`),
-              h('span', { className: 'hx-faint' }, '核验（盲审）'), h('span', { className: 'hx-num' }, m.models?.verify ? `${m.models.verify} · ${m.verifyEndpoint ?? ''}` : '同识别模型'),
+              h('span', { className: 'hx-faint' }, '核验（盲审）'), h('span', { className: m.sameModel ? 'hx-num hx-warn' : 'hx-num' }, m.sameModel || !m.models?.verify ? '未单独配置：由识别模型盲审（建议配置独立的核验模型）' : `${m.models.verify} · ${m.verifyEndpoint ?? ''}`),
               h('span', { className: 'hx-faint' }, '轮次上限'), h('span', { className: 'hx-num' }, `${m.maxRounds}（起草 → 插件校验 → 盲审 → 复判修正）`),
               h('span', { className: 'hx-faint' }, '并发 · 超时'), h('span', { className: 'hx-num' }, `${m.concurrency} / 模型 · ${Math.round((m.timeoutMs ?? 0) / 1000)} 秒 · 思考模式${m.disableThinking ? '关闭' : '开启'}`),
               h('span', { className: 'hx-faint' }, '调用'), h('span', { className: 'hx-num' }, C ? `${fmt(C.total)} 次（实际请求 ${fmt(C.live)}，缓存 ${fmt(C.cached)}，失败 ${fmt(C.failed)}）· ${fmt(C.tokens)} token` : '—'))),
