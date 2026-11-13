@@ -1034,7 +1034,7 @@ window.__ModuleLoader__.load({
         return h('div', { style: { fontSize: 12, color: x.ok ? 'var(--dsw-alias-state-success-primary)' : x.skipped ? 'var(--dsw-alias-label-secondary)' : 'var(--dsw-alias-state-error-primary)' } }, `${label}：${x.skipped ? '未配置' : x.message}${!x.ok && x.models?.length ? `（端点上有：${x.models.join('、')}）` : ''}`)
       }
       return h('div', { className: 'hx-settings' }, h('style', {}, CSS),
-        h('p', { style: { margin: 0, color: 'var(--dsw-alias-label-secondary)' } }, `这里只放配置。运行批次、复核对照，请到左侧栏的「${TITLE}」，或在聊天框使用 /hl7。`),
+        h('p', { style: { margin: 0, color: 'var(--dsw-alias-label-secondary)' } }, `此处仅包含配置。运行批次、复核对照，请使用左侧栏的「${TITLE}」页面，或在对话框中使用 /hl7 命令。`),
         h('h3', { style: { margin: '6px 0 0' } }, '模型'),
         h('p', { style: { margin: 0, fontSize: 12, color: 'var(--dsw-alias-label-secondary)' } }, '用于：为无映射规格的表起草映射规格（Schema 同构）、为无对照的取值确定规范值（值域归一）、为本地概念匹配 LOINC / SNOMED CT 等标准代码（术语对照）。模型结果经插件校验、独立盲审和复判，两个模型结论一致才采用，不一致的转人工复核；结果保存在本机对照库，后续批次复用。病历内容只发送到此处配置的端点；发送内容仅限字段名、截短的取值样例和本地代码 / 名称，不发送文书正文。Agent 不能更改这些设置。'),
         check('modelEnabled', '启用模型'),
