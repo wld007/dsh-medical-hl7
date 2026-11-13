@@ -104,3 +104,23 @@ test('数据去向：来源表 → FHIR 资源类型的条数、箱子格子的�
   assert.ok(run.patients[0].leftover > 0, '原样保留的字段计数')
   assert.equal(run.patients[0].flow, undefined, '状态里不带每人的去向明细')
 })
+
+test('旧批次没有去向统计：打开时从交付的 Bundle 补算', async () => {
+  const base = await realpath(await mkdtemp(join(tmpdir(), 'hl7-backfill-')))
+  await writeFictionalPatient(join(base, 'in', '病人A'))
+  const mk = () => createService({ config: { outputRoot: join(base, 'out') }, defaultDirectory: base, stateDir: join(base, 'state') })
+  const svc = mk()
+  const { runId } = await svc.start({ inputDir: join(base, 'in') })
+  let run
+  for (let i = 0; i < 400; i++) { ({ run } = await svc.status(runId)); if (run.status !== 'running') break; await new Promise((r) => setTimeout(r, 25)) }
+  const original = run.flow
+  const { readFile: rf, writeFile: wf } = await import('node:fs/promises')
+  const path = join(run.runDir, 'run.json')
+  const raw = JSON.parse(await rf(path, 'utf8')); delete raw.flow; for (const p of raw.patients) delete p.flow
+  await wf(path, JSON.stringify(raw))
+  const again = (await mk().status(runId)).run
+  assert.ok(again.flow?.backfilled)
+  for (const t of ['Observation', 'Condition', 'ChargeItem']) assert.deepEqual(again.flow.slots[t], original.slots[t], `${t} 格子一致`)
+  const sum = (f, t) => Object.entries(f.flows).filter(([k]) => k.endsWith(`|${t}`)).reduce((n, [, v]) => n + v, 0)
+  assert.equal(sum(again.flow, 'Observation'), sum(original, 'Observation'))
+})

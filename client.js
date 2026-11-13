@@ -108,6 +108,7 @@ window.__ModuleLoader__.load({
 .hx-t-name{font-size:12px;fill:var(--ink)}.hx-t-num{font-size:11px;fill:var(--ink2);font-family:var(--mono)}
 .hx-t-warn{font-size:11px;fill:var(--warn)}.hx-t-vio{font-size:10.5px;fill:var(--vio)}
 .hx-gate{cursor:pointer}.hx-gate:hover .hx-gate-band{stroke-opacity:.6}
+.hx-empty-card{fill:var(--panel2);stroke:var(--line);stroke-dasharray:4 4}
 .hx-shadow{fill:#000;opacity:.42;filter:url(#hx-soft)}.hx-light .hx-shadow{opacity:.12}
 .hx-slab-top{fill:color-mix(in srgb,var(--panel2) 70%,var(--ink) 12%)}.hx-slab-side{fill:color-mix(in srgb,var(--panel2) 75%,#000 25%)}
 .hx-light .hx-slab-top{fill:color-mix(in srgb,var(--panel2) 80%,#fff 20%)}.hx-light .hx-slab-side{fill:color-mix(in srgb,var(--panel2) 82%,#5a4030 18%)}
@@ -398,8 +399,9 @@ window.__ModuleLoader__.load({
           h('stop', { offset: (gx[0] + 30 - sx - sw) / (bx - sx - sw), style: { stopColor: 'var(--fire1)' } }), h('stop', { offset: 1, style: { stopColor: 'var(--fire2)' } })),
         h('filter', { id: 'hx-soft', x: '-30%', y: '-30%', width: '160%', height: '160%' }, h('feGaussianBlur', { stdDeviation: 6 })),
         h('pattern', { id: 'hx-stripe', width: 5, height: 5, patternUnits: 'userSpaceOnUse', patternTransform: 'rotate(45)' }, h('rect', { width: 5, height: 5, style: { fill: 'var(--warn)' }, opacity: 0.25 }), h('rect', { width: 2, height: 5, style: { fill: 'var(--warn)' } }))))
+      const noData = !M.sources.length
       // gates
-      for (const g of gates) {
+      for (const g of noData ? [] : gates) {
         parts.push(h('g', { key: K(), className: 'hx-gate', onClick: () => onTab(g.tab) }, h('title', {}, `${g.name}：点开复核`),
           h('polygon', { points: P2([[g.x - 15, top - 8], [g.x + 17, top - 8], [g.x + 17 + DX * 2, top - 8 - DY * 2], [g.x - 15 + DX * 2, top - 8 - DY * 2]]), className: 'hx-glass-top' }),
           h('polygon', { points: P2([[g.x + 17, top - 8], [g.x + 17 + DX * 2, top - 8 - DY * 2], [g.x + 17 + DX * 2, H - 62 - DY * 2], [g.x + 17, H - 62]]), className: 'hx-glass-side' }),
@@ -424,7 +426,7 @@ window.__ModuleLoader__.load({
         if (!toBin && w > 4) parts.push(h('path', { key: K(), d, className: 'hx-link-hi', strokeWidth: Math.max(1, w * 0.18), transform: `translate(0,${(-w * 0.28).toFixed(1)})` }))
       }
       // piles
-      for (const g of gates) {
+      for (const g of noData ? [] : gates) {
         if (!g.pile) continue
         const n = Math.min(12, Math.max(1, Math.ceil(Math.log10(g.pile + 1) * 3)))
         const items = []
@@ -438,7 +440,7 @@ window.__ModuleLoader__.load({
         parts.push(h('g', { key: K(), className: 'hx-gate', onClick: () => onTab(g.tab) }, items, h('text', { x: g.x + 20, y: H - 62, className: g.warn ? 'hx-t-warn' : 'hx-t-sub' }, `${g.pileLabel} ${fmt(g.pile)}`)))
       }
       // sources
-      parts.push(h('text', { key: K(), x: sx, y: top - 22, className: 'hx-t-cap' }, `源头 · ${M.sources.length} ${M.grouped ? '类（按记录类别合并）' : '组表'}`))
+      if (!noData) parts.push(h('text', { key: K(), x: sx, y: top - 22, className: 'hx-t-cap' }, `源头 · ${M.sources.length} ${M.grouped ? '类（按记录类别合并）' : '组表'}`))
       for (const [name, p] of sPos) {
         parts.push(h('g', { key: K(), className: 'hx-src', onClick: () => onTab('schema') }, h('title', {}, `${name}：${fmt(p.s.n)} 个资源${M.grouped ? `\n${[...p.s.tables].slice(0, 12).join('、')}${p.s.tables.size > 12 ? '…' : ''}` : ''}${p.s.drafted ? '\n含模型起草的映射规格' : ''}`),
           slab(sx, p.y, sw, p.h, 'hx-slab', 'a'),
@@ -447,7 +449,13 @@ window.__ModuleLoader__.load({
           h('text', { x: sx + 10, y: p.y + Math.min(p.h / 2 + 4, 15), className: 'hx-t-name' }, name.length > 9 ? `${name.slice(0, 9)}…` : name),
           h('text', { x: sx + sw - 8, y: p.y + Math.min(p.h / 2 + 4, 15), textAnchor: 'end', className: 'hx-t-num' }, fmt(p.s.n))))
       }
-      if (!M.sources.length) parts.push(h('text', { key: K(), x: sx, y: top + 20, className: 'hx-t-sub' }, running ? '处理中…' : '这个批次没有去向统计（旧版本生成）；重跑后可见'))
+      if (noData) {
+        const cx = (sx + bx) / 2 - 20, cy = top + 200
+        parts.push(h('g', { key: K() },
+          h('rect', { x: cx - 210, y: cy - 46, width: 420, height: 92, rx: 10, className: 'hx-empty-card' }),
+          h('text', { x: cx, y: cy - 8, textAnchor: 'middle', className: 'hx-t-strong' }, running ? '正在读取和整理数据…' : '这个批次还没有去向统计'),
+          h('text', { x: cx, y: cy + 16, textAnchor: 'middle', className: 'hx-t-sub' }, running ? '第一位病人转换完成后，流向会出现在这里' : '交付的 Bundle 已不在原位置；重跑这一批即可看到')))
+      }
       // boxes
       parts.push(h('text', { key: K(), x: bx, y: top - 22, className: 'hx-t-cap' }, 'FHIR R4 · 固定的箱子（立柱高度＝字段填充率）'))
       for (const t of BOXES) {
@@ -455,13 +463,13 @@ window.__ModuleLoader__.load({
         const st = M.slots[t]; const names = M.names[t] ?? []
         const cells = names.map((nm, i) => ({ nm, rate: st && st.n ? (st.v[i] ?? 0) / st.n : null }))
         const cx0 = bx + 160
-        parts.push(h('g', { key: K(), className: `hx-box${empty ? ' empty' : ''}`, onClick: () => onTab('resources') }, h('title', {}, `${t}（${TYPE_ZH[t]}）：${empty ? '本批没有' : fmt(n)}`),
+        parts.push(h('g', { key: K(), className: `hx-box${empty ? ' empty' : ''}`, onClick: () => onTab('resources') }, h('title', {}, `${t}（${TYPE_ZH[t]}）：${empty ? (noData ? '—' : '本批没有') : fmt(n)}`),
           empty ? null : slab(bx, b.y, bw, bH, 'hx-slab', 'b'),
           h('rect', { x: bx, y: b.y, width: bw, height: bH, rx: 3, className: 'hx-box-r' }),
           h('rect', { x: bx, y: b.y, width: 4, height: bH, className: 'hx-box-mark' }),
           h('text', { x: bx + 12, y: b.y + 18, className: 'hx-t-strong' }, t),
           h('text', { x: bx + 12, y: b.y + 34, className: 'hx-t-sub' }, TYPE_ZH[t]),
-          h('text', { x: bx + 12, y: b.y + 47, className: empty ? 'hx-t-sub' : 'hx-t-num' }, empty ? '本批没有' : fmt(n)),
+          h('text', { x: bx + 12, y: b.y + 47, className: empty ? 'hx-t-sub' : 'hx-t-num' }, empty ? (noData ? (running ? '等待中' : '—') : '本批没有') : fmt(n)),
           cells.map((c, i) => {
             const cw2 = 24, x = cx0 + i * 37, base = b.y + bH - 10, maxH = 30
             const zero = !empty && c.rate === 0
