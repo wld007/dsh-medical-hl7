@@ -107,9 +107,23 @@ window.__ModuleLoader__.load({
 .hx-t-strong{font-size:12.5px;font-weight:600;fill:var(--ink)}.hx-t-sub{font-size:11px;fill:var(--ink3)}.hx-t-cap{font-size:11px;fill:var(--ink3);letter-spacing:1px}
 .hx-t-name{font-size:12px;fill:var(--ink)}.hx-t-num{font-size:11px;fill:var(--ink2);font-family:var(--mono)}
 .hx-t-warn{font-size:11px;fill:var(--warn)}.hx-t-vio{font-size:10.5px;fill:var(--vio)}
-.hx-gate{cursor:pointer}.hx-gate-band{fill:var(--panel2);stroke:var(--line)}.hx-gate:hover .hx-gate-band{stroke:var(--line2)}
+.hx-gate{cursor:pointer}.hx-gate:hover .hx-gate-band{stroke-opacity:.6}
+.hx-shadow{fill:#000;opacity:.42;filter:url(#hx-soft)}.hx-light .hx-shadow{opacity:.12}
+.hx-slab-top{fill:color-mix(in srgb,var(--panel2) 70%,var(--ink) 12%)}.hx-slab-side{fill:color-mix(in srgb,var(--panel2) 75%,#000 25%)}
+.hx-light .hx-slab-top{fill:color-mix(in srgb,var(--panel2) 80%,#fff 20%)}.hx-light .hx-slab-side{fill:color-mix(in srgb,var(--panel2) 82%,#5a4030 18%)}
+.hx-glass-top{fill:var(--ink2);fill-opacity:.2}.hx-glass-side{fill:var(--ink2);fill-opacity:.1}
+.hx-gate-band{fill:var(--ink2);fill-opacity:.06;stroke:var(--ink2);stroke-opacity:.3}
+.hx-link-shadow{fill:none;stroke:#000;stroke-opacity:.5;filter:url(#hx-soft)}.hx-light .hx-link-shadow{stroke-opacity:.13}
+.hx-link-hi{fill:none;stroke:#fff;stroke-opacity:.22;pointer-events:none}.hx-light .hx-link-hi{stroke-opacity:.35}
+.hx-col-pad{fill:var(--track)}.hx-col-pad.zero{fill:url(#hx-stripe);stroke:var(--warn);stroke-width:.8}
+.hx-col-front{fill:color-mix(in srgb,var(--fire1) 78%,#000)}.hx-col-front.full{fill:var(--fire1)}
+.hx-col-side{fill:color-mix(in srgb,var(--fire1) 50%,#000)}.hx-col-side.full{fill:color-mix(in srgb,var(--fire1) 62%,#000)}
+.hx-col-top{fill:color-mix(in srgb,var(--fire1) 70%,#fff 10%)}.hx-col-top.full{fill:color-mix(in srgb,var(--fire1) 60%,#ffd2a8)}
+.hx-cube .front{fill:var(--neutral)}.hx-cube .top{fill:color-mix(in srgb,var(--neutral) 70%,#fff)}.hx-cube .side{fill:color-mix(in srgb,var(--neutral) 65%,#000)}
+.hx-cube.w .front{fill:url(#hx-stripe);stroke:var(--warn);stroke-width:.5}.hx-cube.w .top{fill:var(--warn)}.hx-cube.w .side{fill:color-mix(in srgb,var(--warn) 60%,#000)}
+
 .hx-link{fill:none;stroke:url(#hx-fl);stroke-opacity:.82;mix-blend-mode:normal}
-.hx-dark .hx-link{filter:drop-shadow(0 0 3px color-mix(in srgb,var(--fire1) 45%,transparent))}
+.hx-dark .hx-link{filter:drop-shadow(0 0 2px color-mix(in srgb,var(--fire1) 35%,transparent))}
 .hx-link.bin{stroke:var(--neutral);stroke-dasharray:4 4;filter:none}
 .hx-link.run{stroke-dasharray:14 8;animation:hx-flowing 1.1s linear infinite}
 @keyframes hx-flowing{to{stroke-dashoffset:-22}}
@@ -120,7 +134,7 @@ window.__ModuleLoader__.load({
 .hx-box-mark{fill:var(--fire1)}.hx-box.empty .hx-box-r{fill:none;stroke-dasharray:4 3}.hx-box.empty .hx-box-mark{fill:var(--line)}.hx-box.empty .hx-t-strong{fill:var(--ink3)}
 .hx-cell{fill:var(--track)}.hx-cell-fill{fill:var(--fire1);opacity:.62}.hx-cell-fill.full{opacity:1}
 .hx-cell-empty{fill:none;stroke:var(--warn);stroke-dasharray:2 2;opacity:.85}
-.hx-cell-v{font-size:9px;font-weight:600;font-family:var(--mono);fill:var(--ink2)}.hx-cell-v.on{fill:#fff}
+.hx-cell-v{font-size:9px;font-weight:600;font-family:var(--mono);fill:var(--ink2)}
 .hx-cell-l{font-size:8.5px;fill:var(--ink3)}.hx-cell-l.warn{fill:var(--warn)}
 .hx-ov-foot{flex:none;font-size:11px;text-align:right}
 .hx-ov-side{width:300px;flex:none;display:flex;flex-direction:column;gap:2px}
@@ -342,15 +356,15 @@ window.__ModuleLoader__.load({
       const S = run.stages
       const running = run.status === 'running'
       const W = 1100
-      const sx = 10, sw = 170, bx = 700, bw = 390, bH = 52, bGap = 6, top = 34
+      const sx = 10, sw = 170, bx = 690, bw = 390, bH = 52, bGap = 9, top = 46
       const gx = [320, 445, 570]
       // sources
       const sH = (n) => Math.max(20, Math.min(120, Math.sqrt(n) * 0.85))
       let y = top; const sPos = new Map()
-      for (const s of M.sources) { const hh = sH(s.n); sPos.set(s.name, { y, h: hh, used: 0, s }); y += hh + 6 }
+      for (const s of M.sources) { const hh = sH(s.n); sPos.set(s.name, { y, h: hh, used: 0, s }); y += hh + 9 }
       const bPos = new Map(); BOXES.forEach((t, i) => bPos.set(t, { y: top + i * (bH + bGap), used: 0 }))
       const binY = top + BOXES.length * (bH + bGap) + 2
-      const H = Math.max(y, binY + 34) + 64
+      const H = Math.max(y, binY + 34) + 70
       const max = Math.max(1, ...M.links.map((l) => l.n))
       const lw = (n) => Math.max(1.2, Math.sqrt(n / max) * 26)
       const pile = (S ? S.domains.pending + S.domains.unmapped : 0)
@@ -364,16 +378,33 @@ window.__ModuleLoader__.load({
       const key = { k: 0 }
       const K = () => key.k++
       const parts = []
+      // 2.5D：斜投影的厚度（右上方向）
+      const DX = 9, DY = 7
+      const P2 = (l) => l.map((q) => `${q[0].toFixed(1)},${q[1].toFixed(1)}`).join(' ')
+      const slab = (x, y, w, hh, cls, k) => [
+        h('rect', { key: `${k}s`, x: x + 6, y: y + 8, width: w, height: hh, rx: 5, className: 'hx-shadow' }),
+        h('polygon', { key: `${k}t`, points: P2([[x + 2, y], [x + w, y], [x + w + DX, y - DY], [x + 2 + DX, y - DY]]), className: `${cls}-top` }),
+        h('polygon', { key: `${k}r`, points: P2([[x + w, y], [x + w + DX, y - DY], [x + w + DX, y + hh - DY - 2], [x + w, y + hh]]), className: `${cls}-side` }),
+      ]
+      const column = (x, base, w, hh, full, k) => [
+        h('polygon', { key: `${k}r`, points: P2([[x + w, base], [x + w + 6, base - 5], [x + w + 6, base - hh - 5], [x + w, base - hh]]), className: full ? 'hx-col-side full' : 'hx-col-side' }),
+        h('polygon', { key: `${k}t`, points: P2([[x, base - hh], [x + w, base - hh], [x + w + 6, base - hh - 5], [x + 6, base - hh - 5]]), className: full ? 'hx-col-top full' : 'hx-col-top' }),
+        h('rect', { key: `${k}f`, x, y: base - hh, width: w, height: hh, className: full ? 'hx-col-front full' : 'hx-col-front' }),
+      ]
+      const pad = (x, base, w, cls, k) => h('polygon', { key: k, points: P2([[x, base], [x + w, base], [x + w + 6, base - 5], [x + 6, base - 5]]), className: cls })
       parts.push(h('defs', { key: 'd' },
         h('linearGradient', { id: 'hx-fl', gradientUnits: 'userSpaceOnUse', x1: sx + sw, x2: bx, y1: 0, y2: 0 },
           h('stop', { offset: 0, style: { stopColor: 'var(--neutral)' } }), h('stop', { offset: (gx[0] - sx - sw) / (bx - sx - sw), style: { stopColor: 'var(--neutral)' } }),
           h('stop', { offset: (gx[0] + 30 - sx - sw) / (bx - sx - sw), style: { stopColor: 'var(--fire1)' } }), h('stop', { offset: 1, style: { stopColor: 'var(--fire2)' } })),
+        h('filter', { id: 'hx-soft', x: '-30%', y: '-30%', width: '160%', height: '160%' }, h('feGaussianBlur', { stdDeviation: 6 })),
         h('pattern', { id: 'hx-stripe', width: 5, height: 5, patternUnits: 'userSpaceOnUse', patternTransform: 'rotate(45)' }, h('rect', { width: 5, height: 5, style: { fill: 'var(--warn)' }, opacity: 0.25 }), h('rect', { width: 2, height: 5, style: { fill: 'var(--warn)' } }))))
       // gates
       for (const g of gates) {
         parts.push(h('g', { key: K(), className: 'hx-gate', onClick: () => onTab(g.tab) }, h('title', {}, `${g.name}：点开复核`),
-          h('rect', { x: g.x - 17, y: top - 8, width: 34, height: H - top - 54, rx: 7, className: 'hx-gate-band' }),
-          h('text', { x: g.x, y: top - 16, textAnchor: 'middle', className: 'hx-t-strong' }, `${g.no} ${g.name}`),
+          h('polygon', { points: P2([[g.x - 15, top - 8], [g.x + 17, top - 8], [g.x + 17 + DX * 2, top - 8 - DY * 2], [g.x - 15 + DX * 2, top - 8 - DY * 2]]), className: 'hx-glass-top' }),
+          h('polygon', { points: P2([[g.x + 17, top - 8], [g.x + 17 + DX * 2, top - 8 - DY * 2], [g.x + 17 + DX * 2, H - 62 - DY * 2], [g.x + 17, H - 62]]), className: 'hx-glass-side' }),
+          h('rect', { x: g.x - 17, y: top - 8, width: 34, height: H - top - 54, rx: 6, className: 'hx-gate-band' }),
+          h('text', { x: g.x + 8, y: top - 26, textAnchor: 'middle', className: 'hx-t-strong' }, `${g.no} ${g.name}`),
           h('text', { x: g.x, y: H - 30, textAnchor: 'middle', className: 'hx-t-sub' }, g.sub),
           g.model ? h('text', { x: g.x, y: H - 15, textAnchor: 'middle', className: 'hx-t-vio' }, `◆ ${g.model}`) : null))
       }
@@ -386,49 +417,60 @@ window.__ModuleLoader__.load({
         const y1 = s.y + Math.min(s.h - 2, s.used + w / 2); s.used += w * 0.62
         const y2 = toBin ? binY + 15 : b.y + 14 + Math.min(bH - 18, b.used + w / 2); if (!toBin) b.used += w * 0.5
         const x1 = sx + sw, x2 = bx
-        parts.push(h('path', { key: K(), d: `M${x1},${y1} C${x1 + 210},${y1} ${x2 - 210},${y2} ${x2},${y2}`, className: `hx-link${toBin ? ' bin' : ''}${running ? ' run' : ''}`, strokeWidth: toBin ? Math.min(w, 6) : w }, h('title', {}, `${l.from} → ${toBin ? '原样保留（Basic）' : `${l.to} ${TYPE_ZH[l.to] ?? ''}`}：${fmt(l.n)}`)))
+        const d = `M${x1},${y1} C${x1 + 210},${y1} ${x2 - 210},${y2} ${x2},${y2}`
+        const sw2 = toBin ? Math.min(w, 6) : w
+        if (!toBin) parts.push(h('path', { key: K(), d, className: 'hx-link-shadow', strokeWidth: sw2, transform: 'translate(5,7)' }))
+        parts.push(h('path', { key: K(), d, className: `hx-link${toBin ? ' bin' : ''}${running ? ' run' : ''}`, strokeWidth: sw2 }, h('title', {}, `${l.from} → ${toBin ? '原样保留（Basic）' : `${l.to} ${TYPE_ZH[l.to] ?? ''}`}：${fmt(l.n)}`)))
+        if (!toBin && w > 4) parts.push(h('path', { key: K(), d, className: 'hx-link-hi', strokeWidth: Math.max(1, w * 0.18), transform: `translate(0,${(-w * 0.28).toFixed(1)})` }))
       }
       // piles
       for (const g of gates) {
         if (!g.pile) continue
         const n = Math.min(12, Math.max(1, Math.ceil(Math.log10(g.pile + 1) * 3)))
         const items = []
-        for (let i = 0; i < n; i++) items.push(h('rect', { key: i, x: g.x - 13 + (i % 3) * 9, y: H - 76 - Math.floor(i / 3) * 9, width: 7.5, height: 7.5, rx: 1.5, className: g.warn ? 'hx-pile w' : 'hx-pile' }))
+        for (let i = 0; i < n; i++) {
+          const x = g.x - 14 + (i % 3) * 10, y0 = H - 78 - Math.floor(i / 3) * 10, s2 = 7.5
+          items.push(h('g', { key: i, className: g.warn ? 'hx-cube w' : 'hx-cube' },
+            h('polygon', { points: P2([[x, y0], [x + s2, y0], [x + s2 + 3, y0 - 3], [x + 3, y0 - 3]]), className: 'top' }),
+            h('polygon', { points: P2([[x + s2, y0], [x + s2 + 3, y0 - 3], [x + s2 + 3, y0 + s2 - 3], [x + s2, y0 + s2]]), className: 'side' }),
+            h('rect', { x, y: y0, width: s2, height: s2, className: 'front' })))
+        }
         parts.push(h('g', { key: K(), className: 'hx-gate', onClick: () => onTab(g.tab) }, items, h('text', { x: g.x + 20, y: H - 62, className: g.warn ? 'hx-t-warn' : 'hx-t-sub' }, `${g.pileLabel} ${fmt(g.pile)}`)))
       }
       // sources
-      parts.push(h('text', { key: K(), x: sx, y: top - 16, className: 'hx-t-cap' }, `源头 · ${M.sources.length} ${M.grouped ? '类（按记录类别合并）' : '组表'}`))
+      parts.push(h('text', { key: K(), x: sx, y: top - 22, className: 'hx-t-cap' }, `源头 · ${M.sources.length} ${M.grouped ? '类（按记录类别合并）' : '组表'}`))
       for (const [name, p] of sPos) {
         parts.push(h('g', { key: K(), className: 'hx-src', onClick: () => onTab('schema') }, h('title', {}, `${name}：${fmt(p.s.n)} 个资源${M.grouped ? `\n${[...p.s.tables].slice(0, 12).join('、')}${p.s.tables.size > 12 ? '…' : ''}` : ''}${p.s.drafted ? '\n含模型起草的映射规格' : ''}`),
-          h('rect', { x: sx, y: p.y, width: sw, height: p.h, rx: 4, className: 'hx-src-box' }),
+          slab(sx, p.y, sw, p.h, 'hx-slab', 'a'),
+          h('rect', { x: sx, y: p.y, width: sw, height: p.h, rx: 3, className: 'hx-src-box' }),
           h('rect', { x: sx, y: p.y, width: 3, height: p.h, rx: 1.5, className: p.s.drafted ? 'hx-src-mark vio' : 'hx-src-mark' }),
           h('text', { x: sx + 10, y: p.y + Math.min(p.h / 2 + 4, 15), className: 'hx-t-name' }, name.length > 9 ? `${name.slice(0, 9)}…` : name),
           h('text', { x: sx + sw - 8, y: p.y + Math.min(p.h / 2 + 4, 15), textAnchor: 'end', className: 'hx-t-num' }, fmt(p.s.n))))
       }
       if (!M.sources.length) parts.push(h('text', { key: K(), x: sx, y: top + 20, className: 'hx-t-sub' }, running ? '处理中…' : '这个批次没有去向统计（旧版本生成）；重跑后可见'))
       // boxes
-      parts.push(h('text', { key: K(), x: bx, y: top - 16, className: 'hx-t-cap' }, 'FHIR R4 · 固定的箱子'))
+      parts.push(h('text', { key: K(), x: bx, y: top - 22, className: 'hx-t-cap' }, 'FHIR R4 · 固定的箱子（立柱高度＝字段填充率）'))
       for (const t of BOXES) {
         const b = bPos.get(t); const n = M.byType[t] ?? 0; const empty = !n
         const st = M.slots[t]; const names = M.names[t] ?? []
         const cells = names.map((nm, i) => ({ nm, rate: st && st.n ? (st.v[i] ?? 0) / st.n : null }))
-        const cw = 34, cx0 = bx + 168
+        const cx0 = bx + 160
         parts.push(h('g', { key: K(), className: `hx-box${empty ? ' empty' : ''}`, onClick: () => onTab('resources') }, h('title', {}, `${t}（${TYPE_ZH[t]}）：${empty ? '本批没有' : fmt(n)}`),
-          h('rect', { x: bx, y: b.y, width: bw, height: bH, rx: 6, className: 'hx-box-r' }),
-          h('rect', { x: bx, y: b.y, width: 4, height: bH, rx: 2, className: 'hx-box-mark' }),
+          empty ? null : slab(bx, b.y, bw, bH, 'hx-slab', 'b'),
+          h('rect', { x: bx, y: b.y, width: bw, height: bH, rx: 3, className: 'hx-box-r' }),
+          h('rect', { x: bx, y: b.y, width: 4, height: bH, className: 'hx-box-mark' }),
           h('text', { x: bx + 12, y: b.y + 18, className: 'hx-t-strong' }, t),
           h('text', { x: bx + 12, y: b.y + 34, className: 'hx-t-sub' }, TYPE_ZH[t]),
           h('text', { x: bx + 12, y: b.y + 47, className: empty ? 'hx-t-sub' : 'hx-t-num' }, empty ? '本批没有' : fmt(n)),
           cells.map((c, i) => {
-            const x = cx0 + i * (cw + 3), cy = b.y + 8, ch = 28
-            const fh = c.rate == null ? 0 : ch * c.rate
+            const cw2 = 24, x = cx0 + i * 37, base = b.y + bH - 10, maxH = 30
             const zero = !empty && c.rate === 0
+            const hh = c.rate ? 3 + c.rate * maxH : 0
             return h('g', { key: i }, h('title', {}, `${c.nm}：${c.rate == null ? '—' : `${pct(c.rate)}（${fmt(st.v[i])} / ${fmt(st.n)}）`}`),
-              h('rect', { x, y: cy, width: cw, height: ch, rx: 3, className: 'hx-cell' }),
-              fh > 0 ? h('rect', { x, y: cy + ch - fh, width: cw, height: fh, rx: 3, className: c.rate >= 0.9 ? 'hx-cell-fill full' : 'hx-cell-fill' }) : null,
-              zero ? h('rect', { x: x + 0.5, y: cy + 0.5, width: cw - 1, height: ch - 1, rx: 3, className: 'hx-cell-empty' }) : null,
-              !empty && c.rate != null ? h('text', { x: x + cw / 2, y: cy + 18, textAnchor: 'middle', className: c.rate >= 0.5 ? 'hx-cell-v on' : 'hx-cell-v' }, Math.round(c.rate * 100)) : null,
-              h('text', { x: x + cw / 2, y: cy + ch + 11, textAnchor: 'middle', className: zero ? 'hx-cell-l warn' : 'hx-cell-l' }, c.nm))
+              pad(x, base, cw2, zero ? 'hx-col-pad zero' : 'hx-col-pad', 'p'),
+              hh ? column(x, base, cw2, hh, c.rate >= 0.9, 'c') : null,
+              !empty && c.rate != null && !zero ? h('text', { x: x + cw2 / 2 + 3, y: base - hh - 8, textAnchor: 'middle', className: 'hx-cell-v' }, Math.round(c.rate * 100)) : null,
+              h('text', { x: x + cw2 / 2 + 3, y: base + 9, textAnchor: 'middle', className: zero ? 'hx-cell-l warn' : 'hx-cell-l' }, c.nm))
           })))
       }
       const leftover = run.patients.reduce((n, p) => n + (p.leftover ?? 0), 0)
