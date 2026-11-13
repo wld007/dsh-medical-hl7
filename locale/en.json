@@ -1,6 +1,6 @@
 {
   "meta": {
-    "title": "HL7 FHIR exchange",
-    "description": "Converts de-identified medical records into HL7 FHIR R4: one importable transaction Bundle per patient plus cohort Bulk NDJSON, with unmapped fields preserved."
+    "title": "HL7 standardization",
+    "description": "Standardizes heterogeneous medical data (usually de-identified exports) into HL7 FHIR R4: schema harmonization, value normalization and terminology mapping (optionally with local or intranet models, independently cross-checked); one importable transaction Bundle per patient plus cohort Bulk NDJSON, unmapped fields preserved."
   }
 }

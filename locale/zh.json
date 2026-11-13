@@ -1,6 +1,6 @@
 {
   "meta": {
-    "title": "HL7 数据交换",
-    "description": "把匿名化后的医疗数据转换成 HL7 FHIR R4：每位病人一个可直接导入服务器的 Bundle，另出整批 Bulk NDJSON；字段不限命名，未映射的字段原样保留。"
+    "title": "HL7 标准化",
+    "description": "把来源各异的医疗数据（通常是匿名化后的交付）标准化为 HL7 FHIR R4：Schema 同构、值域归一、术语对照（可用本地或内网模型，经独立核验），每位病人一个可直接导入服务器的 Bundle，另出整批 Bulk NDJSON；未映射的字段原样保留。"
   }
 }

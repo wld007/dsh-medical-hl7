@@ -6,7 +6,7 @@ window.__ModuleLoader__.load({
     const { useState, useEffect, useCallback, useMemo, useRef } = React
     const CHANNEL = '/medical-hl7'
     const PANEL_ID = 'medical-hl7'
-    const TITLE = 'HL7 数据交换'
+    const TITLE = 'HL7 标准化'
     const services = { ctx: null }
 
     /* ------------------------------------------------------------------ rpc */
@@ -265,7 +265,7 @@ window.__ModuleLoader__.load({
         h('style', {}, CSS),
         h('div', { className: 'hx-frame hx-top' },
           h('div', { className: 'hx-logo' }, h('svg', { width: 15, height: 17, viewBox: '0 0 18 20' }, h('path', { d: FLAME_PATH, fill: '#fff' }))),
-          h('div', { className: 'hx-brand' }, h('b', {}, TITLE), h('span', {}, 'HL7 FHIR R4 EXCHANGE')),
+          h('div', { className: 'hx-brand' }, h('b', {}, TITLE), h('span', {}, 'HL7 FHIR R4 STANDARDIZATION')),
           run ? h('div', { className: 'hx-runbox' },
             h('b', {}, statusChip(run.status), run.current ? `${run.current.unit} · ${run.current.step}` : `${fmt(t.patients)} 位病人 · ${fmt(t.resources)} 个资源`),
             h('div', { className: 'hx-num hx-muted', style: { fontSize: 11 } }, run.id)) : null,
@@ -800,7 +800,7 @@ window.__ModuleLoader__.load({
     function ModelTab({ run, onTab }) {
       const d = useAsync(() => call('model', { runId: run.id }), [run.id, run.status])
       const m = run.model
-      if (!m?.configured) return h('div', { className: 'hx-frame hx-pad', style: { flex: 1 } }, h('div', { className: 'hx-h' }, h('b', {}, '模型调用'), h('span', { className: 'hx-cap' }, 'MODEL')), h('div', { className: 'hx-muted' }, m?.note ?? '这一批没有使用模型。'), h('div', { className: 'hx-faint', style: { marginTop: 8, fontSize: 12 } }, '在 设置 → HL7 数据交换 → 模型 里配置识别模型和核验模型后，没有规格的表会由模型起草映射规格，无对照的取值和本地概念会由模型给出规范值和标准代码。'))
+      if (!m?.configured) return h('div', { className: 'hx-frame hx-pad', style: { flex: 1 } }, h('div', { className: 'hx-h' }, h('b', {}, '模型调用'), h('span', { className: 'hx-cap' }, 'MODEL')), h('div', { className: 'hx-muted' }, m?.note ?? '这一批没有使用模型。'), h('div', { className: 'hx-faint', style: { marginTop: 8, fontSize: 12 } }, '在 设置 → HL7 标准化 → 模型 里配置识别模型和核验模型后，没有规格的表会由模型起草映射规格，无对照的取值和本地概念会由模型给出规范值和标准代码。'))
       const P = m.phases ?? {}
       const C = m.calls ?? d.value?.model?.calls
       const crossRow = (name, x, go) => x ? h('tr', { className: 'click', onClick: () => onTab(go) },

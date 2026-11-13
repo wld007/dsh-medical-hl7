@@ -24,7 +24,7 @@ export function apply(ctx, config = {}) {
 
   register({
     name: 'hl7_start',
-    description: `dsh-medical-hl7 插件（HL7 数据交换）：把医疗数据（通常是 dsh-medical-anonymizer 的交付目录；json/ndjson/csv，字段命名不限）转换成 HL7 FHIR R4，用于存储和交换。流程：Schema 同构（表→记录类别、字段→语义角色；没有规格的表由模型起草映射规格）→ 值域归一（写法统一到规范值；无对照的取值由模型给出）→ 术语对照（本地概念→LOINC、SNOMED CT 等；由模型给出候选）→ FHIR 组装 → 验收 → 交付。模型结果都经插件校验（字段存在、目标值集、LOINC/SNOMED 校验位）和独立盲审、复判，两模型一致才采用，有分歧的转人工复核，结果存本机对照表、下次复用。每位病人一个 transaction Bundle（PUT、编号稳定），另出整批 Bulk NDJSON、definitions（含 ConceptMap）和 manifest。没有对应的字段原样保留，值不变。${DATA_BOUNDARY}绝不修改源文件。立即返回批次 id。`,
+    description: `dsh-medical-hl7 插件（HL7 标准化）：把医疗数据（通常是 dsh-medical-anonymizer 的交付目录；json/ndjson/csv，字段命名不限）转换成 HL7 FHIR R4，用于存储和交换。流程：Schema 同构（表→记录类别、字段→语义角色；没有规格的表由模型起草映射规格）→ 值域归一（写法统一到规范值；无对照的取值由模型给出）→ 术语对照（本地概念→LOINC、SNOMED CT 等；由模型给出候选）→ FHIR 组装 → 验收 → 交付。模型结果都经插件校验（字段存在、目标值集、LOINC/SNOMED 校验位）和独立盲审、复判，两模型一致才采用，有分歧的转人工复核，结果存本机对照表、下次复用。每位病人一个 transaction Bundle（PUT、编号稳定），另出整批 Bulk NDJSON、definitions（含 ConceptMap）和 manifest。没有对应的字段原样保留，值不变。${DATA_BOUNDARY}绝不修改源文件。立即返回批次 id。`,
     parameters: {
       inputDir: { type: 'string', description: '输入目录（一位病人或多位病人的上级目录）或单个文件，绝对路径或相对工作区。' },
       outputRoot: { type: 'string', description: '输出根目录，不能与输入相同、不能包含输入或放在输入里；省略时用设置里的默认值，再缺省为输入旁的 _medical-hl7。' },
