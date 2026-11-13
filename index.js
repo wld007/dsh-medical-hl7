@@ -179,6 +179,8 @@ export function apply(ctx, config = {}) {
           case 'confirmModel': return service.confirmModel(r)
           case 'model': return service.modelView(r.runId)
           case 'testConnection': return service.testConnection(r)
+          case 'deleteRun': return service.deleteRun(r.runId)
+          case 'history': return service.history(r)
           case 'pickFolder': {
             const ws = ctx.get('uiWorkspace')
             return { path: ws?.pickDirectory ? await ws.pickDirectory() : null }

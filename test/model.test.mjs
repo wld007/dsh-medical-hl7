@@ -37,7 +37,7 @@ function mock(name, log) {
     },
   }
 }
-const wait = async (svc, id) => { for (let i = 0; i < 800; i++) { const { run } = await svc.status(id); if (run.status !== 'running') return run; await new Promise((r) => setTimeout(r, 25)) } throw new Error('timeout') }
+const wait = async (svc, id) => { for (let i = 0; i < 800; i++) { const { run } = await svc.status(id); if (run.status !== 'running' && !svc.isRunning()) return run; await new Promise((r) => setTimeout(r, 25)) } throw new Error('timeout') }
 
 test('校验位：LOINC mod10、SNOMED CT Verhoeff', () => {
   assert.ok(loincValid('2160-0')); assert.ok(!loincValid('2160-1')); assert.ok(!loincValid('1234-5'))
@@ -63,8 +63,11 @@ test('模型：起草规格、补值域、找术语；插件校验拦下编造�
   assert.equal(run.model.phases.values.confirmed, 1)
   assert.equal(run.model.phases.terms.confirmed, 1, '只有肌酐被采用')
   assert.ok(run.model.phases.terms.skipped.some((x) => /SNOMED/.test(x.target)), '没有代码表的标准不交给模型')
-  const specs = await readdir(join(base, 'state', 'vocab', 'specs'))
-  assert.equal(specs.length, 1)
+  const { openVocabStore } = await import('../lib/stages/vocabstore.js')
+  const vs = await openVocabStore(join(base, 'state', 'vocab'))
+  assert.equal(vs.kind, 'sqlite')
+  assert.equal((await vs.specs()).length, 1, '起草的规格存进本机对照库')
+  assert.ok((await vs.history('spec', 'some_followup_table.json')).some((x) => x.origin === 'model'), '改动有记录')
 
   const bundle = JSON.parse(await readFile(join(run.output, 'bundles', '病人A.json'), 'utf8'))
   const R = bundle.entry.map((e) => e.resource)

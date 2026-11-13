@@ -41,7 +41,44 @@ window.__ModuleLoader__.load({
 .hx.hx-dark .hx-frame{box-shadow:none}
 
 .hx-frame{border:1px solid var(--line);background:var(--panel);border-radius:6px;box-shadow:0 1px 2px color-mix(in srgb,var(--dsw-alias-label-primary) 6%,transparent)}
-.hx-top{display:flex;align-items:center;gap:14px;padding:8px 14px;background:linear-gradient(90deg,var(--tint),var(--panel) 40%)}
+.hx-top{display:flex;align-items:center;gap:14px;padding:7px 12px 7px 14px;border-left:3px solid var(--fire1);position:relative;z-index:20}
+.hx-brandbox{display:flex;align-items:center;gap:10px;flex:none}
+.hx-status{display:flex;align-items:center;gap:9px;padding:4px 12px 4px 10px;border-radius:8px;border:1px solid var(--line2);min-width:170px}
+.hx-status>div{display:flex;flex-direction:column;line-height:16px}.hx-status b{font-size:13px}.hx-status .hx-num{font-size:11px;color:var(--ink2)}
+.hx-lamp{width:9px;height:9px;border-radius:50%;background:var(--line2);flex:none}
+.s-running .hx-lamp{background:var(--fire1);box-shadow:0 0 0 3px var(--fireDim);animation:hx-blink 1.2s infinite}
+.s-completed .hx-lamp{background:var(--ok)}.s-review .hx-lamp{background:var(--warn)}.s-failed .hx-lamp,.s-cancelled .hx-lamp{background:var(--bad)}
+.hx-src{font-size:11px;color:var(--ink2);background:none;border:0;padding:0;text-align:left;font:inherit;font-size:11px}
+.hx-src.link{color:var(--fire1);cursor:pointer}.hx-src.link:hover{text-decoration:underline}
+.hx-now-top{font-size:12px;color:var(--fire1);max-width:320px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hx-clock{display:flex;flex-direction:column;align-items:flex-end;line-height:16px;padding:0 4px}
+.hx-clock span{font-size:10px;color:var(--ink3);letter-spacing:1px}
+.hx-clock b{font-family:var(--mono);font-size:18px;font-weight:600;letter-spacing:1px;line-height:22px}
+.hx-clock.sep{padding-right:14px;margin-right:2px;border-right:1px solid var(--line)}
+.hx-clock.ver b{font-size:12.5px;font-weight:500;letter-spacing:0;color:var(--ink2)}
+.hx-pct{color:var(--fire1)}.hx-pct small{font-size:11px;font-weight:400;margin-left:1px;color:var(--ink2)}
+.hx-act{position:relative}
+.hx-btn.new{border-color:var(--fire1);background:var(--fire1);color:#fff;font-weight:600;padding:6px 14px}
+.hx-btn.new:hover:not(:disabled){filter:brightness(1.06)}.hx-btn.new:disabled{background:transparent;color:var(--ink2);border-color:var(--line2);font-weight:400}
+.hx-caret{margin-left:6px;font-size:10px;opacity:.85}
+.hx-btn.stop{border-color:var(--bad);color:var(--bad);background:color-mix(in srgb,var(--bad) 8%,transparent);padding:6px 14px}
+.hx-btn.hbtn{padding:6px 12px;display:inline-flex;align-items:center;gap:6px}.hx-btn.hbtn.on{border-color:var(--fire1);color:var(--fire1)}
+.hx-hcount{font-style:normal;font-family:var(--mono);font-size:10.5px;line-height:15px;padding:0 5px;border-radius:8px;background:color-mix(in srgb,var(--ink) 8%,transparent);color:var(--ink2)}
+.hx-btn.hicon{width:34px;padding:6px 0;font-size:15px;color:var(--ink2)}
+.hx-btn.danger{border-color:var(--bad);color:var(--bad)}
+.hx-shade{position:fixed;inset:0;z-index:30}
+.hx-pop{position:absolute;right:0;top:40px;z-index:40;width:460px;padding:14px 16px;border:1px solid var(--line2);border-top:2px solid var(--fire1);border-radius:8px;background:var(--panel);box-shadow:0 20px 60px rgba(0,0,0,.35);display:flex;flex-direction:column;gap:10px}
+.hx-pop-h{display:flex;align-items:center;gap:8px}.hx-pop-h b{font-size:13px}
+.hx-pop.runs{width:440px;max-height:70vh}
+.hx-runs{overflow:auto;display:flex;flex-direction:column;gap:6px;max-height:calc(70vh - 60px)}
+.hx-run{border:1px solid var(--line);border-radius:6px;padding:7px 10px;cursor:pointer;background:var(--panel2)}
+.hx-run:hover{border-color:var(--line2)}.hx-run.on{border-color:var(--fire1);box-shadow:inset 3px 0 0 var(--fire1)}
+.hx-run-top{display:flex;align-items:center;gap:8px}.hx-run-name{flex:1;min-width:0;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hx-run-del{border:0;background:none;color:var(--ink3);cursor:pointer;font-size:12px;padding:0 2px}.hx-run-del:hover{color:var(--bad)}
+.hx-run-meta{display:flex;flex-direction:column;font-size:11px;color:var(--ink2);margin-top:3px;line-height:16px}
+.hx-run-confirm{margin-top:8px;padding:8px;border:1px solid color-mix(in srgb,var(--bad) 45%,transparent);border-radius:6px;font-size:12px;color:var(--ink2);cursor:default}
+.hx-modal{position:fixed;inset:0;z-index:60;background:rgba(0,0,0,.35);display:grid;place-items:center}
+.hx-modal-box{width:min(880px,92vw);height:min(760px,88vh);background:var(--panel);border:1px solid var(--line2);border-top:2px solid var(--fire1);border-radius:10px;padding:14px 18px;display:flex;flex-direction:column;gap:10px;box-shadow:0 24px 80px rgba(0,0,0,.45)}
 .hx-logo{width:28px;height:28px;border-radius:7px;background:var(--flame);display:grid;place-items:center;flex:none}
 .hx-brand b{display:block;font-size:14px;letter-spacing:2px}.hx-brand span{font-family:var(--mono);font-size:9.5px;color:var(--ink2);letter-spacing:1px}
 .hx-runbox{border:1px solid var(--line2);border-radius:6px;padding:3px 10px;line-height:1.35;min-width:220px}
@@ -171,6 +208,7 @@ window.__ModuleLoader__.load({
     const statusChip = (s) => h('span', { className: `hx-chip ${STATUS[s]?.[1] ?? ''}` }, STATUS[s]?.[0] ?? s)
     const TYPE_ZH = { Patient: '病人', Encounter: '就诊', Condition: '诊断', Observation: '观察/检验', DiagnosticReport: '报告', Specimen: '标本', Procedure: '手术操作', DocumentReference: '文书', MedicationRequest: '医嘱', ChargeItem: '费用', Basic: '通用(未映射表)', Organization: '机构/科室', Practitioner: '医务人员' }
     const TYPE_ORDER = Object.keys(TYPE_ZH)
+    function clock(ms) { const s2 = Math.max(0, Math.floor(Number(ms || 0) / 1000)); const p = (v) => String(v).padStart(2, '0'); return `${p(Math.floor(s2 / 3600))}:${p(Math.floor(s2 / 60) % 60)}:${p(s2 % 60)}` }
     const FLAME_PATH = 'M9 1c1 4 6 6 6 11a6 6 0 0 1-12 0c0-3 2-4 3-6 0 2 1 3 2 3-1-3 0-6 1-8z'
     const byOrder = (a, b) => (TYPE_ORDER.indexOf(a) + 1 || 99) - (TYPE_ORDER.indexOf(b) + 1 || 99)
     const shortTime = (s) => (s ? String(s).replace('T', ' ').replace(/:\d{2}([+-]\d{2}:\d{2}|Z)$/, '').replace(/([+-]\d{2}:\d{2}|Z)$/, '') : '—')
@@ -240,8 +278,15 @@ window.__ModuleLoader__.load({
       const [run, setRun] = useState(null)
       const [patient, setPatient] = useState(null)
       const [error, setError] = useState('')
+      const [activeId, setActiveId] = useState(null)
       const [showNew, setShowNew] = useState(false)
+      const [runsOpen, setRunsOpen] = useState(false)
+      const [settingsOpen, setSettingsOpen] = useState(false)
+      const [deleting, setDeleting] = useState(null)
+      const [config, setConfig] = useState(null)
+      const [now, setNow] = useState(Date.now())
       const rootRef = useRef(null)
+      useEffect(() => { call('config').then(setConfig).catch(() => {}) }, [])
       const dark = useHostDark(rootRef)
 
       const refreshList = useCallback(async () => {
@@ -250,6 +295,7 @@ window.__ModuleLoader__.load({
           setRuns(v.runs)
           setRunId((cur) => cur ?? v.active ?? v.runs[0]?.id ?? null)
           if (!v.runs.length) setShowNew(true)
+          setActiveId(v.active ?? null)
         } catch (e) { setError(msg(e)) }
       }, [])
       useEffect(() => { refreshList() }, [])
@@ -275,24 +321,84 @@ window.__ModuleLoader__.load({
       const t = run?.totals
       const st = run?.stages
       const tabs = [['overview', '◈ 概览'], ['schema', '① Schema 同构'], ['domains', '② 值域归一', st ? (st.domains.pending + st.domains.unmapped) || null : null], ['terms', '③ 术语对照'], ['patients', '病人', t?.held || null], ['resources', '资源浏览'], ['model', '模型调用'], ['report', '报告']]
+      const running = run?.status === 'running'
+      const anyRunning = Boolean(activeId) && activeId !== run?.id
+      const lineStatus = run ? run.status : 'idle'
+      const resumable = run && ['cancelled', 'failed'].includes(run.status) && !activeId
+      useEffect(() => { if (!running) return undefined; const id = setInterval(() => setNow(Date.now()), 1000); return () => clearInterval(id) }, [running])
+      const startedMs = run?.startedAt ? Date.parse(run.startedAt) : 0
+      const elapsed = !run ? 0 : running ? now - startedMs : (run.finishedAt ? Date.parse(run.finishedAt) - startedMs : 0)
+      const percent = !run ? 0 : run.status === 'completed' || run.status === 'review' ? 100 : t?.units ? Math.floor(((run.units?.length ?? 0) / t.units) * 100) : 0
+      const SRC = { agent: 'Agent 会话', command: '/hl7 命令', panel: '页面', rerun: '重新运行' }
+      const sourceLabel = (source) => {
+        const label = source.kind === 'rerun' ? `重新运行 ${String(source.of ?? '').slice(-6)}` : SRC[source.kind] ?? source.kind
+        if (!source.sessionId) return h('span', { className: 'hx-src' }, `来源：${label}`)
+        return h('button', { type: 'button', className: 'hx-src link', title: source.sessionId, onClick: () => { try { services.ctx.get('uiWorkspace').openSession(source.sessionId) } catch (e) { setError(msg(e)) } } }, `来源：${label} ↗`)
+      }
+      const removeRun = async (id) => {
+        setDeleting((d) => ({ ...d, busy: true, error: '' }))
+        try {
+          await call('deleteRun', { runId: id })
+          setDeleting(null)
+          if (id === runId) { setRunId(null); setRun(null) }
+          const v = await call('list'); setRuns(v.runs); if (id === runId) setRunId(v.runs[0]?.id ?? null)
+        } catch (e) { setDeleting((d) => ({ ...d, busy: false, error: msg(e) })) }
+      }
+      const runsPopover = () => h('div', { className: 'hx-pop runs', role: 'dialog' },
+        h('div', { className: 'hx-pop-h' }, h('b', {}, '批次记录'), h('span', { className: 'hx-sp' }), h('button', { className: 'hx-btn sm', onClick: refreshList }, '刷新')),
+        runs.length === 0 ? h('div', { className: 'hx-faint' }, '还没有批次') : h('div', { className: 'hx-runs' }, runs.map((r) => h('div', {
+          key: r.id, role: 'button', tabIndex: 0, className: `hx-run${r.id === runId ? ' on' : ''}`,
+          onClick: () => { setRunId(r.id); setRun(null); setPatient(null); setRunsOpen(false); setTab('overview') },
+        },
+          h('div', { className: 'hx-run-top' },
+            h('span', { className: 'hx-run-name', title: r.outputRoot }, r.input ?? r.id),
+            statusChip(r.status),
+            r.status !== 'running' ? h('button', { type: 'button', className: 'hx-run-del', title: '删除批次记录', onClick: (e) => { e.stopPropagation(); setDeleting({ id: r.id, busy: false, error: '' }) } }, '✕') : null),
+          h('div', { className: 'hx-run-meta' },
+            h('span', {}, `${shortTime(r.startedAt)}${r.source ? ` · ${r.source.kind === 'rerun' ? '重新运行' : SRC[r.source.kind] ?? r.source.kind}` : ''}${r.model ? ` · 模型 ${r.model}` : ''}`),
+            h('span', {}, `${fmt(r.patients ?? 0)} 位病人 · ${fmt(r.resources ?? 0)} 个资源${r.held ? ` · 暂扣 ${r.held}` : ''}`)),
+          deleting?.id === r.id ? h('div', { className: 'hx-run-confirm', onClick: (e) => e.stopPropagation() },
+            h('div', {}, '删除该批次的过程记录（统计、模型调用、报告、中间结果、暂扣的病人）？交付目录保留，不受影响。此操作不可撤销。'),
+            deleting.error ? h('div', { className: 'hx-bad' }, deleting.error) : null,
+            h('div', { style: { display: 'flex', gap: 6, marginTop: 6 } }, h('button', { className: 'hx-btn sm danger', disabled: deleting.busy, onClick: () => removeRun(r.id) }, deleting.busy ? '删除中…' : '删除'), h('button', { className: 'hx-btn sm', onClick: () => setDeleting(null) }, '取消'))) : null))))
       const rerun = () => call('rerun', { runId: run.id }).then((v) => { setRunId(v.runId); setRun(null); refreshList() }).catch((e) => setError(msg(e)))
       return h('div', { className: `hx ${dark ? 'hx-dark' : 'hx-light'}`, ref: rootRef },
         h('style', {}, CSS),
-        h('div', { className: 'hx-frame hx-top' },
-          h('div', { className: 'hx-logo' }, h('svg', { width: 15, height: 17, viewBox: '0 0 18 20' }, h('path', { d: FLAME_PATH, fill: '#fff' }))),
-          h('div', { className: 'hx-brand' }, h('b', {}, TITLE), h('span', {}, 'HL7 FHIR R4 STANDARDIZATION')),
-          run ? h('div', { className: 'hx-runbox' },
-            h('b', {}, statusChip(run.status), run.current ? `${run.current.unit} · ${run.current.step}` : `${fmt(t.patients)} 位病人 · ${fmt(t.resources)} 个资源`),
-            h('div', { className: 'hx-num hx-muted', style: { fontSize: 11 } }, run.id)) : null,
-          h('div', { className: 'hx-sp' }),
-          run?.status === 'running' ? h('button', { className: 'hx-btn', onClick: () => call('cancel', { runId: run.id }).catch((e) => setError(msg(e))) }, '取消批次') : null,
-          run && ['cancelled', 'failed'].includes(run.status) ? h('button', { className: 'hx-btn', onClick: () => call('start', { resumeFrom: run.id }).then(() => { setRun(null); setRunId(null); setTimeout(() => setRunId(run.id), 0) }).catch((e) => setError(msg(e))) }, '继续处理') : null,
-          h('button', { className: 'hx-btn pri', onClick: () => setShowNew((x) => !x) }, '＋ 新批次'),
-          h('select', { className: 'hx-input', value: runId ?? '', onChange: (e) => { setRunId(e.target.value); setRun(null); setPatient(null) } },
-            runs.map((r) => h('option', { key: r.id, value: r.id }, `${r.id} · ${r.input} · ${STATUS[r.status]?.[0] ?? r.status}`)))),
+        h('header', { className: 'hx-frame hx-top' },
+          h('div', { className: 'hx-brandbox' },
+            h('div', { className: 'hx-logo' }, h('svg', { width: 15, height: 17, viewBox: '0 0 18 20' }, h('path', { d: FLAME_PATH, fill: '#fff' }))),
+            h('div', { className: 'hx-brand' }, h('b', {}, TITLE), h('span', {}, 'HL7 FHIR R4 STANDARDIZATION'))),
+          h('div', { className: `hx-status s-${lineStatus}` },
+            h('span', { className: 'hx-lamp' }),
+            h('div', {},
+              h('b', {}, lineStatus === 'idle' ? '空闲' : STATUS[lineStatus]?.[0] ?? lineStatus),
+              h('span', { className: 'hx-num' }, run?.id ?? '—'),
+              run?.source ? sourceLabel(run.source) : null)),
+          running && run?.current ? h('div', { className: 'hx-now-top', title: `${run.current.unit} · ${run.current.step}` }, `${run.current.unit} · ${run.current.step}`) : null,
+          h('span', { className: 'hx-sp' }),
+          h('div', { className: 'hx-clock sep' }, h('span', {}, '用时'), h('b', {}, clock(elapsed))),
+          run ? h('div', { className: 'hx-clock sep', title: `${fmt(run.units?.length ?? 0)} / ${fmt(t?.units ?? 0)} 个目录` }, h('span', {}, '完成'), h('b', { className: 'hx-pct' }, String(percent), h('small', {}, '%'))) : null,
+          config?.version ? h('div', { className: 'hx-clock ver' }, h('span', {}, '版本'), h('b', {}, `v${config.version}`)) : null,
+          h('div', { className: 'hx-act' },
+            running
+              ? h('button', { className: 'hx-btn stop', onClick: () => call('cancel', { runId: run.id }).catch((e) => setError(msg(e))) }, '■ 取消批次')
+              : h('button', { className: 'hx-btn new', disabled: anyRunning, onClick: () => { setShowNew((x) => !x); setRunsOpen(false) } }, anyRunning ? '有批次在运行' : h(React.Fragment, {}, '＋ 新批次', h('span', { className: 'hx-caret' }, '▾'))),
+            !running && showNew ? h('div', { className: 'hx-shade', onMouseDown: () => setShowNew(false) }) : null,
+            !running && showNew ? h('div', { className: 'hx-pop', role: 'dialog' },
+              h('div', { className: 'hx-pop-h' }, h('b', {}, '新批次')),
+              h(NewRun, { onStarted: (id) => { setShowNew(false); setRunId(id); setRun(null); setPatient(null); refreshList(); setTab('overview') }, onError: setError }),
+              run && resumable ? h('button', { className: 'hx-btn', onClick: () => call('start', { resumeFrom: run.id }).then(() => { setShowNew(false); setRun(null); setRunId(null); setTimeout(() => setRunId(run.id), 0); refreshList() }).catch((e) => setError(msg(e))), title: '沿用原输入和输出根目录，已完成的病人和模型调用直接复用' }, `↻ 继续处理 ${run.id.slice(-6)}`) : null) : null),
+          h('div', { className: 'hx-act' },
+            h('button', { className: `hx-btn hbtn${runsOpen ? ' on' : ''}`, onClick: () => { setRunsOpen((x) => !x); setShowNew(false); if (!runsOpen) refreshList() }, title: '切换批次：查看、删除历史批次', 'aria-expanded': runsOpen ? 'true' : 'false' }, '记录', runs.length ? h('i', { className: 'hx-hcount' }, String(runs.length)) : null),
+            runsOpen ? h('div', { className: 'hx-shade', onMouseDown: () => { setRunsOpen(false); setDeleting(null) } }) : null,
+            runsOpen ? runsPopover() : null),
+          h('button', { className: 'hx-btn hicon', title: '设置', 'aria-label': '设置', onClick: () => setSettingsOpen(true) }, '⚙')),
         h('div', { className: 'hx-frame hx-tabs' }, tabs.map(([k, label, n]) => h('button', { key: k, className: `hx-tab${tab === k ? ' on' : ''}`, onClick: () => setTab(k) }, label, n ? h('i', {}, String(n)) : null))),
         error ? h('div', { className: 'hx-err', onClick: () => setError('') }, error, h('span', { className: 'hx-faint' }, '（点击关闭）')) : null,
-        showNew ? h(NewRun, { onStarted: (id) => { setShowNew(false); setRunId(id); setRun(null); setPatient(null); refreshList(); setTab('overview') }, onError: setError }) : null,
+        settingsOpen ? h('div', { className: 'hx-modal', onMouseDown: (e) => { if (e.target === e.currentTarget) setSettingsOpen(false) } },
+          h('div', { className: 'hx-modal-box' },
+            h('div', { className: 'hx-pop-h' }, h('b', {}, `设置 · ${TITLE}`), h('span', { className: 'hx-sp' }), h('button', { className: 'hx-btn sm', onClick: () => setSettingsOpen(false) }, '关闭')),
+            h('div', { className: 'hx-scroll', style: { flex: 1 } }, h(SettingsSection)))) : null,
         h('div', { className: 'hx-body' },
           !run ? h('div', { className: 'hx-frame hx-empty', style: { flex: 1 } }, runs.length ? '加载中…' : '还没有批次。点右上角「＋ 新批次」，选择匿名化后的数据目录开始转换。')
             : tab === 'overview' ? h(Overview, { run, openPatient, onTab: setTab })
@@ -315,14 +421,14 @@ window.__ModuleLoader__.load({
         setBusy(true)
         try { const v = await call('start', { inputDir, outputRoot: outputRoot || undefined }); onStarted(v.runId) } catch (e) { onError(msg(e)) } finally { setBusy(false) }
       }
-      return h('div', { className: 'hx-frame hx-pad', style: { display: 'flex', gap: 10, alignItems: 'flex-end', flexWrap: 'wrap' } },
-        h('label', { className: 'hx-field', style: { flex: 3, minWidth: 280 } }, '输入目录或文件（通常是匿名化插件的交付目录；json / ndjson / csv，字段命名不限）',
+      return h('div', { style: { display: 'flex', flexDirection: 'column', gap: 10 } },
+        h('label', { className: 'hx-field' }, '输入目录或文件（通常是匿名化插件的交付目录；json / ndjson / csv，字段命名不限）',
           h('div', { style: { display: 'flex', gap: 6 } }, h('input', { className: 'hx-input', style: { flex: 1 }, value: inputDir, onChange: (e) => setInput(e.target.value), placeholder: '/path/to/_medical-anonymizer/…' }), h('button', { className: 'hx-btn', onClick: pick }, '选择…'))),
-        h('label', { className: 'hx-field', style: { flex: 2, minWidth: 200 } }, '输出根目录（可空：输入旁的 _medical-hl7）', h('input', { className: 'hx-input', value: outputRoot, onChange: (e) => setOut(e.target.value) })),
-        h('button', { className: 'hx-btn pri', disabled: !inputDir || busy, onClick: start }, busy ? '启动中…' : '开始转换'))
+        h('label', { className: 'hx-field' }, '输出根目录（可空：输入旁的 _medical-hl7）', h('input', { className: 'hx-input', value: outputRoot, onChange: (e) => setOut(e.target.value) })),
+        h('button', { className: 'hx-btn new', style: { alignSelf: 'stretch' }, disabled: !inputDir || busy, onClick: start }, busy ? '启动中…' : '▶ 开始转换'))
     }
 
-    /* ------------------------------------------------- 数据去向（源头 → 固定的箱子） */
+    /* ------------------------------------------------- 映射总览（源数据 → FHIR 资源类型） */
     const BOXES = ['Patient', 'Encounter', 'Condition', 'Observation', 'DiagnosticReport', 'Specimen', 'Procedure', 'MedicationRequest', 'DocumentReference', 'ChargeItem']
     const KIND_ZH = { patient: '病人信息', address: '地址', encounter: '就诊登记', condition: '诊断', lab: '检验', imaging: '检查', procedure: '手术操作', document: '病历文书', observation: '体征与问卷', medication: '用药医嘱', charge: '费用', death: '死亡', generic: '其他（未映射）' }
     const pct = (x) => (x == null ? '—' : `${(x * 100).toFixed(x > 0 && x < 0.1 ? 1 : 0)}%`)
@@ -372,7 +478,7 @@ window.__ModuleLoader__.load({
       const unmappedConcepts = S ? S.terminology.concepts - S.terminology.mappedConcepts : 0
       const MP = run.model?.phases
       const gates = [
-        { x: gx[0], no: '①', name: 'Schema 同构', tab: 'schema', sub: S ? `${S.schema.tables} 张表${S.schema.inferred ? ` · Basic ${S.schema.inferred}` : ''}` : '—', pile: S?.schema.inferred ?? 0, pileLabel: '无规格', warn: true, model: MP?.schema?.tables ? `模型起草 ${MP.schema.tables}` : null },
+        { x: gx[0], no: '①', name: 'Schema 同构', tab: 'schema', sub: S ? `${S.schema.tables} 张表${S.schema.inferred ? ` · Basic ${S.schema.inferred}` : ''}` : '—', pile: S?.schema.inferred ?? 0, pileLabel: '无映射规格', warn: true, model: MP?.schema?.tables ? `模型起草 ${MP.schema.tables}` : null },
         { x: gx[1], no: '②', name: '值域归一', tab: 'domains', sub: S ? `覆盖 ${pct(S.domains.coverage)}` : '—', pile, pileLabel: '待确认', warn: true, model: MP?.values?.asked ? `模型采用 ${MP.values.confirmed + MP.values.text + MP.values.invalid}` : null },
         { x: gx[2], no: '③', name: '术语对照', tab: 'terms', sub: S ? `${fmt(S.terminology.mappedConcepts)} / ${fmt(S.terminology.concepts)} 概念` : '—', pile: unmappedConcepts, pileLabel: '未对照', warn: false, model: MP?.terms?.asked ? `模型采用 ${MP.terms.confirmed}` : null },
       ]
@@ -402,7 +508,7 @@ window.__ModuleLoader__.load({
       const noData = !M.sources.length
       // gates
       for (const g of noData ? [] : gates) {
-        parts.push(h('g', { key: K(), className: 'hx-gate', onClick: () => onTab(g.tab) }, h('title', {}, `${g.name}：点开复核`),
+        parts.push(h('g', { key: K(), className: 'hx-gate', onClick: () => onTab(g.tab) }, h('title', {}, `${g.name}：点击查看详情`),
           h('polygon', { points: P2([[g.x - 15, top - 8], [g.x + 17, top - 8], [g.x + 17 + DX * 2, top - 8 - DY * 2], [g.x - 15 + DX * 2, top - 8 - DY * 2]]), className: 'hx-glass-top' }),
           h('polygon', { points: P2([[g.x + 17, top - 8], [g.x + 17 + DX * 2, top - 8 - DY * 2], [g.x + 17 + DX * 2, H - 62 - DY * 2], [g.x + 17, H - 62]]), className: 'hx-glass-side' }),
           h('rect', { x: g.x - 17, y: top - 8, width: 34, height: H - top - 54, rx: 6, className: 'hx-gate-band' }),
@@ -422,7 +528,7 @@ window.__ModuleLoader__.load({
         const d = `M${x1},${y1} C${x1 + 210},${y1} ${x2 - 210},${y2} ${x2},${y2}`
         const sw2 = toBin ? Math.min(w, 6) : w
         if (!toBin) parts.push(h('path', { key: K(), d, className: 'hx-link-shadow', strokeWidth: sw2, transform: 'translate(5,7)' }))
-        parts.push(h('path', { key: K(), d, className: `hx-link${toBin ? ' bin' : ''}${running ? ' run' : ''}`, strokeWidth: sw2 }, h('title', {}, `${l.from} → ${toBin ? '原样保留（Basic）' : `${l.to} ${TYPE_ZH[l.to] ?? ''}`}：${fmt(l.n)}`)))
+        parts.push(h('path', { key: K(), d, className: `hx-link${toBin ? ' bin' : ''}${running ? ' run' : ''}`, strokeWidth: sw2 }, h('title', {}, `${l.from} → ${toBin ? '未映射（Basic / source-field）' : `${l.to} ${TYPE_ZH[l.to] ?? ''}`}：${fmt(l.n)}`)))
         if (!toBin && w > 4) parts.push(h('path', { key: K(), d, className: 'hx-link-hi', strokeWidth: Math.max(1, w * 0.18), transform: `translate(0,${(-w * 0.28).toFixed(1)})` }))
       }
       // piles
@@ -440,7 +546,7 @@ window.__ModuleLoader__.load({
         parts.push(h('g', { key: K(), className: 'hx-gate', onClick: () => onTab(g.tab) }, items, h('text', { x: g.x + 20, y: H - 62, className: g.warn ? 'hx-t-warn' : 'hx-t-sub' }, `${g.pileLabel} ${fmt(g.pile)}`)))
       }
       // sources
-      if (!noData) parts.push(h('text', { key: K(), x: sx, y: top - 22, className: 'hx-t-cap' }, `源头 · ${M.sources.length} ${M.grouped ? '类（按记录类别合并）' : '组表'}`))
+      if (!noData) parts.push(h('text', { key: K(), x: sx, y: top - 22, className: 'hx-t-cap' }, `源数据 · ${M.sources.length} ${M.grouped ? '类（按记录类别合并）' : '张表'}`))
       for (const [name, p] of sPos) {
         parts.push(h('g', { key: K(), className: 'hx-src', onClick: () => onTab('schema') }, h('title', {}, `${name}：${fmt(p.s.n)} 个资源${M.grouped ? `\n${[...p.s.tables].slice(0, 12).join('、')}${p.s.tables.size > 12 ? '…' : ''}` : ''}${p.s.drafted ? '\n含模型起草的映射规格' : ''}`),
           slab(sx, p.y, sw, p.h, 'hx-slab', 'a'),
@@ -453,11 +559,11 @@ window.__ModuleLoader__.load({
         const cx = (sx + bx) / 2 - 20, cy = top + 200
         parts.push(h('g', { key: K() },
           h('rect', { x: cx - 210, y: cy - 46, width: 420, height: 92, rx: 10, className: 'hx-empty-card' }),
-          h('text', { x: cx, y: cy - 8, textAnchor: 'middle', className: 'hx-t-strong' }, running ? '正在读取和整理数据…' : '这个批次还没有去向统计'),
-          h('text', { x: cx, y: cy + 16, textAnchor: 'middle', className: 'hx-t-sub' }, running ? '第一位病人转换完成后，流向会出现在这里' : '交付的 Bundle 已不在原位置；重跑这一批即可看到')))
+          h('text', { x: cx, y: cy - 8, textAnchor: 'middle', className: 'hx-t-strong' }, running ? '正在读取和整理数据…' : '该批次暂无映射统计'),
+          h('text', { x: cx, y: cy + 16, textAnchor: 'middle', className: 'hx-t-sub' }, running ? '第一位病人转换完成后，在此显示映射情况' : '交付的 Bundle 已移动或删除，重新运行该批次后可查看')))
       }
       // boxes
-      parts.push(h('text', { key: K(), x: bx, y: top - 22, className: 'hx-t-cap' }, 'FHIR R4 · 固定的箱子（立柱高度＝字段填充率）'))
+      parts.push(h('text', { key: K(), x: bx, y: top - 22, className: 'hx-t-cap' }, 'FHIR R4 资源类型（柱高 = 元素填充率）'))
       for (const t of BOXES) {
         const b = bPos.get(t); const n = M.byType[t] ?? 0; const empty = !n
         const st = M.slots[t]; const names = M.names[t] ?? []
@@ -483,11 +589,11 @@ window.__ModuleLoader__.load({
       }
       const leftover = run.patients.reduce((n, p) => n + (p.leftover ?? 0), 0)
       const refs = ['Organization', 'Practitioner'].filter((t) => M.byType[t]).map((t) => `${TYPE_ZH[t]} ${fmt(M.byType[t])}`).join(' · ')
-      parts.push(h('g', { key: K(), className: 'hx-box empty', onClick: () => onTab('schema') }, h('title', {}, '没有对应到 FHIR 字段的源字段，原样挂 source-field 扩展；没有规格的表按 Basic 保留'),
+      parts.push(h('g', { key: K(), className: 'hx-box empty', onClick: () => onTab('schema') }, h('title', {}, '未映射到 FHIR 元素的源字段以 source-field 扩展保留；无映射规格的表以 Basic 资源保存'),
         h('rect', { x: bx, y: binY, width: bw, height: 30, rx: 6, className: 'hx-box-r' }),
-        h('text', { x: bx + 12, y: binY + 19, className: 'hx-t-sub' }, `原样保留 · ${fmt(leftover)} 个字段值挂 source-field · ${fmt(M.byType.Basic ?? 0)} 条按 Basic`)))
-      if (refs) parts.push(h('text', { key: K(), x: bx, y: binY + 48, className: 'hx-t-sub' }, `被引用：${refs}`))
-      return h('svg', { className: 'hx-flow', viewBox: `0 0 ${W} ${H}`, preserveAspectRatio: 'xMidYMid meet', role: 'img', 'aria-label': '数据去向' }, parts)
+        h('text', { x: bx + 12, y: binY + 19, className: 'hx-t-sub' }, `未映射：${fmt(leftover)} 个字段值保留在 source-field 扩展 · ${fmt(M.byType.Basic ?? 0)} 条记录以 Basic 资源保存`)))
+      if (refs) parts.push(h('text', { key: K(), x: bx, y: binY + 48, className: 'hx-t-sub' }, `引用资源：${refs}`))
+      return h('svg', { className: 'hx-flow', viewBox: `0 0 ${W} ${H}`, preserveAspectRatio: 'xMidYMid meet', role: 'img', 'aria-label': '映射总览' }, parts)
     }
 
     function stepStates(run) {
@@ -522,9 +628,9 @@ window.__ModuleLoader__.load({
       const pend = S ? S.domains.pending + S.domains.unmapped : 0
       const alerts = [
         run.error && { tone: 'b', title: '批次出错', sub: String(run.error).split('\n')[0], go: 'report', btn: '报告' },
-        t.held && { tone: 'w', title: `暂扣 ${t.held} 位病人`, sub: '验收门未过，不在交付目录里', go: 'patients', btn: '病人' },
-        pend && { tone: 'w', title: `值域待处理 ${fmt(pend)} 个取值`, sub: lowCov.length ? `${lowCov.length} 个值域覆盖率低于阈值（不阻断）` : '原值照常交付', go: 'domains', btn: '复核' },
-        run.model?.phases?.schema?.review && { tone: 'w', title: `模型起草的规格 ${run.model.phases.schema.review} 张有未解决问题`, sub: '请人工过目后确认', go: 'schema', btn: '查看' },
+        t.held && { tone: 'w', title: `暂扣 ${t.held} 位病人`, sub: '未通过验收，未交付', go: 'patients', btn: '病人' },
+        pend && { tone: 'w', title: `值域待处理 ${fmt(pend)} 个取值`, sub: lowCov.length ? `${lowCov.length} 个值域覆盖率低于阈值（不阻断交付）` : '按原值交付', go: 'domains', btn: '复核' },
+        run.model?.phases?.schema?.review && { tone: 'w', title: `模型起草的规格 ${run.model.phases.schema.review} 张存在未解决问题`, sub: '需人工审核后确认', go: 'schema', btn: '查看' },
         ...others.map((w) => ({ tone: 'w', title: w.length > 26 ? `${w.slice(0, 26)}…` : w, sub: w.length > 26 ? w : '', go: 'report', btn: '报告' })),
       ].filter(Boolean)
       const st = stepStates(run)
@@ -535,24 +641,24 @@ window.__ModuleLoader__.load({
       const kv = (k, v, cls = '') => [h('span', { key: `${k}k`, className: 'hx-faint' }, k), h('span', { key: `${k}v`, className: `hx-num ${cls}`, title: typeof v === 'string' ? v : undefined }, v)]
       return h('div', { className: 'hx-ov' },
         h('div', { className: 'hx-frame hx-ov-stage' },
-          h('div', { className: 'hx-ov-head' }, h('b', {}, '数据去向'), h('span', { className: 'hx-cap' }, 'SOURCES → FHIR'),
+          h('div', { className: 'hx-ov-head' }, h('b', {}, '映射总览'), h('span', { className: 'hx-cap' }, 'SOURCE → FHIR R4'),
             h('div', { className: 'hx-steps' }, STEP.map(([k, l]) => h('span', { key: k, className: st[k] }, `${l}${st[k] === 'done' ? ' ✓' : st[k] === 'warn' ? ' !' : st[k] === 'run' ? ' …' : ''}`)))),
           h(FlowView, { run, onTab }),
-          h('div', { className: 'hx-ov-foot hx-faint' }, '线越粗记录越多 · 箱子里每格是一个 FHIR 字段的填充率（%），虚线格＝这一格还空着 · 点关口、箱子进入对应页面')),
+          h('div', { className: 'hx-ov-foot hx-faint' }, '线宽表示记录数 · 每列为一个 FHIR 元素的填充率（%），虚线表示填充率为 0 · 点击阶段或资源类型查看详情')),
         h('div', { className: 'hx-frame hx-pad hx-ov-side hx-scroll' },
           h('div', { className: 'hx-tiles' },
             [['病人', fmt(t.patients), ''], ['资源', fmt(t.resources), ''], ['暂扣', fmt(t.held), t.held ? 'hx-warn' : ''], ['结构错误', fmt(t.errors), t.errors ? 'hx-bad' : 'hx-ok']].map(([k, v, c]) => h('div', { key: k }, h('small', {}, k), h('b', { className: `hx-num ${c}` }, v)))),
           running && run.current ? h('div', { className: 'hx-now' }, h('i', {}), `${run.current.unit} · ${run.current.step}`) : null,
-          alerts.length ? h(React.Fragment, {}, h('div', { className: 'hx-sec' }, h('b', {}, '待办'), h('span', { className: 'hx-num hx-faint' }, alerts.length)),
+          alerts.length ? h(React.Fragment, {}, h('div', { className: 'hx-sec' }, h('b', {}, '待处理'), h('span', { className: 'hx-num hx-faint' }, alerts.length)),
             alerts.slice(0, 4).map((a, i) => h('div', { key: i, className: `hx-alert ${a.tone}`, title: a.sub || a.title },
               h('div', { style: { minWidth: 0 } }, h('div', { className: 'hx-alert-t' }, a.title), a.sub ? h('div', { className: 'hx-alert-s' }, a.sub) : null),
               h('button', { className: 'hx-btn sm', onClick: () => onTab(a.go) }, a.btn)))) : null,
-          h('div', { className: 'hx-sec' }, h('b', {}, '三道关')),
+          h('div', { className: 'hx-sec' }, h('b', {}, '处理阶段')),
           S ? h('div', { className: 'hx-stage-rows' },
             h('div', { onClick: () => onTab('schema') }, h('span', {}, '① Schema 同构'), h(Coverage, { value: S.schema.tables ? (S.schema.tables - S.schema.inferred) / S.schema.tables : null }), h('span', { className: 'hx-faint' }, `${S.schema.tables} 表`)),
             h('div', { onClick: () => onTab('domains') }, h('span', {}, '② 值域归一'), h(Coverage, { value: S.domains.coverage }), h('span', { className: pend ? 'hx-warn' : 'hx-faint' }, pend ? `待 ${fmt(pend)}` : '全部')),
             h('div', { onClick: () => onTab('terms') }, h('span', {}, '③ 术语对照'), h(Coverage, { value: S.terminology.coverage }), h('span', { className: 'hx-faint' }, `${fmt(S.terminology.mappedConcepts)}/${fmt(S.terminology.concepts)}`))) : h('div', { className: 'hx-faint' }, running ? '处理中…' : '—'),
-          worst.length ? h(React.Fragment, {}, h('div', { className: 'hx-sec' }, h('b', {}, '箱子里最空的格子')),
+          worst.length ? h(React.Fragment, {}, h('div', { className: 'hx-sec' }, h('b', {}, '填充率最低的元素')),
             worst.map((x, i) => h('div', { key: i, className: 'hx-hole', onClick: () => onTab(/标准|SNOMED/.test(x.nm) ? 'terms' : /解释/.test(x.nm) ? 'domains' : 'resources') }, h('span', {}, `${TYPE_ZH[x.type]} · ${x.nm}`), h('span', { className: 'hx-num hx-warn' }, pct(x.rate))))) : null,
           h('div', { className: 'hx-sec' }, h('b', {}, '病人'), h('span', { className: 'hx-faint' }, `交付 ${fmt(t.done)} · 暂扣 ${fmt(t.held)}`)),
           h('div', { className: 'hx-cells' }, P.slice(0, 300).map((p) => h('i', { key: p.name, title: `${p.name}：${p.status === 'held' ? '暂扣' : '交付'}，资源 ${p.resources}`, className: p.status === 'held' ? 'w' : 'o', onClick: () => openPatient(p.name) }))),
@@ -562,10 +668,10 @@ window.__ModuleLoader__.load({
             ...kv('来源', run.provenance?.kind === 'delivered' ? '匿名化正式交付' : run.provenance?.kind === 'withheld' ? '匿名化暂扣结果' : '未知来源', run.provenance?.kind === 'delivered' ? 'hx-ok' : 'hx-warn'),
             ...kv('模型', run.model?.configured ? `${run.model.models?.suggest ?? ''}${run.model.models?.verify ? ` / ${run.model.models.verify}` : ''}` : '未使用', run.model?.configured ? 'hx-vio' : 'hx-faint'),
             ...kv('交付', run.output ? run.output.split('/').slice(-2).join('/') : running ? '处理中' : '未交付'),
-            ...kv('格式', { both: '按人 + 按资源', bundles: '按人', ndjson: '按资源' }[run.outputFormat ?? 'both']),
+            ...kv('格式', { both: '按病人 + 按资源类型', bundles: '按病人', ndjson: '按资源类型' }[run.outputFormat ?? 'both']),
             ...kv('对照表', run.vocab?.version ?? '—')),
           h('div', { className: 'hx-sec' }, h('b', {}, '颜色')),
-          h('div', { className: 'hx-legend2' }, [['fire', '已填 / 已过关'], ['neutral', '未经处理'], ['ok', '完成'], ['warn', '待确认'], ['bad', '错误'], ['vio', '模型']].map(([k, l]) => h('span', { key: k }, h('i', { className: `c-${k}` }), l)))))
+          h('div', { className: 'hx-legend2' }, [['fire', '已映射'], ['neutral', '未处理'], ['ok', '完成'], ['warn', '待确认'], ['bad', '错误'], ['vio', '模型']].map(([k, l]) => h('span', { key: k }, h('i', { className: `c-${k}` }), l)))))
     }
 
     /* --------------------------------------------------------------- patients */
@@ -575,7 +681,7 @@ window.__ModuleLoader__.load({
       return h('div', { style: { display: 'flex', gap: 8, flex: 1, minHeight: 0 } },
         h('div', { className: 'hx-frame hx-scroll', style: { flex: 1.3 } },
           h('table', {},
-            h('thead', {}, h('tr', {}, ['病人', '状态', '源记录', '资源', '结构错误', '残留标识符', '登记缺失就诊', '耗时'].map((x) => h('th', { key: x }, x)))),
+            h('thead', {}, h('tr', {}, ['病人', '状态', '源记录', '资源', '结构错误', '残留标识符', '未登记就诊', '耗时'].map((x) => h('th', { key: x }, x)))),
             h('tbody', {}, run.patients.map((x) => h('tr', { key: x.name, className: `click${x.name === patient ? ' sel' : ''}`, onClick: () => setPatient(x.name) },
               h('td', { className: 'hx-num' }, x.name),
               h('td', {}, x.status === 'held' ? h('span', { className: 'hx-chip w' }, '暂扣') : h('span', { className: 'hx-chip ok' }, '交付')),
@@ -646,8 +752,8 @@ window.__ModuleLoader__.load({
     }
 
     /* ------------------------------------------------------- ① Schema 同构 */
-    const DRAFT_ST = { applied: ['模型起草 · 未复核', 't'], review: ['模型起草 · 有未解决问题', 'w'], confirmed: ['人工已确认', 'ok'], rejected: ['已驳回 · 按 Basic', 'b'], failed: ['起草失败', 'b'] }
-    const draftLabel = (dr) => (dr.status === 'applied' ? (dr.agreement === 'disputed' ? ['模型起草 · 复判为准', 'vio'] : ['模型起草 · 两模型一致', 't']) : DRAFT_ST[dr.status] ?? [dr.status, ''])
+    const DRAFT_ST = { applied: ['模型起草 · 未复核', 't'], review: ['模型起草 · 存在未解决问题', 'w'], confirmed: ['人工已确认', 'ok'], rejected: ['已驳回 · 按 Basic', 'b'], failed: ['起草失败', 'b'] }
+    const draftLabel = (dr) => (dr.status === 'applied' ? (dr.agreement === 'disputed' ? ['模型起草 · 以复判结论为准', 'vio'] : ['模型起草 · 两个模型结论一致', 't']) : DRAFT_ST[dr.status] ?? [dr.status, ''])
     function SchemaTab({ run, onRerun }) {
       const [tick, setTick] = useState(0)
       const d = useAsync(() => call('schema', { runId: run.id }), [run.id, run.status, tick])
@@ -665,8 +771,8 @@ window.__ModuleLoader__.load({
         h('div', { style: { display: 'flex', gap: 8, flex: 1, minHeight: 0 } },
         h('div', { className: 'hx-frame hx-scroll', style: { width: 400, flex: 'none' } },
           h('div', { className: 'hx-pad', style: { paddingBottom: 4 } }, h('div', { className: 'hx-h' }, h('b', {}, '① Schema 同构'), h('span', { className: 'hx-cap' }, 'HARMONIZE')),
-            h('div', { className: 'hx-muted', style: { fontSize: 11.5, lineHeight: 1.6 } }, '表 → 记录类别，字段 → 语义角色。只搬不改：这一步不解释任何取值。没有规格的表由模型起草（插件校验 + 独立盲审 + 复判），没对上的字段原样保留。'),
-            d.value.model?.tables ? h('div', { className: 'hx-muted', style: { fontSize: 11.5, marginTop: 6 } }, `本批模型起草 ${d.value.model.tables} 张：一致采用 ${d.value.model.applied}、有分歧 ${d.value.model.review}、失败 ${d.value.model.failed}`) : null),
+            h('div', { className: 'hx-muted', style: { fontSize: 11.5, lineHeight: 1.6 } }, '表 → 记录类别，字段 → 语义角色。本阶段只做结构映射，不改变任何取值。无映射规格的表由模型起草（插件校验 + 独立盲审 + 复判）；未映射的字段以 source-field 扩展保留。'),
+            d.value.model?.tables ? h('div', { className: 'hx-muted', style: { fontSize: 11.5, marginTop: 6 } }, `本批由模型起草 ${d.value.model.tables} 张：一致并采用 ${d.value.model.applied}、有分歧 ${d.value.model.review}、失败 ${d.value.model.failed}`) : null),
           h('table', {}, h('thead', {}, h('tr', {}, ['表', '类别', '行数', '保留字段'].map((x) => h('th', { key: x }, x)))),
             h('tbody', {}, tables.map((x) => h('tr', { key: x.table, className: `click${x === t ? ' sel' : ''}`, onClick: () => setSel(x.table) },
               h('td', { className: 'hx-num' }, x.table, x.inferred ? h('span', { className: 'hx-chip w', style: { marginLeft: 6 } }, '自动推断 · Basic') : x.draft ? h('span', { className: `hx-chip ${draftLabel(x.draft)[1]}`, style: { marginLeft: 6 } }, draftLabel(x.draft)[0]) : null),
@@ -683,13 +789,13 @@ window.__ModuleLoader__.load({
               h('button', { className: 'hx-btn sm', onClick: () => setJson(json === null ? JSON.stringify(dr.spec, null, 2) : null) }, json === null ? '修改' : '收起'),
               h('button', { className: 'hx-btn sm', onClick: () => act(dr.file, 'redraft') }, '重新起草'),
               dr.status !== 'rejected' ? h('button', { className: 'hx-btn sm', onClick: () => act(dr.file, 'reject') }, '驳回（按 Basic）') : null),
-            dr.disputed?.length ? h('div', { className: 'hx-warn', style: { fontSize: 12, marginTop: 6 } }, `两模型有分歧、已先拿掉的字段（原样保留）：${dr.disputed.join('、')}`) : null,
-            dr.dropped?.length ? h('div', { className: 'hx-faint', style: { fontSize: 12, marginTop: 4 } }, `插件校验后去掉的角色：${dr.dropped.join('、')}`) : null,
-            dr.links?.length ? h('div', { style: { fontSize: 12, marginTop: 4 } }, h('span', { className: 'hx-faint' }, '就诊号关联（按数据核对，覆盖了模型的选择）：'), dr.links.map((x, i) => h('div', { key: i, className: 'hx-num', style: { marginTop: 2 } }, `${x.role}：${x.previous ?? '—'} → ${x.field ?? '（拿掉）'}`, h('span', { className: 'hx-faint' }, `　${x.evidence}`)))) : null,
+            dr.disputed?.length ? h('div', { className: 'hx-warn', style: { fontSize: 12, marginTop: 6 } }, `两个模型结论不一致、暂未映射的字段（以 source-field 保留）：${dr.disputed.join('、')}`) : null,
+            dr.dropped?.length ? h('div', { className: 'hx-faint', style: { fontSize: 12, marginTop: 4 } }, `未通过插件校验而移除的角色：${dr.dropped.join('、')}`) : null,
+            dr.links?.length ? h('div', { style: { fontSize: 12, marginTop: 4 } }, h('span', { className: 'hx-faint' }, '就诊号关联（经数据核对，已替换模型的选择）：'), dr.links.map((x, i) => h('div', { key: i, className: 'hx-num', style: { marginTop: 2 } }, `${x.role}：${x.previous ?? '—'} → ${x.field ?? '（移除）'}`, h('span', { className: 'hx-faint' }, `　${x.evidence}`)))) : null,
             dr.issue?.reason ? h('div', { className: 'hx-warn', style: { fontSize: 12, marginTop: 4 } }, `未解决的问题：${dr.issue.reason}`) : null,
-            dr.dismissed?.length ? h('div', { style: { fontSize: 12, marginTop: 4 } }, h('span', { className: 'hx-faint' }, '核验模型提出、复判未采纳（请人工过目）：'), dr.dismissed.map((x, i) => h('div', { key: i, style: { marginTop: 2 } }, h('span', { className: 'hx-warn' }, `R${x.round} ${x.reason}`), h('span', { className: 'hx-faint' }, ` ← 复判：${x.ruling}`)))) : null,
+            dr.dismissed?.length ? h('div', { style: { fontSize: 12, marginTop: 4 } }, h('span', { className: 'hx-faint' }, '核验模型提出、复判未采纳的意见（需人工审核）：'), dr.dismissed.map((x, i) => h('div', { key: i, style: { marginTop: 2 } }, h('span', { className: 'hx-warn' }, `R${x.round} ${x.reason}`), h('span', { className: 'hx-faint' }, ` ← 复判：${x.ruling}`)))) : null,
             h('details', { style: { marginTop: 6 } }, h('summary', { className: 'hx-faint', style: { fontSize: 12, cursor: 'pointer' } }, '起草过程'),
-              (dr.trail ?? []).map((x, i) => h('div', { key: i, style: { fontSize: 11.5, marginTop: 3 } }, h('span', { className: 'hx-num hx-faint' }, `R${x.round} ${x.step}`), ' ', x.ok === true ? h('span', { className: 'hx-ok' }, '通过 ') : x.ok === false ? h('span', { className: 'hx-warn' }, '报出问题 ') : x.revise === true ? h('span', { className: 'hx-ok' }, '改正 ') : x.revise === false ? h('span', { className: 'hx-warn' }, '坚持 ') : null, x.reason ?? ''))),
+              (dr.trail ?? []).map((x, i) => h('div', { key: i, style: { fontSize: 11.5, marginTop: 3 } }, h('span', { className: 'hx-num hx-faint' }, `R${x.round} ${x.step}`), ' ', x.ok === true ? h('span', { className: 'hx-ok' }, '通过 ') : x.ok === false ? h('span', { className: 'hx-warn' }, '提出异议 ') : x.revise === true ? h('span', { className: 'hx-ok' }, '修正 ') : x.revise === false ? h('span', { className: 'hx-warn' }, '维持原结论 ') : null, x.reason ?? ''))),
             json !== null ? h('div', { style: { marginTop: 8 } }, h('textarea', { className: 'hx-input hx-num', style: { width: '100%', height: 260, fontSize: 11.5 }, value: json, onChange: (e) => setJson(e.target.value) }),
               h('div', { style: { display: 'flex', gap: 8, marginTop: 6 } }, h('button', { className: 'hx-btn pri', onClick: () => act(dr.file, 'edit', json) }, '保存并确认'), h('span', { className: 'hx-faint', style: { fontSize: 11.5 } }, '规格格式见 lib/mapping/roles.js；保存后下次运行生效'))) : null,
             err ? h('div', { className: 'hx-err', style: { marginTop: 6 } }, err) : null) : null,
@@ -700,7 +806,7 @@ window.__ModuleLoader__.load({
               h('td', { className: 'hx-num' }, fmt(r.filled)),
               h('td', {}, h('div', { className: 'hx-bars', style: { gridTemplateColumns: '1fr auto' } }, h('div', { className: 'track' }, h('span', { style: { width: `${t.rows ? (r.filled / t.rows) * 100 : 0}%` } })), h('span', { className: 'hx-num hx-faint' }, `${t.rows ? Math.round((r.filled / t.rows) * 100) : 0}%`))),
               h('td', { className: 'hx-num hx-faint' }, r.domain ?? ''))))),
-          h('div', { className: 'hx-sec' }, h('b', {}, '原样保留的字段'), h('span', { className: 'hx-faint' }, 'source-field 扩展；出现多的值得补进规格')),
+          h('div', { className: 'hx-sec' }, h('b', {}, '原样保留的字段'), h('span', { className: 'hx-faint' }, 'source-field 扩展；出现较多的字段建议补充到映射规格')),
           t.extras.length ? h('div', {}, t.extras.map(([f, n]) => h('span', { key: f, className: 'hx-chip' }, `${f} · ${fmt(n)}`))) : h('div', { className: 'hx-faint' }, '无'),
           t.fields ? h(React.Fragment, {}, h('div', { className: 'hx-sec' }, h('b', {}, '字段画像')), h('div', {}, t.fields.map((f) => h('span', { key: f.name, className: `hx-chip${f.pseudonym ? ' w' : f.time ? ' t' : ''}`, title: `填充 ${f.fill}%${f.pseudonym ? ` · ${f.pseudonym}假名` : ''}${f.time ? ' · 时间' : ''}` }, f.name)))) : null)))
     }
@@ -743,13 +849,13 @@ window.__ModuleLoader__.load({
         h('div', { style: { display: 'flex', gap: 8, flex: 1, minHeight: 0 } },
           h('div', { className: 'hx-frame hx-scroll', style: { width: 360, flex: 'none' } },
             h('div', { className: 'hx-pad', style: { paddingBottom: 4 } }, h('div', { className: 'hx-h' }, h('b', {}, '② 值域归一'), h('span', { className: 'hx-cap' }, 'NORMALIZE')),
-              h('div', { className: 'hx-muted', style: { fontSize: 11.5, lineHeight: 1.6 } }, '同一件事写法不统一 → 规范值。原值始终保留；含义未确认的标“待确认”，不猜。'),
+              h('div', { className: 'hx-muted', style: { fontSize: 11.5, lineHeight: 1.6 } }, '将同一含义的不同写法统一为规范值。原值始终保留；含义未经确认的取值标为“待确认”，不做推测。'),
               d.value.summary ? h('div', { className: 'hx-muted', style: { fontSize: 11.5, marginTop: 6 } }, `覆盖率 ${(d.value.summary.coverage * 100).toFixed(1)}% · 待确认 ${fmt(d.value.summary.pending)} · 无对照 ${fmt(d.value.summary.unmapped)} · 不属于/无法解析 ${fmt(d.value.summary.invalid)}`) : null),
             h('table', {}, h('thead', {}, h('tr', {}, ['值域', '取值', '覆盖率', ''].map((x, i) => h('th', { key: i }, x)))),
               h('tbody', {}, doms.map((x) => h('tr', { key: x.id, className: `click${x === dom ? ' sel' : ''}`, onClick: () => { setSel(x.id); setEdit(null) } },
                 h('td', {}, x.name, h('div', { className: 'hx-faint hx-num', style: { fontSize: 10 } }, x.kind === 'enum' ? '对照' : '格式')),
                 h('td', { className: 'hx-num' }, fmt(x.total)), h('td', { style: { width: 110 } }, h(Coverage, { value: x.coverage })),
-                h('td', {}, (x.byStatus.pending ?? 0) + (x.byStatus.unmapped ?? 0) ? h('span', { className: 'hx-chip w' }, fmt((x.byStatus.pending ?? 0) + (x.byStatus.unmapped ?? 0))) : null, x.changed ? h('span', { className: 'hx-chip t' }, `改 ${x.changed}`) : null)))))),
+                h('td', {}, (x.byStatus.pending ?? 0) + (x.byStatus.unmapped ?? 0) ? h('span', { className: 'hx-chip w' }, fmt((x.byStatus.pending ?? 0) + (x.byStatus.unmapped ?? 0))) : null, x.changed ? h('span', { className: 'hx-chip t' }, `已修改 ${x.changed}`) : null)))))),
           !dom ? null : h('div', { className: 'hx-frame hx-col', style: { flex: 1, minWidth: 0 } },
             h('div', { className: 'hx-pad', style: { paddingBottom: 6 } },
               h('div', { className: 'hx-h' }, h('b', {}, dom.name), h('span', { className: 'hx-faint hx-num' }, dom.id), dom.version ? h('span', { className: 'hx-chip' }, `v${dom.version}`) : null, dom.reviewed ? h('span', { className: 'hx-chip t' }, `本机复核 ${dom.reviewed}`) : null),
@@ -812,18 +918,18 @@ window.__ModuleLoader__.load({
         h('div', { style: { display: 'flex', gap: 8, flex: 1, minHeight: 0 } },
           h('div', { className: 'hx-frame hx-scroll', style: { width: 360, flex: 'none' } },
             h('div', { className: 'hx-pad', style: { paddingBottom: 4 } }, h('div', { className: 'hx-h' }, h('b', {}, '③ 术语对照'), h('span', { className: 'hx-cap' }, 'TERMINOLOGY')),
-              h('div', { className: 'hx-muted', style: { fontSize: 11.5, lineHeight: 1.6 } }, '本地概念 → 外部标准术语（LOINC、SNOMED CT、国家标准代码表）。不改原值，已确认的对照另加一个标准编码；没对照的照常交付。')),
+              h('div', { className: 'hx-muted', style: { fontSize: 11.5, lineHeight: 1.6 } }, '本地概念 → 标准术语（LOINC、SNOMED CT、国家标准代码表）。不修改原值；已确认的对照另行添加标准编码，未对照的概念不影响交付。')),
             h('table', {}, h('thead', {}, h('tr', {}, ['对照', '概念', '覆盖（按次数）'].map((x) => h('th', { key: x }, x)))),
               h('tbody', {}, bs.map((x) => h('tr', { key: x.id, className: `click${x === b ? ' sel' : ''}`, onClick: () => { setSel(x.id); setEdit(null) } },
-                h('td', {}, x.name, x.changed ? h('span', { className: 'hx-chip t', style: { marginLeft: 4 } }, `改 ${x.changed}`) : null),
+                h('td', {}, x.name, x.changed ? h('span', { className: 'hx-chip t', style: { marginLeft: 4 } }, `已修改 ${x.changed}`) : null),
                 h('td', { className: 'hx-num' }, `${fmt(x.mappedConcepts)}/${fmt(x.conceptCount)}`), h('td', { style: { width: 110 } }, h(Coverage, { value: x.coverage }))))))),
           !b ? null : h('div', { className: 'hx-frame hx-col', style: { flex: 1, minWidth: 0 } },
             h('div', { className: 'hx-pad', style: { paddingBottom: 6 } },
               h('div', { className: 'hx-h' }, h('b', {}, b.name), b.version ? h('span', { className: 'hx-chip' }, `v${b.version}`) : null, b.reviewed ? h('span', { className: 'hx-chip t' }, `本机复核 ${b.reviewed}`) : null),
               h('div', { className: 'hx-muted', style: { fontSize: 12, lineHeight: 1.6 } }, b.description),
-              h('div', { className: 'hx-faint', style: { fontSize: 11.5, marginTop: 4 } }, `目标：${b.target?.name ?? ''}（${b.target?.system ?? ''}）· 落在 ${b.lands ?? ''}`),
+              h('div', { className: 'hx-faint', style: { fontSize: 11.5, marginTop: 4 } }, `目标：${b.target?.name ?? ''}（${b.target?.system ?? ''}）· 写入 ${b.lands ?? ''}`),
               h('div', { style: { display: 'flex', gap: 6, marginTop: 8, alignItems: 'center' } },
-                h('select', { className: 'hx-input', value: filter, onChange: (e) => setFilter(e.target.value) }, h('option', { value: 'unmapped' }, '未对照'), h('option', { value: 'mapped' }, '已对照'), h('option', { value: 'model' }, '模型给出 · 未经人工复核'), h('option', { value: 'candidates' }, '两模型有分歧（有候选）'), h('option', { value: 'all' }, '全部')),
+                h('select', { className: 'hx-input', value: filter, onChange: (e) => setFilter(e.target.value) }, h('option', { value: 'unmapped' }, '未对照'), h('option', { value: 'mapped' }, '已对照'), h('option', { value: 'model' }, '模型给出 · 未经人工复核'), h('option', { value: 'candidates' }, '两个模型结论不一致（有候选）'), h('option', { value: 'all' }, '全部')),
                 h('input', { className: 'hx-input', placeholder: '筛选代码/名称…', value: q, onChange: (e) => setQ(e.target.value) }), h('span', { className: 'hx-faint' }, `${fmt(rows.length)} 个`)),
               err ? h('div', { className: 'hx-err', style: { marginTop: 6 } }, err) : null),
             h('div', { className: 'hx-scroll', style: { flex: 1 } },
@@ -850,7 +956,7 @@ window.__ModuleLoader__.load({
     function ModelTab({ run, onTab }) {
       const d = useAsync(() => call('model', { runId: run.id }), [run.id, run.status])
       const m = run.model
-      if (!m?.configured) return h('div', { className: 'hx-frame hx-pad', style: { flex: 1 } }, h('div', { className: 'hx-h' }, h('b', {}, '模型调用'), h('span', { className: 'hx-cap' }, 'MODEL')), h('div', { className: 'hx-muted' }, m?.note ?? '这一批没有使用模型。'), h('div', { className: 'hx-faint', style: { marginTop: 8, fontSize: 12 } }, '在 设置 → HL7 标准化 → 模型 里配置识别模型和核验模型后，没有规格的表会由模型起草映射规格，无对照的取值和本地概念会由模型给出规范值和标准代码。'))
+      if (!m?.configured) return h('div', { className: 'hx-frame hx-pad', style: { flex: 1 } }, h('div', { className: 'hx-h' }, h('b', {}, '模型调用'), h('span', { className: 'hx-cap' }, 'MODEL')), h('div', { className: 'hx-muted' }, m?.note ?? '这一批没有使用模型。'), h('div', { className: 'hx-faint', style: { marginTop: 8, fontSize: 12 } }, '在 设置 → HL7 标准化 → 模型 里配置识别模型和核验模型后，无映射规格的表由模型起草映射规格，无对照的取值和本地概念由模型给出规范值和标准代码。'))
       const P = m.phases ?? {}
       const C = m.calls ?? d.value?.model?.calls
       const crossRow = (name, x, go) => x ? h('tr', { className: 'click', onClick: () => onTab(go) },
@@ -866,10 +972,10 @@ window.__ModuleLoader__.load({
               h('span', { className: 'hx-faint' }, '核验（盲审）'), h('span', { className: 'hx-num' }, m.models?.verify ? `${m.models.verify} · ${m.verifyEndpoint ?? ''}` : '同识别模型'),
               h('span', { className: 'hx-faint' }, '轮次上限'), h('span', { className: 'hx-num' }, `${m.maxRounds}（起草 → 插件校验 → 盲审 → 复判修正）`),
               h('span', { className: 'hx-faint' }, '并发 · 超时'), h('span', { className: 'hx-num' }, `${m.concurrency} / 模型 · ${Math.round((m.timeoutMs ?? 0) / 1000)} 秒 · 思考模式${m.disableThinking ? '关闭' : '开启'}`),
-              h('span', { className: 'hx-faint' }, '调用'), h('span', { className: 'hx-num' }, C ? `${fmt(C.total)} 次（实发 ${fmt(C.live)}，缓存 ${fmt(C.cached)}，失败 ${fmt(C.failed)}）· ${fmt(C.tokens)} token` : '—'))),
+              h('span', { className: 'hx-faint' }, '调用'), h('span', { className: 'hx-num' }, C ? `${fmt(C.total)} 次（实际请求 ${fmt(C.live)}，缓存 ${fmt(C.cached)}，失败 ${fmt(C.failed)}）· ${fmt(C.tokens)} token` : '—'))),
           h('div', { className: 'hx-frame hx-pad', style: { flex: 1.3 } },
             h('div', { className: 'hx-h' }, h('b', {}, '三个阶段'), h('span', { className: 'hx-cap' }, 'RESULTS')),
-            h('table', {}, h('thead', {}, h('tr', {}, ['阶段', '交给模型', '两模型一致 · 采用', '转人工复核', '模型放弃', '失败'].map((x) => h('th', { key: x }, x)))),
+            h('table', {}, h('thead', {}, h('tr', {}, ['阶段', '提交模型', '结论一致 · 已采用', '转人工复核', '模型未给出结论', '失败'].map((x) => h('th', { key: x }, x)))),
               h('tbody', {},
                 P.schema ? h('tr', { className: 'click', onClick: () => onTab('schema') }, h('td', {}, '① Schema 起草'), h('td', { className: 'hx-num' }, `${fmt(P.schema.tables)} 张表`), h('td', { className: 'hx-num hx-ok' }, fmt(P.schema.applied)), h('td', { className: 'hx-num hx-warn' }, fmt(P.schema.review)), h('td', {}, '—'), h('td', { className: 'hx-num' }, fmt(P.schema.failed))) : null,
                 P.values ? h('tr', { className: 'click', onClick: () => onTab('domains') }, h('td', {}, '② 值域归一'), h('td', { className: 'hx-num' }, `${fmt(P.values.asked)} 个取值`), h('td', { className: 'hx-num hx-ok' }, fmt(P.values.confirmed + P.values.text + P.values.invalid)), h('td', { className: 'hx-num hx-warn' }, fmt(P.values.pending)), h('td', {}, '—'), h('td', { className: 'hx-num' }, fmt(P.values.failed))) : null,
@@ -877,7 +983,7 @@ window.__ModuleLoader__.load({
             h('div', { className: 'hx-faint', style: { fontSize: 11.5, marginTop: 6 } }, '采用的结果标为“模型 · 未复核”，可在对应页面确认或改正；结果存本机对照表，下次运行直接复用。'))),
         h('div', { className: 'hx-frame hx-pad' },
           h('div', { className: 'hx-h' }, h('b', {}, '交叉核验'), h('span', { className: 'hx-cap' }, 'CROSS-CHECK'), h('span', { className: 'hx-faint' }, '核验模型只看“输入 + 结论”，不看识别模型的理由')),
-          h('table', {}, h('thead', {}, h('tr', {}, ['阶段', '盲审', '报出问题', '插件校验拦下', '复判改正', '坚持（分歧 → 人工）', '一次通过'].map((x) => h('th', { key: x }, x)))),
+          h('table', {}, h('thead', {}, h('tr', {}, ['阶段', '盲审', '提出异议', '插件校验未通过', '复判修正', '维持原结论（转人工）', '一次通过'].map((x) => h('th', { key: x }, x)))),
             h('tbody', {}, crossRow('① Schema 起草', P.schema?.cross, 'schema'), crossRow('② 值域归一', P.values?.cross, 'domains'), crossRow('③ 术语对照', P.terms?.cross, 'terms')))),
         h('div', { className: 'hx-frame hx-pad' },
           h('div', { className: 'hx-h' }, h('b', {}, '按环节'), h('span', { className: 'hx-cap' }, 'CALLS')),
@@ -930,7 +1036,7 @@ window.__ModuleLoader__.load({
       return h('div', { className: 'hx-settings' }, h('style', {}, CSS),
         h('p', { style: { margin: 0, color: 'var(--dsw-alias-label-secondary)' } }, `这里只放配置。运行批次、复核对照，请到左侧栏的「${TITLE}」，或在聊天框使用 /hl7。`),
         h('h3', { style: { margin: '6px 0 0' } }, '模型'),
-        h('p', { style: { margin: 0, fontSize: 12, color: 'var(--dsw-alias-label-secondary)' } }, '用于：给没有规格的表起草映射规格（Schema 同构）、给无对照的取值找规范值（值域归一）、给本地概念找 LOINC / SNOMED CT 等标准代码（术语对照）。模型结果经插件校验和独立盲审、复判，两模型一致才采用，有分歧的转人工复核，结果存本机对照表、下次复用。病历内容只发往这里配置的端点；发送的只是字段名、截短的取值样例和本地代码 / 名称，不发文书正文。Agent 不能更改这些设置。'),
+        h('p', { style: { margin: 0, fontSize: 12, color: 'var(--dsw-alias-label-secondary)' } }, '用于：为无映射规格的表起草映射规格（Schema 同构）、为无对照的取值确定规范值（值域归一）、为本地概念匹配 LOINC / SNOMED CT 等标准代码（术语对照）。模型结果经插件校验、独立盲审和复判，两个模型结论一致才采用，不一致的转人工复核；结果保存在本机对照库，后续批次复用。病历内容只发送到此处配置的端点；发送内容仅限字段名、截短的取值样例和本地代码 / 名称，不发送文书正文。Agent 不能更改这些设置。'),
         check('modelEnabled', '启用模型'),
         h('div', { className: 'hx-grid2' },
           field('baseURL', '识别模型端点（OpenAI 兼容，以 /v1 结尾）', { placeholder: 'http://127.0.0.1:11434/v1' }), field('model', '识别模型'),
@@ -939,8 +1045,8 @@ window.__ModuleLoader__.load({
           field('modelConcurrency', '每个模型同时处理的请求数'), field('maxRounds', '核验轮次上限（1–6）'),
           field('temperature', '温度'), field('loincTable', 'LOINC 代码表：LoincTable/Loinc.csv'),
           field('loincZhTable', 'LOINC 中文变体：LinguisticVariants/zhCN…LinguisticVariant.csv（建议）'), field('snomedTable', 'SNOMED CT 描述表：sct2_Description_Snapshot-….txt'),
-          field('valueLimit', '每个值域最多交给模型的取值数'), field('termLimit', '每组术语对照最多交给模型的概念数')),
-        h('p', { style: { margin: 0, fontSize: 12, color: 'var(--dsw-alias-label-secondary)' } }, '术语对照的候选只从本地代码表里检索，模型只在候选里选、核验模型独立再选一次，两者相同才采用。没有配置代码表的标准不交给模型（实测模型凭记忆给的代码约一半是编的）。LOINC 在 loinc.org 免费注册后下载。'),
+          field('valueLimit', '每个值域最多提交模型的取值数'), field('termLimit', '每组术语对照最多提交模型的概念数')),
+        h('p', { style: { margin: 0, fontSize: 12, color: 'var(--dsw-alias-label-secondary)' } }, '术语对照的候选只从本地代码表中检索：模型在候选中选择，核验模型独立再选一次，两者一致才采用。未配置代码表的标准不提交模型（实测模型直接给出的代码约半数不存在）。LOINC 在 loinc.org 免费注册后下载。'),
         check('disableThinking', '关闭思考模式（推理模型更快）'),
         h('div', { style: { display: 'flex', gap: 8, alignItems: 'center' } }, h('button', { className: 'hx-btn', onClick: runTest, disabled: test?.busy }, test?.busy ? '测试中…' : '测试连接'), test?.error ? h('span', { style: { color: 'var(--dsw-alias-state-error-primary)', fontSize: 12 } }, test.error) : null),
         testLine('suggest', '识别模型'), testLine('verify', '核验模型'),

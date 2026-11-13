@@ -20,7 +20,7 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms))
 async function waitDone(svc, id) {
   for (let i = 0; i < 400; i++) {
     const { run } = await svc.status(id)
-    if (run && run.status !== 'running') return run
+    if (run && run.status !== 'running' && !svc.isRunning()) return run
     await sleep(25)
   }
   throw new Error('timeout')

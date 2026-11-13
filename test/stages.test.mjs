@@ -53,7 +53,7 @@ test('复核：页面改对照 → 存本机 → 重跑生效；中间结果与 
   const base = await realpath(await mkdtemp(join(tmpdir(), 'hl7-review-')))
   await writeFictionalPatient(join(base, 'in', '病人A'))
   const svc = createService({ config: { outputRoot: join(base, 'out') }, defaultDirectory: base, stateDir: join(base, 'state') })
-  const wait = async (id) => { for (let i = 0; i < 400; i++) { const { run } = await svc.status(id); if (run.status !== 'running') return run; await new Promise((r) => setTimeout(r, 25)) } }
+  const wait = async (id) => { for (let i = 0; i < 400; i++) { const { run } = await svc.status(id); if (run.status !== 'running' && !svc.isRunning()) return run; await new Promise((r) => setTimeout(r, 25)) } }
   const first = await wait((await svc.start({ inputDir: join(base, 'in') })).runId)
   assert.equal(first.error, undefined, first.error)
   assert.ok(first.stages.domains.pending > 0)
@@ -92,7 +92,7 @@ test('数据去向：来源表 → FHIR 资源类型的条数、箱子格子的�
   const svc = createService({ config: { outputRoot: join(base, 'out') }, defaultDirectory: base, stateDir: join(base, 'state') })
   const { runId } = await svc.start({ inputDir: join(base, 'in') })
   let run
-  for (let i = 0; i < 400; i++) { ({ run } = await svc.status(runId)); if (run.status !== 'running') break; await new Promise((r) => setTimeout(r, 25)) }
+  for (let i = 0; i < 400; i++) { ({ run } = await svc.status(runId)); if (run.status !== 'running' && !svc.isRunning()) break; await new Promise((r) => setTimeout(r, 25)) }
   const F = run.flow
   const total = (type) => Object.entries(F.flows).filter(([k]) => k.endsWith(`|${type}`)).reduce((n, [, v]) => n + v, 0)
   const byType = run.patients[0].byType
@@ -112,12 +112,14 @@ test('旧批次没有去向统计：打开时从交付的 Bundle 补算', async 
   const svc = mk()
   const { runId } = await svc.start({ inputDir: join(base, 'in') })
   let run
-  for (let i = 0; i < 400; i++) { ({ run } = await svc.status(runId)); if (run.status !== 'running') break; await new Promise((r) => setTimeout(r, 25)) }
+  for (let i = 0; i < 400; i++) { ({ run } = await svc.status(runId)); if (run.status !== 'running' && !svc.isRunning()) break; await new Promise((r) => setTimeout(r, 25)) }
   const original = run.flow
-  const { readFile: rf, writeFile: wf } = await import('node:fs/promises')
-  const path = join(run.runDir, 'run.json')
-  const raw = JSON.parse(await rf(path, 'utf8')); delete raw.flow; for (const p of raw.patients) delete p.flow
-  await wf(path, JSON.stringify(raw))
+  const { openRecords } = await import('../lib/records.js')
+  const st = await openRecords(join(base, 'out', '_records'))
+  const raw = await st.loadRun(runId); delete raw.flow; for (const p of raw.patients) delete p.flow
+  await st.saveRun(raw)
+  st.close()
+  svc.dispose()
   const again = (await mk().status(runId)).run
   assert.ok(again.flow?.backfilled)
   for (const t of ['Observation', 'Condition', 'ChargeItem']) assert.deepEqual(again.flow.slots[t], original.slots[t], `${t} 格子一致`)
