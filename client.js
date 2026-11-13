@@ -417,14 +417,29 @@ window.__ModuleLoader__.load({
       const [inputDir, setInput] = useState('')
       const [outputRoot, setOut] = useState('')
       const [busy, setBusy] = useState(false)
-      const pick = async () => { try { const v = await call('pickFolder'); if (v.path) setInput(v.path) } catch (e) { onError(msg(e)) } }
+      const [picking, setPicking] = useState('')
+      // 先用系统对话框（macOS，由插件服务端弹出）；不行再用宿主的目录选择器
+      const pick = async (kind) => {
+        setPicking(kind)
+        try {
+          const v = await call(kind === 'file' ? 'pickFile' : 'pickFolder')
+          if (v.path) setInput(v.path)
+        } catch (cause) {
+          try {
+            const ws = services.ctx?.get('uiWorkspace')
+            if (kind === 'file' || !ws?.pickDirectory) throw cause
+            const picked = await ws.pickDirectory()
+            if (picked) setInput(picked)
+          } catch (e) { onError(msg(e)) }
+        } finally { setPicking('') }
+      }
       const start = async () => {
         setBusy(true)
         try { const v = await call('start', { inputDir, outputRoot: outputRoot || undefined }); onStarted(v.runId) } catch (e) { onError(msg(e)) } finally { setBusy(false) }
       }
       return h('div', { style: { display: 'flex', flexDirection: 'column', gap: 10 } },
         h('label', { className: 'hx-field' }, '输入目录或文件（通常是匿名化插件的交付目录；json / ndjson / csv，字段命名不限）',
-          h('div', { style: { display: 'flex', gap: 6 } }, h('input', { className: 'hx-input', style: { flex: 1 }, value: inputDir, onChange: (e) => setInput(e.target.value), placeholder: '/path/to/_medical-anonymizer/…' }), h('button', { className: 'hx-btn', onClick: pick }, '选择…'))),
+          h('div', { style: { display: 'flex', gap: 6 } }, h('input', { className: 'hx-input', style: { flex: 1 }, value: inputDir, onChange: (e) => setInput(e.target.value), placeholder: '/path/to/_medical-anonymizer/…' }), h('button', { className: 'hx-btn', disabled: Boolean(picking), onClick: () => pick('folder') }, picking === 'folder' ? '等待选择…' : '选择目录…'), h('button', { className: 'hx-btn', disabled: Boolean(picking), onClick: () => pick('file') }, picking === 'file' ? '等待选择…' : '选择文件…'))),
         h('label', { className: 'hx-field' }, '输出根目录（可空：输入旁的 _medical-hl7）', h('input', { className: 'hx-input', value: outputRoot, onChange: (e) => setOut(e.target.value) })),
         h('button', { className: 'hx-btn new', style: { alignSelf: 'stretch' }, disabled: !inputDir || busy, onClick: start }, busy ? '启动中…' : '▶ 开始转换'))
     }

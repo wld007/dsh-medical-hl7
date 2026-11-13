@@ -1,3 +1,4 @@
+import { execFile } from 'node:child_process'
 /**
  * Host half of dsh-medical-hl7: agent tools and the /hl7 command over one shared batch service.
  */
@@ -181,10 +182,8 @@ export function apply(ctx, config = {}) {
           case 'testConnection': return service.testConnection(r)
           case 'deleteRun': return service.deleteRun(r.runId)
           case 'history': return service.history(r)
-          case 'pickFolder': {
-            const ws = ctx.get('uiWorkspace')
-            return { path: ws?.pickDirectory ? await ws.pickDirectory() : null }
-          }
+          case 'pickFolder': return { path: await systemPick('folder') }
+          case 'pickFile': return { path: await systemPick('file') }
           case 'saveDefaults': return saveDefaults(r)
           default: throw Object.assign(new Error(`未知方法: ${endpoint}`), { code: 'unknown-endpoint' })
         }
@@ -198,6 +197,28 @@ export function apply(ctx, config = {}) {
 
 const CHANNEL = '/medical-hl7'
 const ENTRY_ID = 'medical-hl7'
+
+/**
+ * 系统的“选择文件夹 / 选择文件”对话框（macOS，由插件服务端用 osascript 弹出）。用户取消时返回 null。
+ * 其他平台抛错，由页面退回宿主的目录选择器或手动填写路径。
+ */
+function systemPick(kind) {
+  if (process.platform !== 'darwin') return Promise.reject(Object.assign(new Error('系统选择对话框目前只支持 macOS；请在输入框中填写完整路径'), { code: 'unsupported' }))
+  const script = kind === 'file'
+    ? 'POSIX path of (choose file with prompt "选择要标准化的数据文件（json / ndjson / csv）")'
+    : 'POSIX path of (choose folder with prompt "选择输入目录（通常是匿名化插件的交付目录）")'
+  return new Promise((resolve, reject) => {
+    execFile('osascript', ['-e', script], { timeout: 10 * 60 * 1000 }, (error, stdout, stderr) => {
+      if (error) {
+        // -128：用户点了“取消”
+        if (/-128/.test(String(stderr)) || /-128/.test(String(error.message))) resolve(null)
+        else reject(new Error(String(stderr || error.message).trim()))
+        return
+      }
+      resolve(String(stdout).trim().replace(/(.)\/$/, '$1') || null)
+    })
+  })
+}
 
 function sessionIdOf(agent) {
   try { const id = agent?.session?.id; return typeof id === 'string' ? id : undefined } catch { return undefined }
