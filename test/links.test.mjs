@@ -37,3 +37,18 @@ test('值域绑定：意思对不上的不放行，取值认不出的判为绑�
   const [x] = bindingFit({ roles: { 'patient.gender.code': 'AGE' }, domains: { 'patient.gender': 'gender' } }, rows, vocab.domains)
   assert.equal(x.ok, false)
 })
+
+test('就诊号关联：登记表是内置规格的表（不在起草规格里）时不出错，按表名定门诊 / 住院', async () => {
+  const { createLinkStats } = await import('../lib/model/links.js')
+  const L = createLinkStats()
+  const recs = []
+  for (let i = 0; i < 12; i++) {
+    recs.push({ spec: { id: 'visit', kind: 'encounter', name: '门诊就诊' }, row: { VISIT_NO: `MZ00${i + 10}` } })
+    recs.push({ spec: { id: 'm-followup', kind: 'document', drafted: true }, row: { REF_NO: `MZ00${i + 10}`, OTHER: `QT00${i + 10}` } })
+  }
+  L.add(recs)
+  const fixes = L.decide(new Map([['m-followup', { id: 'm-followup', kind: 'document', drafted: true, roles: { 'encounter.outpatientNo': 'OTHER' } }]]))
+  const f = fixes.find((x) => x.table === 'm-followup' && x.field === 'REF_NO')
+  assert.ok(f, JSON.stringify(fixes))
+  assert.equal(f.role, 'encounter.outpatientNo')
+})
