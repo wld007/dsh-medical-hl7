@@ -7,6 +7,7 @@ window.__ModuleLoader__.load({
     const CHANNEL = '/medical-hl7'
     const PANEL_ID = 'medical-hl7'
     const TITLE = 'HL7 标准化'
+    const PAGE_TITLE = 'HL7 标准化流水线'
     const services = { ctx: null }
 
     /* ------------------------------------------------------------------ rpc */
@@ -156,6 +157,48 @@ window.__ModuleLoader__.load({
 .hx-src.live.s-drafting .hx-src-box,.hx-src.live.s-verifying .hx-src-box,.hx-src.live.s-adjudicating .hx-src-box{stroke:var(--vio)}
 .hx-src.live.s-applied .hx-live-mark{fill:var(--fire1)}.hx-src.live.s-review .hx-live-mark,.hx-src.live.s-disputed .hx-live-mark{fill:var(--warn)}.hx-src.live.s-failed .hx-live-mark{fill:var(--bad)}
 .hx-live-st{fill:var(--ink3)}.hx-live-st.s-drafting,.hx-live-st.s-verifying,.hx-live-st.s-adjudicating{fill:var(--vio)}.hx-live-st.s-applied{fill:var(--fire1)}.hx-live-st.s-review,.hx-live-st.s-disputed{fill:var(--warn)}.hx-live-st.s-failed{fill:var(--bad)}.hx-live-st.s-agreed{fill:var(--ok)}
+.hx-ov-stage{overflow:hidden}
+.hx-layer{position:relative;border-radius:8px;transition:opacity .3s}
+.hx-layer.rules{flex:none;margin-top:-2px;border:1px dashed color-mix(in srgb,var(--vio) 45%,var(--line));background:color-mix(in srgb,var(--vio) 4%,transparent);padding:2px 6px 0}
+.hx-layer.rules.on{border-style:solid;border-color:color-mix(in srgb,var(--vio) 70%,transparent);box-shadow:0 0 0 3px color-mix(in srgb,var(--vio) 10%,transparent)}
+.hx-layer.run{flex:1;min-height:0;display:flex;flex-direction:column}
+.hx-layer.dim{opacity:.55}
+.hx-layer-t{display:flex;align-items:baseline;gap:8px;font-size:11px;color:var(--ink3);padding:4px 4px 0}
+.hx-layer-t b{font-size:12px;color:var(--ink);letter-spacing:1px}.hx-layer-t.run{margin-top:4px}.hx-layer-t.run.first{margin-top:2px}.hx-layer-t.on b{color:var(--fire1)}
+.hx-layer.rules .hx-layer-t b{color:var(--vio)}
+.hx-ruleband{width:100%;height:auto;display:block;max-height:150px}.hx-ruleband.compact{max-height:74px}
+.hx-room{cursor:pointer}.hx-room-box{fill:var(--panel2);stroke:var(--line2)}.hx-room-box-top{fill:color-mix(in srgb,var(--panel2) 70%,var(--ink) 12%)}.hx-room-box-side{fill:color-mix(in srgb,var(--panel2) 75%,#000 25%)}
+.hx-light .hx-room-box-top{fill:color-mix(in srgb,var(--panel2) 80%,#fff 20%)}.hx-light .hx-room-box-side{fill:color-mix(in srgb,var(--panel2) 82%,#5a4030 18%)}
+.hx-room-box.off{stroke-dasharray:4 3}.hx-room-box.warn{stroke:var(--warn)}
+.hx-room-box.off-top,.hx-room-box.warn-top{fill:color-mix(in srgb,var(--panel2) 70%,var(--ink) 12%)}.hx-room-box.off-side,.hx-room-box.warn-side{fill:color-mix(in srgb,var(--panel2) 75%,#000 25%)}
+.hx-lamp-on{fill:var(--vio);filter:drop-shadow(0 0 3px var(--vio));animation:hx-blink 1.1s infinite}.hx-lamp-off{fill:var(--track);stroke:var(--line2)}
+.hx-rseg{cursor:pointer}.hx-rseg-bg{fill:var(--panel);stroke:var(--line)}.hx-rseg.on .hx-rseg-bg{stroke:var(--vio);fill:color-mix(in srgb,var(--vio) 6%,var(--panel))}
+.hx-rstep{fill:var(--panel2);stroke:var(--line)}.hx-rstep.has{stroke:var(--line2)}.hx-rstep.busy{stroke:var(--vio);fill:color-mix(in srgb,var(--vio) 12%,var(--panel2))}
+.hx-rarrow{stroke:var(--ink3);stroke-width:1.2}
+.hx-rres{fill:var(--panel2);stroke:var(--line)}.hx-rres.ok{fill:color-mix(in srgb,var(--ok) 14%,var(--panel2));stroke:color-mix(in srgb,var(--ok) 50%,transparent)}.hx-rres.warn{fill:color-mix(in srgb,var(--warn) 16%,var(--panel2));stroke:var(--warn)}
+.hx-rres-t{font-size:9.5px;font-family:var(--mono);fill:var(--ink)}
+.hx-rtoken{fill:var(--vio)}
+.hx-rpipe{fill:none;stroke:var(--vio);stroke-width:1.4;stroke-opacity:.7}.hx-rpipe.run{stroke-dasharray:6 5;animation:hx-flowing 1s linear infinite}
+.hx-big{font-size:18px;font-family:var(--mono);font-weight:600;fill:var(--ink)}.hx-big.warn{fill:var(--warn)}
+.hx-rdown{stroke:var(--vio);stroke-width:1.6;fill:none}.hx-rdown.run{stroke-dasharray:6 4;animation:hx-flowing 1s linear infinite}.hx-rdown-head{fill:none;stroke:var(--vio);stroke-width:1.6}
+.hx-rup{stroke:var(--ink3);stroke-width:1.2;stroke-dasharray:3 3;fill:none}.hx-rup.has{stroke:var(--warn)}.hx-rup.run{animation:hx-flowing-up 1s linear infinite}
+@keyframes hx-flowing-up{to{stroke-dashoffset:12}}
+.hx-rlib{fill:color-mix(in srgb,var(--vio) 12%,var(--panel));stroke:color-mix(in srgb,var(--vio) 55%,transparent)}.hx-rlib-t{font-size:10.5px;fill:var(--vio);font-weight:600}.hx-rlib-w{font-size:10px;fill:var(--warn);font-weight:600}.hx-rlib-o{font-size:10px;fill:var(--ink3)}.hx-rlib-sep{stroke:color-mix(in srgb,var(--vio) 40%,transparent)}
+.hx-stepgrp{display:inline-flex;gap:3px;align-items:center;border:0!important;padding:0!important;margin-left:6px}.hx-stepgrp>i{font-style:normal;font-size:10px;color:var(--ink3);margin-right:2px}
+.hx-tiles3{grid-template-columns:1fr 1fr 1fr}.hx-tiles3 b{font-size:17px}
+.hx-seg{display:inline-flex;border:1px solid var(--line2);border-radius:6px;overflow:hidden}
+.hx-seg button{border:0;background:transparent;color:var(--ink2);padding:4px 10px;font-size:12px;cursor:pointer;border-right:1px solid var(--line)}
+.hx-seg button:last-child{border-right:0}.hx-seg button.on{background:var(--panel3);color:var(--ink);font-weight:600}
+.hx-seg button i{font-style:normal;font-family:var(--mono);font-size:10.5px;color:var(--ink3);margin-left:5px}
+.hx-subbar{display:flex;gap:10px;align-items:center;flex:none;padding:6px 10px}
+.hx-grp{font-size:11.5px;color:var(--ink2);padding:6px 12px 3px;font-weight:600;border-top:1px solid var(--line)}
+.hx-note{font-size:12px;line-height:1.6;padding:6px 10px;border-left:3px solid var(--vio);background:color-mix(in srgb,var(--vio) 7%,transparent);margin:8px 0;border-radius:0 5px 5px 0}
+.hx-note.w{border-left-color:var(--warn);background:color-mix(in srgb,var(--warn) 9%,transparent)}
+.hx-actions{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-top:10px}
+.hx-trail{margin-top:14px;border-top:1px solid var(--line);padding-top:8px}
+.hx-trail-row{display:grid;grid-template-columns:52px 56px 72px 1fr;gap:8px;align-items:baseline;font-size:12px;padding:3px 0;border-bottom:1px dashed var(--line)}
+.hx-chip.src-builtin{color:var(--ink2)}.hx-chip.src-model{color:var(--vio);border-color:color-mix(in srgb,var(--vio) 50%,transparent)}.hx-chip.src-user{color:var(--ok);border-color:color-mix(in srgb,var(--ok) 50%,transparent)}
+.hx-chip.vio{color:var(--vio);border-color:color-mix(in srgb,var(--vio) 50%,transparent)}
 .hx-shadow{fill:#000;opacity:.42;filter:url(#hx-soft)}.hx-light .hx-shadow{opacity:.12}
 .hx-slab-top{fill:color-mix(in srgb,var(--panel2) 70%,var(--ink) 12%)}.hx-slab-side{fill:color-mix(in srgb,var(--panel2) 75%,#000 25%)}
 .hx-light .hx-slab-top{fill:color-mix(in srgb,var(--panel2) 80%,#fff 20%)}.hx-light .hx-slab-side{fill:color-mix(in srgb,var(--panel2) 82%,#5a4030 18%)}
@@ -290,6 +333,7 @@ window.__ModuleLoader__.load({
       const [patient, setPatient] = useState(null)
       const [error, setError] = useState('')
       const [activeId, setActiveId] = useState(null)
+      const [reload, setReload] = useState(0)
       const [showNew, setShowNew] = useState(false)
       const [runsOpen, setRunsOpen] = useState(false)
       const [settingsOpen, setSettingsOpen] = useState(false)
@@ -326,12 +370,13 @@ window.__ModuleLoader__.load({
         }
         load()
         return () => { alive = false; clearTimeout(timer) }
-      }, [runId])
+      }, [runId, reload])
 
       const openPatient = (name, next = 'resources') => { setPatient(name); setTab(next) }
       const t = run?.totals
       const st = run?.stages
-      const tabs = [['overview', '◈ 概览'], ['schema', '① Schema 同构'], ['domains', '② 值域归一', st ? (st.domains.pending + st.domains.unmapped) || null : null], ['terms', '③ 术语对照'], ['patients', '病人', t?.held || null], ['resources', '资源浏览'], ['model', '模型调用'], ['report', '报告']]
+      const isRules = ['schema', 'domains', 'terms'].includes(tab)
+      const tabs = [['overview', '◈ 流水线'], ['review', '规则复核', run?.rules?.review || null], ['rules', '规则库'], ['patients', '病人', t?.held || null], ['resources', '资源浏览'], ['model', '模型调用'], ['report', '报告']]
       const running = run?.status === 'running'
       const anyRunning = Boolean(activeId) && activeId !== run?.id
       const lineStatus = run ? run.status : 'idle'
@@ -388,7 +433,7 @@ window.__ModuleLoader__.load({
         h('header', { className: 'hx-frame hx-top' },
           h('div', { className: 'hx-brandbox' },
             h('div', { className: 'hx-logo' }, h('svg', { width: 15, height: 17, viewBox: '0 0 18 20' }, h('path', { d: FLAME_PATH, fill: '#fff' }))),
-            h('div', { className: 'hx-brand' }, h('b', {}, TITLE), h('span', {}, 'HL7 FHIR R4 STANDARDIZATION'))),
+            h('div', { className: 'hx-brand' }, h('b', {}, PAGE_TITLE), h('span', {}, 'HL7 FHIR STANDARDIZATION PIPELINE'))),
           h('div', { className: `hx-status s-${lineStatus}` },
             h('span', { className: 'hx-lamp' }),
             h('div', {},
@@ -414,7 +459,7 @@ window.__ModuleLoader__.load({
             runsOpen ? h('div', { className: 'hx-shade', onMouseDown: () => { setRunsOpen(false); setDeleting(null) } }) : null,
             runsOpen ? runsPopover() : null),
           h('button', { className: 'hx-btn hicon', title: '设置', 'aria-label': '设置', onClick: () => setSettingsOpen(true) }, '⚙')),
-        h('div', { className: 'hx-frame hx-tabs' }, tabs.map(([k, label, n]) => h('button', { key: k, className: `hx-tab${tab === k ? ' on' : ''}`, onClick: () => setTab(k) }, label, n ? h('i', {}, String(n)) : null))),
+        h('div', { className: 'hx-frame hx-tabs' }, tabs.map(([k, label, n]) => h('button', { key: k, className: `hx-tab${tab === k || (k === 'rules' && isRules) ? ' on' : ''}`, onClick: () => setTab(k === 'rules' ? 'schema' : k) }, label, n ? h('i', {}, String(n)) : null))),
         error ? h('div', { className: 'hx-err', onClick: () => setError('') }, error, h('span', { className: 'hx-faint' }, '（点击关闭）')) : null,
         settingsOpen ? h('div', { className: 'hx-modal', onMouseDown: (e) => { if (e.target === e.currentTarget) setSettingsOpen(false) } },
           h('div', { className: 'hx-modal-box' },
@@ -422,12 +467,11 @@ window.__ModuleLoader__.load({
             h('div', { className: 'hx-scroll', style: { flex: 1 } }, h(SettingsSection)))) : null,
         h('div', { className: 'hx-body' },
           !run ? h('div', { className: 'hx-frame hx-empty', style: { flex: 1 } }, runs.length ? '加载中…' : '还没有批次。点右上角「＋ 新批次」，选择匿名化后的数据目录开始转换。')
-            : tab === 'overview' ? h(Overview, { run, openPatient, onTab: (k) => (k === 'settings' ? setSettingsOpen(true) : setTab(k)) })
+            : tab === 'overview' ? h(Overview, { run, openPatient, onTab: (k) => (k === 'settings' ? setSettingsOpen(true) : setTab(k === 'rules' ? 'schema' : k)) })
+            : tab === 'review' ? h(ReviewTab, { run, onChanged: () => setReload((n) => n + 1) })
               : tab === 'patients' ? h(Patients, { run, patient, setPatient, openPatient })
                 : tab === 'resources' ? h(Resources, { run, patient, setPatient })
-                  : tab === 'schema' ? h(SchemaTab, { run, onRerun: rerun })
-                  : tab === 'domains' ? h(DomainsTab, { run, onRerun: rerun })
-                  : tab === 'terms' ? h(TermsTab, { run, onRerun: rerun })
+                  : isRules ? h(RulesTab, { run, sub: tab, setSub: setTab, onRerun: rerun })
                   : tab === 'model' ? h(ModelTab, { run, onTab: setTab })
                     : h(Report, { run })))
     }
@@ -469,6 +513,7 @@ window.__ModuleLoader__.load({
     const KIND_ZH = { patient: '病人信息', address: '地址', encounter: '就诊登记', condition: '诊断', lab: '检验', imaging: '检查', procedure: '手术操作', document: '病历文书', observation: '体征与问卷', medication: '用药医嘱', charge: '费用', death: '死亡', generic: '其他（未映射）' }
     const KIND_TO = { patient: ['Patient'], address: ['Patient'], encounter: ['Encounter'], condition: ['Condition'], lab: ['Observation', 'DiagnosticReport', 'Specimen'], imaging: ['DiagnosticReport'], procedure: ['Procedure'], document: ['DocumentReference'], observation: ['Observation'], medication: ['MedicationRequest'], charge: ['ChargeItem'], death: ['Observation'], generic: ['__left'] }
     const LIVE_ST = { queued: '排队', drafting: '起草中', drafted: '待核验', verifying: '盲审中', agreed: '结论一致', disputed: '有异议', adjudicating: '复判中', applied: '已采用', review: '待人工审核', failed: '起草失败' }
+    const compactNum = (n) => (n >= 10000 ? `${(n / 10000).toFixed(n >= 100000 ? 0 : 1)} 万` : fmt(n))
     const pct = (x) => (x == null ? '—' : `${(x * 100).toFixed(x > 0 && x < 0.1 ? 1 : 0)}%`)
 
     function flowModel(run) {
@@ -494,6 +539,136 @@ window.__ModuleLoader__.load({
         links: [...link].map(([k, n]) => { const [from, to] = k.split('|'); return { from, to, n } }).sort((a, b) => b.n - a.n),
         slots: F.slots ?? {}, names: F.slotNames ?? {},
       }
+    }
+
+    /* ---------------------------------------------- 规则生产（双模型起草 · 人工复核） */
+    // run.rules = { stages: { schema|values|terms: { pending, drafting, checking, blind, recheck, agreed, review, library: { total, builtin, model, user }, hit, uncovered } },
+    //               models: { suggest, verify, inflight: { suggest, verify } }, review, active: 'schema'|'values'|'terms'|null, layer: 'rules'|'run'|null }
+    const RULE_STAGES = [['schema', '① 结构规格', '张表'], ['values', '② 值域对照', '种写法'], ['terms', '③ 术语对照', '个概念']]
+    const RULE_STEPS = [['pending', '待定'], ['drafting', '起草'], ['checking', '校验'], ['blind', '盲审'], ['recheck', '复查']]
+    function RuleBand({ run, onTab }) {
+      const R = run.rules
+      if (!R) return null
+      const compact = R.layer !== 'rules'
+      const W = 1100, H = compact ? 64 : 128
+      const parts = []
+      let k = 0; const K = () => k++
+      const DX = 7, DY = 5
+      const P2 = (l) => l.map((q) => `${q[0].toFixed(1)},${q[1].toFixed(1)}`).join(' ')
+      const box3 = (x, y, w, hh, cls) => [
+        h('rect', { key: K(), x: x + 4, y: y + 6, width: w, height: hh, rx: 5, className: 'hx-shadow' }),
+        h('polygon', { key: K(), points: P2([[x + 2, y], [x + w, y], [x + w + DX, y - DY], [x + 2 + DX, y - DY]]), className: `${cls}-top` }),
+        h('polygon', { key: K(), points: P2([[x + w, y], [x + w + DX, y - DY], [x + w + DX, y + hh - DY - 2], [x + w, y + hh]]), className: `${cls}-side` }),
+        h('rect', { key: K(), x, y, width: w, height: hh, rx: 4, className: cls }),
+      ]
+      const running = run.status === 'running'
+      const active = R.active
+      const sameModel = !R.models?.verify || R.models.verify === R.models.suggest
+      // 模型机房（两端）
+      const room = (x, label, model, n, cls) => {
+        if (compact) {
+          return h('g', { key: K(), className: 'hx-room', onClick: () => onTab('model') }, h('title', {}, `${label}：${model ?? '未配置'}`),
+            ...box3(x, 12, 84, 42, model ? 'hx-room-box' : 'hx-room-box off'),
+            h('text', { x: x + 42, y: 29, textAnchor: 'middle', className: 'hx-t-strong', style: { fontSize: 11.5 } }, label),
+            h('text', { x: x + 42, y: 45, textAnchor: 'middle', className: model ? 'hx-t-vio' : 'hx-t-warn', style: { fontSize: 9.5 } }, model ? (model.length > 14 ? `${model.slice(0, 13)}…` : model) : (cls === 'v' ? '未配置 · 转人工' : '未配置')))
+        }
+        const lamps = [0, 1, 2, 3].map((i) => h('circle', { key: i, cx: x + 18 + i * 13, cy: 70, r: 4, className: i < (n ?? 0) ? `hx-lamp-on ${cls}` : 'hx-lamp-off' }))
+        return h('g', { key: K(), className: 'hx-room', onClick: () => onTab('model') }, h('title', {}, `${label}：${model ?? '未配置'}${n ? ` · 进行中 ${n} 个请求` : ''}`),
+          ...box3(x, 32, 84, 76, model ? 'hx-room-box' : 'hx-room-box off'),
+          h('text', { x: x + 42, y: 50, textAnchor: 'middle', className: 'hx-t-strong' }, label),
+          ...lamps,
+          h('text', { x: x + 42, y: 92, textAnchor: 'middle', className: model ? 'hx-t-vio' : 'hx-t-warn', style: { fontSize: 9.5 } }, model ? (model.length > 14 ? `${model.slice(0, 13)}…` : model) : '未配置'),
+          h('text', { x: x + 42, y: 103, textAnchor: 'middle', className: 'hx-t-sub', style: { fontSize: 9 } }, cls === 'v' && sameModel ? '起草结果全部转人工' : n ? `进行中 ${n}` : '空闲'))
+      }
+      parts.push(room(4, '识别模型', R.models?.suggest, R.models?.inflight?.suggest, 's'))
+      parts.push(room(W - 186, '核验模型', sameModel ? null : R.models?.verify, R.models?.inflight?.verify, 'v'))
+      // 三段小流水线
+      const x0 = 110, segW = (W - 300 - x0) / 3
+      RULE_STAGES.forEach(([id, label, unit], si) => {
+        const s = R.stages[id] ?? {}
+        const sx = x0 + si * segW + 8, sw = segW - 22
+        const on = active === id
+        if (compact) {
+          const lib = s.library ?? {}
+          const rate = s.rate == null ? '—' : `${Math.round(s.rate * 100)}%`
+          parts.push(h('g', { key: K(), className: 'hx-rseg', onClick: () => onTab('rules') }, h('title', {}, `${label}：本批 ${fmt(s.total ?? 0)} ${unit}送模型；一致入库 ${fmt(s.agreed ?? 0)}，转人工 ${fmt(s.review ?? 0)}；规则库 ${fmt(lib.total ?? 0)} 条（内置 ${fmt(lib.builtin ?? 0)} · 模型 ${fmt(lib.model ?? 0)} · 人工 ${fmt(lib.user ?? 0)}）`),
+            h('rect', { x: sx, y: 10, width: sw, height: 46, rx: 7, className: 'hx-rseg-bg' }),
+            h('text', { x: sx + 10, y: 28, className: 'hx-t-strong', style: { fontSize: 11.5 } }, label),
+            h('text', { x: sx + sw - 10, y: 28, textAnchor: 'end', className: 'hx-t-sub' }, s.total ? `本批送模型 ${fmt(s.total)} ${unit}` : '本批无新项'),
+            h('text', { x: sx + 10, y: 46, style: { fontSize: 10.5 } }, h('tspan', { className: 'hx-t-num' }, `✓ 入库 ${fmt(s.agreed ?? 0)}`), h('tspan', { dx: 10, className: (s.review ?? 0) ? 'hx-t-warn' : 'hx-t-sub' }, `⚑ 人工 ${fmt(s.review ?? 0)}`), h('tspan', { dx: 10, className: 'hx-t-sub' }, `一致率 ${rate}`))))
+          return
+        }
+        parts.push(h('g', { key: K(), className: `hx-rseg${on ? ' on' : ''}`, onClick: () => onTab('rules') },
+          h('rect', { x: sx, y: 22, width: sw, height: 98, rx: 7, className: 'hx-rseg-bg' }),
+          h('text', { x: sx + 10, y: 39, className: 'hx-t-strong' }, label),
+          h('text', { x: sx + sw - 10, y: 39, textAnchor: 'end', className: 'hx-t-sub' }, s.total ? `本批 ${fmt(s.total)} ${unit}` : '本批无新项')))
+        // 站点
+        const stepW = (sw - 20) / (RULE_STEPS.length + 1)
+        RULE_STEPS.forEach(([sk, sl], i) => {
+          const cx = sx + 10 + i * stepW + stepW / 2
+          const n = s[sk] ?? 0
+          const busy = on && n > 0 && sk !== 'pending'
+          parts.push(h('g', { key: K() },
+            h('rect', { x: cx - stepW / 2 + 3, y: 50, width: stepW - 6, height: 34, rx: 4, className: busy ? 'hx-rstep busy' : n ? 'hx-rstep has' : 'hx-rstep' }),
+            h('text', { x: cx, y: 64, textAnchor: 'middle', className: 'hx-t-sub', style: { fontSize: 9.5 } }, sl),
+            h('text', { x: cx, y: 78, textAnchor: 'middle', className: busy ? 'hx-t-vio' : 'hx-t-num', style: { fontSize: 11 } }, fmt(n)),
+            i < RULE_STEPS.length - 1 ? h('path', { d: `M${cx + stepW / 2 - 3},67 l3,0`, className: 'hx-rarrow' }) : null))
+        })
+        // 结果：一致入库 / 转人工
+        const rx = sx + 10 + RULE_STEPS.length * stepW + 3
+        parts.push(h('g', { key: K() },
+          h('rect', { x: rx, y: 50, width: stepW - 6, height: 15, rx: 3, className: 'hx-rres ok' }),
+          h('text', { x: rx + (stepW - 6) / 2, y: 61, textAnchor: 'middle', className: 'hx-rres-t' }, `✓ ${fmt(s.agreed ?? 0)}`),
+          h('rect', { x: rx, y: 69, width: stepW - 6, height: 15, rx: 3, className: (s.review ?? 0) ? 'hx-rres warn' : 'hx-rres' }),
+          h('text', { x: rx + (stepW - 6) / 2, y: 80, textAnchor: 'middle', className: 'hx-rres-t' }, `⚑ ${fmt(s.review ?? 0)}`)))
+        // 一致率
+        const rate = s.rate == null ? '—' : `${Math.round(s.rate * 100)}%`
+        parts.push(h('text', { key: K(), x: sx + 10, y: 108, className: 'hx-t-sub', style: { fontSize: 10 } }, `复查前一致率 ${rate}`))
+        if (on && running) parts.push(h('rect', { key: K(), x: sx + 10 + ((Date.now() / 40) % Math.max(1, sw - 40)), y: 89, width: 8, height: 5, rx: 1.5, className: 'hx-rtoken' }))
+        // 管道：模型 → 当前段
+        if (on) {
+          parts.push(h('path', { key: K(), d: `M92,58 C${sx - 40},40 ${sx - 10},40 ${sx + 30},48`, className: 'hx-rpipe run' }))
+          if (!sameModel) parts.push(h('path', { key: K(), d: `M${W - 186},58 C${sx + sw + 60},40 ${sx + sw},40 ${sx + sw - 30},48`, className: 'hx-rpipe run v' }))
+        }
+      })
+      // 人工复核站
+      const hx = W - 92
+      if (compact) {
+        parts.push(h('g', { key: K(), className: 'hx-room', onClick: () => onTab('review') }, h('title', {}, '人工复核'),
+          ...box3(hx, 12, 84, 42, (R.review ?? 0) ? 'hx-room-box warn' : 'hx-room-box'),
+          h('text', { x: hx + 42, y: 29, textAnchor: 'middle', className: 'hx-t-strong', style: { fontSize: 11.5 } }, '人工复核'),
+          h('text', { x: hx + 42, y: 47, textAnchor: 'middle', className: (R.review ?? 0) ? 'hx-t-warn' : 'hx-t-sub', style: { fontSize: 12, fontWeight: 600 } }, `⚑ ${fmt(R.review ?? 0)}`)))
+        return h('svg', { className: 'hx-ruleband compact', viewBox: `0 0 ${W} ${H}`, preserveAspectRatio: 'xMidYMid meet', role: 'img', 'aria-label': '规则生产' }, parts)
+      }
+      parts.push(h('g', { key: K(), className: 'hx-room', onClick: () => onTab('review') }, h('title', {}, '人工复核：两个模型结论不一致、或没有独立核验模型时起草的规则'),
+        ...box3(hx, 32, 84, 76, (R.review ?? 0) ? 'hx-room-box warn' : 'hx-room-box'),
+        h('text', { x: hx + 42, y: 50, textAnchor: 'middle', className: 'hx-t-strong' }, '人工复核'),
+        h('text', { x: hx + 42, y: 80, textAnchor: 'middle', className: (R.review ?? 0) ? 'hx-big warn' : 'hx-big' }, `⚑ ${fmt(R.review ?? 0)}`),
+        h('text', { x: hx + 42, y: 100, textAnchor: 'middle', className: 'hx-t-sub', style: { fontSize: 9.5 } }, (R.review ?? 0) ? '待判断 · 点击复核' : '没有待判断')))
+      return h('svg', { className: 'hx-ruleband', viewBox: compact ? `0 0 ${W} ${H}` : `0 14 ${W} ${H}`, preserveAspectRatio: 'xMidYMid meet', role: 'img', 'aria-label': '规则生产' }, parts)
+    }
+
+    /** 两层之间：画在流水线主视觉的关口下方。规则库在关口底部；规则从下方的规则生产向上送入（↑），未覆盖的项向下送回（↓）。 */
+    function ruleLinks(run, gx, y0, y1, subs) {
+      const R = run.rules
+      if (!R) return []
+      const out = []
+      ;['schema', 'values', 'terms'].forEach((id, i) => {
+        const s = R.stages[id] ?? {}
+        const lib = s.library ?? {}
+        const x = gx[i] + 1
+        const unc = s.uncovered ?? 0
+        out.push(h('g', { key: `rl${i}` },
+          h('title', {}, `${subs?.[i] ?? ''}\n规则库 ${fmt(lib.total ?? 0)} 条：内置 ${fmt(lib.builtin ?? 0)} · 模型起草 ${fmt(lib.model ?? 0)} · 人工确认 ${fmt(lib.user ?? 0)}；本批命中 ${s.hit == null ? '—' : pct(s.hit)}\n↑ 规则从下方的规则生产送入 · ↓ 未覆盖 ${fmt(unc)} 项送回规则生产`),
+          h('text', { x, y: y0 + 2, textAnchor: 'middle', className: 'hx-t-sub', style: { fontSize: 10 } }, subs?.[i] ?? ''),
+          h('rect', { x: x - 56, y: y0 + 9, width: 112, height: 20, rx: 10, className: 'hx-rlib' }),
+          h('line', { x1: x + 8, y1: y0 + 13, x2: x + 8, y2: y0 + 25, className: 'hx-rlib-sep' }),
+          h('text', { x: x - 48, y: y0 + 23, className: 'hx-rlib-t' }, `↑ 规则 ${compactNum(lib.total ?? 0)}`),
+          h('text', { x: x + 50, y: y0 + 23, textAnchor: 'end', className: unc ? 'hx-rlib-w' : 'hx-rlib-o' }, `↓ ${compactNum(unc)}`),
+          h('path', { d: `M${x - 22},${y0 + 29} L${x - 22},${y1}`, className: `hx-rdown${R.layer === 'rules' ? ' run' : ''}` }),
+          h('path', { d: `M${x + 22},${y0 + 29} L${x + 22},${y1}`, className: `hx-rup${unc ? ' has' : ''}${R.layer === 'run' && unc ? ' run' : ''}` })))
+      })
+      return out
     }
 
     function FlowView({ run, onTab }) {
@@ -570,8 +745,8 @@ window.__ModuleLoader__.load({
           h('polygon', { points: P2([[g.x + 17, top - 8], [g.x + 17 + DX * 2, top - 8 - DY * 2], [g.x + 17 + DX * 2, H - 62 - DY * 2], [g.x + 17, H - 62]]), className: 'hx-glass-side' }),
           h('rect', { x: g.x - 17, y: top - 8, width: 34, height: H - top - 54, rx: 6, className: 'hx-gate-band' }),
           h('text', { x: g.x + 8, y: top - 26, textAnchor: 'middle', className: 'hx-t-strong' }, `${g.no} ${g.name}`),
-          h('text', { x: g.x, y: H - 30, textAnchor: 'middle', className: 'hx-t-sub' }, g.sub),
-          g.model ? h('text', { x: g.x, y: H - 15, textAnchor: 'middle', className: 'hx-t-vio' }, `◆ ${g.model}`) : null))
+          run.rules ? null : h('text', { x: g.x, y: H - 30, textAnchor: 'middle', className: 'hx-t-sub' }, g.sub),
+          run.rules ? null : (g.model ? h('text', { x: g.x, y: H - 15, textAnchor: 'middle', className: 'hx-t-vio' }, `◆ ${g.model}`) : null)))
       }
       // links
       for (const l of M.links) {
@@ -594,13 +769,13 @@ window.__ModuleLoader__.load({
         const n = Math.min(12, Math.max(1, Math.ceil(Math.log10(g.pile + 1) * 3)))
         const items = []
         for (let i = 0; i < n; i++) {
-          const x = g.x - 14 + (i % 3) * 10, y0 = H - 78 - Math.floor(i / 3) * 10, s2 = 7.5
+          const x = g.x - 14 + (i % 3) * 10, y0 = (run.rules ? H - 88 : H - 78) - Math.floor(i / 3) * 10, s2 = 7.5
           items.push(h('g', { key: i, className: g.warn ? 'hx-cube w' : 'hx-cube' },
             h('polygon', { points: P2([[x, y0], [x + s2, y0], [x + s2 + 3, y0 - 3], [x + 3, y0 - 3]]), className: 'top' }),
             h('polygon', { points: P2([[x + s2, y0], [x + s2 + 3, y0 - 3], [x + s2 + 3, y0 + s2 - 3], [x + s2, y0 + s2]]), className: 'side' }),
             h('rect', { x, y: y0, width: s2, height: s2, className: 'front' })))
         }
-        parts.push(h('g', { key: K(), className: 'hx-gate', onClick: () => onTab(g.tab) }, items, h('text', { x: g.x + 20, y: H - 62, className: g.warn ? 'hx-t-warn' : 'hx-t-sub' }, `${g.pileLabel} ${fmt(g.pile)}`)))
+        parts.push(h('g', { key: K(), className: 'hx-gate', onClick: () => onTab(g.tab) }, items, h('text', { x: g.x + 20, y: run.rules ? H - 72 : H - 62, className: g.warn ? 'hx-t-warn' : 'hx-t-sub' }, `${g.pileLabel} ${fmt(g.pile)}`)))
       }
       // sources
       if (!noData) parts.push(h('text', { key: K(), x: sx, y: top - 22, className: 'hx-t-cap' }, `源数据 · ${M.sources.length} ${M.grouped ? '类（按记录类别合并）' : '张表'}`))
@@ -683,7 +858,24 @@ window.__ModuleLoader__.load({
         h('rect', { x: bx, y: binY, width: bw, height: 30, rx: 6, className: 'hx-box-r' }),
         h('text', { x: bx + 12, y: binY + 19, className: 'hx-t-sub' }, `未映射：${fmt(leftover)} 个字段值保留在 source-field 扩展 · ${fmt(M.byType.Basic ?? 0)} 条记录以 Basic 资源保存`)))
       if (refs) parts.push(h('text', { key: K(), x: bx, y: binY + 48, className: 'hx-t-sub' }, `引用资源：${refs}`))
-      return h('svg', { className: 'hx-flow', viewBox: `0 0 ${W} ${H}`, preserveAspectRatio: 'xMidYMid meet', role: 'img', 'aria-label': '映射总览' }, parts)
+      const HB = run.rules ? H - 14 : H
+      if (run.rules) parts.push(...ruleLinks(run, gx, H - 50, HB, gates.map((g) => g.sub)))
+      return h('svg', { className: 'hx-flow', viewBox: `0 0 ${W} ${HB}`, preserveAspectRatio: 'xMidYMid meet', role: 'img', 'aria-label': '映射总览' }, parts)
+    }
+
+    /** 顶部进度：三组（发现未覆盖 │ 规则生产 │ 程序转换）。 */
+    function ruleSteps(run) {
+      const R = run.rules
+      const S = (x) => x
+      const done = run.status !== 'running'
+      const at = R.at ?? (done ? 'deliver' : 'convert')
+      const order = ['read', 'discover', 'draft', 'blind', 'review', 'convert', 'gate', 'deliver']
+      const st = (k) => (done ? (k === 'review' && (R.review ?? 0) ? 'warn' : 'done') : order.indexOf(k) < order.indexOf(at) ? 'done' : k === at ? 'run' : 'idle')
+      return [
+        { label: '数据', items: [['读取', st('read')], ['发现未覆盖', st('discover')]] },
+        { label: '规则', items: [['起草', st('draft')], ['盲审', st('blind')], ['人工复核', st('review')]] },
+        { label: '转换', items: [['程序转换', st('convert')], ['验收', st('gate')], ['交付', st('deliver')]] },
+      ].map(S)
     }
 
     function stepStates(run) {
@@ -732,9 +924,12 @@ window.__ModuleLoader__.load({
       const kv = (k, v, cls = '') => [h('span', { key: `${k}k`, className: 'hx-faint' }, k), h('span', { key: `${k}v`, className: `hx-num ${cls}`, title: typeof v === 'string' ? v : undefined }, v)]
       return h('div', { className: 'hx-ov' },
         h('div', { className: 'hx-frame hx-ov-stage' },
-          h('div', { className: 'hx-ov-head' }, h('b', {}, '映射总览'), h('span', { className: 'hx-cap' }, 'SOURCE → FHIR R4'),
-            h('div', { className: 'hx-steps' }, STEP.map(([k, l]) => h('span', { key: k, className: st[k] }, `${l}${st[k] === 'done' ? ' ✓' : st[k] === 'warn' ? ' !' : st[k] === 'run' ? ' …' : ''}`)))),
-          h(FlowView, { run, onTab }),
+          h('div', { className: 'hx-ov-head' }, h('b', {}, '流水线'), h('span', { className: 'hx-cap' }, 'SOURCE → FHIR R4 · RULES'),
+            run.rules ? h('div', { className: 'hx-steps' }, ruleSteps(run).map((g, gi) => h('span', { key: gi, className: 'hx-stepgrp' }, h('i', {}, g.label), g.items.map(([l, st2]) => h('span', { key: l, className: st2 }, `${l}${st2 === 'done' ? ' ✓' : st2 === 'warn' ? ' !' : st2 === 'run' ? ' …' : ''}`)))))
+              : h('div', { className: 'hx-steps' }, STEP.map(([k, l]) => h('span', { key: k, className: st[k] }, `${l}${st[k] === 'done' ? ' ✓' : st[k] === 'warn' ? ' !' : st[k] === 'run' ? ' …' : ''}`)))),
+          run.rules ? h('div', { className: `hx-layer-t run first${run.rules.layer === 'run' ? ' on' : ''}` }, h('b', {}, '按规则转换'), h('span', {}, '程序执行，不调用模型')) : null,
+          h('div', { className: `hx-layer run${run.rules?.layer === 'rules' ? ' dim' : ''}` }, h(FlowView, { run, onTab })),
+          run.rules ? h('div', { className: `hx-layer rules${run.rules.layer === 'rules' ? ' on' : run.rules.layer === 'run' ? ' dim' : ''}` }, h('div', { className: 'hx-layer-t' }, h('b', {}, '规则生产'), h('span', {}, '双模型起草 · 人工复核 · 只处理未覆盖的表、写法和概念')), h(RuleBand, { run, onTab })) : null,
           h('div', { className: 'hx-ov-foot hx-faint' }, '线宽表示记录数 · 每列为一个 FHIR 元素的填充率（%），虚线表示填充率为 0 · 点击阶段或资源类型查看详情')),
         h('div', { className: 'hx-frame hx-pad hx-ov-side hx-scroll' },
           h('div', { className: 'hx-tiles' },
@@ -744,6 +939,10 @@ window.__ModuleLoader__.load({
             alerts.slice(0, 4).map((a, i) => h('div', { key: i, className: `hx-alert ${a.tone}`, title: a.sub || a.title },
               h('div', { style: { minWidth: 0 } }, h('div', { className: 'hx-alert-t' }, a.title), a.sub ? h('div', { className: 'hx-alert-s' }, a.sub) : null),
               h('button', { className: 'hx-btn sm', onClick: () => onTab(a.go) }, a.btn)))) : null,
+          run.rules ? h(React.Fragment, {}, h('div', { className: 'hx-sec' }, h('b', {}, '规则')),
+            h('div', { className: 'hx-tiles hx-tiles3' },
+              [['规则库', fmt(['schema', 'values', 'terms'].reduce((n, k) => n + (run.rules.stages[k]?.library?.total ?? 0), 0)), ''], ['本批新增', fmt(['schema', 'values', 'terms'].reduce((n, k) => n + (run.rules.stages[k]?.agreed ?? 0), 0)), ''], ['待人工复核', fmt(run.rules.review ?? 0), run.rules.review ? 'hx-warn' : 'hx-ok']].map(([k2, v, c]) => h('div', { key: k2, onClick: k2 === '待人工复核' ? () => onTab('review') : undefined, style: k2 === '待人工复核' ? { cursor: 'pointer' } : undefined }, h('small', {}, k2), h('b', { className: `hx-num ${c}` }, v)))),
+            h('div', { className: 'hx-faint', style: { fontSize: 11.5, margin: '4px 2px 0' } }, `复查前一致率：结构 ${run.rules.stages.schema?.rate == null ? '—' : `${Math.round(run.rules.stages.schema.rate * 100)}%`} · 值域 ${run.rules.stages.values?.rate == null ? '—' : `${Math.round(run.rules.stages.values.rate * 100)}%`} · 术语 ${run.rules.stages.terms?.rate == null ? '—' : `${Math.round(run.rules.stages.terms.rate * 100)}%`}`)) : null,
           h('div', { className: 'hx-sec' }, h('b', {}, '处理阶段')),
           S ? h('div', { className: 'hx-stage-rows' },
             h('div', { onClick: () => onTab('schema') }, h('span', {}, '① Schema 同构'), h(Coverage, { value: S.schema.tables ? (S.schema.tables - S.schema.inferred) / S.schema.tables : null }), h('span', { className: 'hx-faint' }, `${S.schema.tables} 表`)),
@@ -856,6 +1055,139 @@ window.__ModuleLoader__.load({
     /* ------------------------------------------------------- ① Schema 同构 */
     const DRAFT_ST = { applied: ['模型起草 · 未复核', 't'], review: ['模型起草 · 存在未解决问题', 'w'], confirmed: ['人工已确认', 'ok'], rejected: ['已驳回 · 按 Basic', 'b'], failed: ['起草失败', 'b'] }
     const draftLabel = (dr) => (dr.status === 'applied' ? (dr.agreement === 'disputed' ? ['模型起草 · 以复判结论为准', 'vio'] : ['模型起草 · 两个模型结论一致', 't']) : DRAFT_ST[dr.status] ?? [dr.status, ''])
+    /* ------------------------------------------------------------ 规则复核 */
+    const KIND_LABEL = { schema: '结构规格', values: '值域对照', terms: '术语对照' }
+    const SRC_LABEL = { builtin: '内置', model: '模型起草', user: '人工确认' }
+    const reasonChip = (x) => (x.unverified ? h('span', { className: 'hx-chip w' }, '未独立核验') : x.abstain ? h('span', { className: 'hx-chip' }, '模型无法判断') : h('span', { className: 'hx-chip vio' }, '两个模型不一致'))
+    function Trail({ trail }) {
+      if (!trail?.length) return null
+      return h('div', { className: 'hx-trail' }, h('div', { className: 'hx-faint', style: { fontSize: 11.5, marginBottom: 4 } }, '起草过程'),
+        trail.map((x, i) => h('div', { key: i, className: 'hx-trail-row' },
+          h('span', { className: 'hx-num hx-faint' }, `第 ${x.round ?? '—'} 轮`),
+          h('span', { className: 'hx-chip' }, x.step === '复判' ? '复查' : x.step),
+          h('span', { className: x.ok === false || x.revise === false ? 'hx-warn' : x.ok === true ? 'hx-ok' : '' }, x.ok === true ? '无异议' : x.ok === false ? '提出异议' : x.revise === true ? '修正' : x.revise === false ? '维持原结论' : ''),
+          h('span', { className: 'hx-muted', style: { fontSize: 12 } }, x.reason || ''))))
+    }
+
+    function ReviewTab({ run, onChanged }) {
+      const [tick, setTick] = useState(0)
+      const d = useAsync(() => call('rulesQueue', { runId: run.id }), [run.id, tick])
+      const [kind, setKind] = useState('all')
+      const [sel, setSel] = useState(null)
+      const [busy, setBusy] = useState(false)
+      const [err, setErr] = useState('')
+      const [edit, setEdit] = useState(null)
+      const [pick, setPick] = useState('')
+      const done = async (fn) => { setBusy(true); setErr(''); try { await fn(); setEdit(null); setPick(''); setTick((n) => n + 1); onChanged?.() } catch (e) { setErr(msg(e)) } finally { setBusy(false) } }
+      if (!d.value) return h('div', { className: 'hx-frame hx-pad', style: { flex: 1 } }, h('span', { className: 'hx-faint' }, d.error ?? '加载中…'))
+      const all = d.value.items
+      const list = kind === 'all' ? all : all.filter((x) => x.kind === kind)
+      const keyOf = (x) => `${x.kind}|${x.id}|${x.key ?? ''}`
+      const cur = list.find((x) => keyOf(x) === sel) ?? list[0] ?? null
+      const groups = []
+      for (const x of list) { const g = x.kind === 'schema' ? '结构规格' : `${KIND_LABEL[x.kind]} · ${x.group}`; const last = groups.at(-1); if (last?.name === g) last.items.push(x); else groups.push({ name: g, items: [x] }) }
+      const saveValue = (x, status, to) => call('reviewDomain', { domain: x.id, code: x.code ?? undefined, display: x.display ?? undefined, status, to: to ?? null, note: status === 'confirmed' ? '人工复核' : undefined })
+      const saveTerm = (x, c) => call('reviewTerm', { binding: x.id, key: x.key, from: x.from, to: c ? { code: c.code, display: c.display } : null, equivalence: c ? 'equivalent' : 'unmatched', status: 'confirmed', note: c ? `人工复核：采用${c.by === 'verify' ? '核验模型' : c.by === 'suggest' ? '识别模型' : '检索候选'}的选择` : '人工复核：无对应' })
+      const valueOfCand = (x) => (x.candidate?.verdict === 'map' ? ['confirmed', x.candidate.to] : x.candidate?.verdict ? [x.candidate.verdict, null] : null)
+      const sameGroup = cur ? list.filter((x) => x.kind === cur.kind && x.id === cur.id) : []
+      const VERDICT = { confirmed: '对照为', text: '按原文保留', invalid: '不属于本值域' }
+      return h('div', { style: { display: 'flex', gap: 8, flex: 1, minHeight: 0 } },
+        h('div', { className: 'hx-frame hx-scroll', style: { width: 420, flex: 'none' } },
+          h('div', { className: 'hx-pad', style: { paddingBottom: 6 } },
+            h('div', { className: 'hx-h' }, h('b', {}, '规则复核'), h('span', { className: 'hx-cap' }, 'HUMAN REVIEW')),
+            h('div', { className: 'hx-muted', style: { fontSize: 11.5, lineHeight: 1.6 } }, '两个模型结论不一致、或没有独立核验模型时起草的规则。每一项是一种表、一种写法或一个本地概念，判断一次，所有记录按它执行；判断前按原值或 Basic 保留。整个规则库共用，不限本批。'),
+            h('div', { className: 'hx-seg', style: { marginTop: 8 } }, [['all', '全部', all.length], ['schema', '结构规格', d.value.counts.schema], ['values', '值域对照', d.value.counts.values], ['terms', '术语对照', d.value.counts.terms]].map(([k, l, n]) => h('button', { key: k, className: kind === k ? 'on' : '', onClick: () => { setKind(k); setSel(null) } }, l, h('i', {}, String(n)))))),
+          !list.length ? h('div', { className: 'hx-pad hx-faint' }, '没有待人工复核的规则。') : groups.map((g) => h('div', { key: g.name },
+            h('div', { className: 'hx-grp' }, g.name, h('span', { className: 'hx-faint' }, ` ${g.items.length}`)),
+            g.items.map((x) => h('div', { key: keyOf(x), className: `hx-li${x === cur ? ' on' : ''}`, onClick: () => { setSel(keyOf(x)); setEdit(null); setPick('') } },
+              h('div', { style: { display: 'flex', gap: 6, alignItems: 'center' } },
+                h('span', { className: 'hx-num', style: { flex: 1, minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' } }, x.kind === 'schema' ? x.title : x.kind === 'values' ? [x.code, x.display].filter((v) => v != null && v !== '').join(' · ') || '（空）' : [x.from?.code, x.from?.display].filter(Boolean).join(' · ')),
+                x.count != null ? h('span', { className: 'hx-num hx-faint', style: { fontSize: 11 } }, `${fmt(x.count)} 次`) : null,
+                reasonChip(x))))))),
+        !cur ? h('div', { className: 'hx-frame hx-pad', style: { flex: 1 } }, h('span', { className: 'hx-faint' }, '—')) : h('div', { className: 'hx-frame hx-scroll hx-pad', style: { flex: 1 } },
+          h('div', { className: 'hx-h' }, h('b', {}, cur.kind === 'schema' ? cur.title : cur.kind === 'values' ? [cur.code, cur.display].filter((v) => v != null && v !== '').join(' · ') : [cur.from?.code, cur.from?.display].filter(Boolean).join(' · ')),
+            h('span', { className: 'hx-chip t' }, KIND_LABEL[cur.kind]), reasonChip(cur),
+            cur.kind !== 'schema' ? h('span', { className: 'hx-faint' }, `${cur.group}${cur.count != null ? ` · 本批出现 ${fmt(cur.count)} 次` : ''}`) : h('span', { className: 'hx-faint' }, `记录类别 ${KIND_ZH[cur.recordKind] ?? cur.recordKind ?? '—'} · ${cur.roles} 个角色`)),
+          cur.unverified ? h('div', { className: 'hx-note w' }, '没有配置独立的核验模型，这条规则只经过识别模型起草和插件校验。确认后生效；配置核验模型后重新运行，可由两个模型交叉核验。') : null,
+          cur.note && cur.kind !== 'schema' ? h('div', { className: 'hx-muted', style: { fontSize: 12, margin: '6px 0' } }, cur.note) : null,
+          cur.kind === 'schema' ? h(React.Fragment, {},
+            cur.issue?.reason && !cur.unverified ? h('div', { className: 'hx-note' }, `核验模型的意见：${cur.issue.reason}`) : null,
+            cur.disputed?.length ? h('div', { className: 'hx-muted', style: { fontSize: 12 } }, `两个模型结论不一致、暂未映射的字段：${cur.disputed.join('、')}`) : null,
+            h('table', { style: { marginTop: 8 } }, h('thead', {}, h('tr', {}, h('th', {}, '语义角色'), h('th', {}, '来源字段'))),
+              h('tbody', {}, Object.entries(cur.spec?.roles ?? {}).map(([r, f]) => h('tr', { key: r }, h('td', { className: 'hx-num' }, r), h('td', { className: 'hx-num' }, [].concat(f).join(' → ')))))),
+            edit !== null ? h('div', { style: { marginTop: 8 } }, h('textarea', { className: 'hx-input', style: { width: '100%', height: 240, fontFamily: 'var(--mono)', fontSize: 12 }, value: edit, onChange: (e) => setEdit(e.target.value) })) : null,
+            h('div', { className: 'hx-actions' },
+              edit === null ? h('button', { className: 'hx-btn new', disabled: busy, onClick: () => done(() => call('reviewDraft', { file: cur.id, action: 'confirm' })) }, '确认，采用这份规格') : h('button', { className: 'hx-btn new', disabled: busy, onClick: () => done(() => call('reviewDraft', { file: cur.id, action: 'edit', spec: edit })) }, '保存修改并确认'),
+              h('button', { className: 'hx-btn', disabled: busy, onClick: () => setEdit(edit === null ? JSON.stringify(cur.spec, null, 2) : null) }, edit === null ? '修改…' : '取消修改'),
+              h('button', { className: 'hx-btn', disabled: busy, onClick: () => done(() => call('reviewDraft', { file: cur.id, action: 'redraft' })) }, '下次运行重新起草'),
+              h('button', { className: 'hx-btn danger', disabled: busy, onClick: () => done(() => call('reviewDraft', { file: cur.id, action: 'reject' })) }, '不采用（按 Basic 保存）'))) : null,
+          cur.kind === 'values' ? h(React.Fragment, {},
+            cur.candidate ? h('div', { className: 'hx-note' }, `识别模型的结论：${VERDICT[valueOfCand(cur)[0]] ?? valueOfCand(cur)[0]}${valueOfCand(cur)[1] ? ` ${valueOfCand(cur)[1]}${(cur.target?.values ?? []).find((v) => v.code === valueOfCand(cur)[1])?.display ? `（${cur.target.values.find((v) => v.code === valueOfCand(cur)[1]).display}）` : ''}` : ''}`) : null,
+            cur.fields ? h('div', { className: 'hx-faint', style: { fontSize: 11.5 } }, `出现在：${(Array.isArray(cur.fields) ? cur.fields : Object.keys(cur.fields)).slice(0, 3).join('、')}`) : null,
+            h('div', { className: 'hx-actions' },
+              cur.candidate ? h('button', { className: 'hx-btn new', disabled: busy, onClick: () => done(() => saveValue(cur, ...valueOfCand(cur))) }, '采用识别模型的结论') : null,
+              cur.target?.values?.length ? h('select', { className: 'hx-input', value: pick, onChange: (e) => setPick(e.target.value) }, h('option', { value: '' }, '改为对照到…'), cur.target.values.map((v) => h('option', { key: v.code, value: v.code }, `${v.code} · ${v.display ?? ''}`))) : h('input', { className: 'hx-input', placeholder: '规范写法', value: pick, onChange: (e) => setPick(e.target.value) }),
+              h('button', { className: 'hx-btn', disabled: busy || !pick, onClick: () => done(() => saveValue(cur, 'confirmed', pick)) }, '确认对照'),
+              h('button', { className: 'hx-btn', disabled: busy, onClick: () => done(() => saveValue(cur, 'text')) }, '按原文保留'),
+              h('button', { className: 'hx-btn danger', disabled: busy, onClick: () => done(() => saveValue(cur, 'invalid')) }, '不属于本值域')),
+            sameGroup.filter((x) => x.candidate).length > 1 ? h('div', { className: 'hx-actions' }, h('button', { className: 'hx-btn', disabled: busy, onClick: () => done(async () => { for (const x of sameGroup.filter((y) => y.candidate)) await saveValue(x, ...valueOfCand(x)) }) }, `本值域 ${sameGroup.filter((x) => x.candidate).length} 项全部采用识别模型的结论`)) : null) : null,
+          cur.kind === 'terms' ? h(React.Fragment, {},
+            h('div', { className: 'hx-faint', style: { fontSize: 11.5 } }, `目标标准：${cur.target}${cur.ctx?.unit?.length ? ` · 单位 ${cur.ctx.unit.slice(0, 3).join('、')}` : ''}`),
+            h('table', { style: { marginTop: 8 } }, h('thead', {}, h('tr', {}, h('th', {}, '候选代码'), h('th', {}, '名称'), h('th', {}, '来自'), h('th', {}, ''))),
+              h('tbody', {}, cur.candidates.map((c) => h('tr', { key: `${c.by}${c.code}` }, h('td', { className: 'hx-num' }, c.code), h('td', {}, c.display), h('td', { className: 'hx-faint' }, c.by === 'suggest' ? '识别模型' : c.by === 'verify' ? '核验模型' : '代码表检索'),
+                h('td', {}, h('button', { className: 'hx-btn sm', disabled: busy, onClick: () => done(() => saveTerm(cur, c)) }, '采用')))))),
+            h('div', { className: 'hx-actions' }, h('button', { className: 'hx-btn danger', disabled: busy, onClick: () => done(() => saveTerm(cur, null)) }, '无对应的标准代码'),
+              sameGroup.filter((x) => x.candidates.some((c) => c.by === 'suggest')).length > 1 ? h('button', { className: 'hx-btn', disabled: busy, onClick: () => done(async () => { for (const x of sameGroup) { const c = x.candidates.find((y) => y.by === 'suggest'); if (c) await saveTerm(x, c) } }) }, `本组 ${sameGroup.filter((x) => x.candidates.some((c) => c.by === 'suggest')).length} 项全部采用识别模型的选择`) : null)) : null,
+          err ? h('div', { className: 'hx-bad', style: { marginTop: 8 } }, err) : null,
+          h('div', { className: 'hx-faint', style: { fontSize: 11.5, marginTop: 8 } }, '判断保存在本机对照库，下次运行生效；也可以在流水线页用新规则重新运行本批。'),
+          h(Trail, { trail: cur.trail })))
+    }
+
+    /* -------------------------------------------------------------- 规则库 */
+    function LibraryList({ kind }) {
+      const [q, setQ] = useState('')
+      const [source, setSource] = useState('all')
+      const [limit, setLimit] = useState(200)
+      const [sel, setSel] = useState(null)
+      const apiKind = kind === 'schema' ? 'schema' : kind === 'domains' ? 'values' : 'terms'
+      const d = useAsync(() => call('rulesLibrary', { kind: apiKind, q, source, limit }), [apiKind, q, source, limit])
+      const hk = apiKind === 'schema' ? 'spec' : apiKind === 'values' ? 'domain' : 'term'
+      const hist = useAsync(() => (sel ? call('history', { kind: hk, id: sel.id, key: sel.key ?? '' }) : Promise.resolve(null)), [sel ? `${sel.id}|${sel.key}` : ''])
+      const v = d.value
+      const cols = apiKind === 'schema' ? ['表', '记录类别', '角色', '来源', '状态'] : apiKind === 'values' ? ['值域', '代码', '名称 / 原值', '规范值', '状态', '来源'] : ['对照', '本地代码', '名称', '标准代码', '来源']
+      const ST = { confirmed: '已确认', applied: '生效（模型起草）', review: '待人工复核', rejected: '不采用', failed: '待重新起草', text: '按原文保留', invalid: '不属于本值域', pending: '待确认' }
+      return h('div', { style: { display: 'flex', gap: 8, flex: 1, minHeight: 0 } },
+        h('div', { className: 'hx-frame hx-scroll', style: { flex: 1 } },
+          h('div', { className: 'hx-pad', style: { display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap', paddingBottom: 6 } },
+            h('input', { className: 'hx-input', style: { width: 240 }, placeholder: '筛选代码、名称、表名…', value: q, onChange: (e) => { setQ(e.target.value); setLimit(200) } }),
+            h('div', { className: 'hx-seg' }, ['all', 'builtin', 'model', 'user'].map((k) => h('button', { key: k, className: source === k ? 'on' : '', onClick: () => setSource(k) }, k === 'all' ? '全部' : SRC_LABEL[k], h('i', {}, String(v?.counts?.[k] ?? 0))))),
+            h('span', { className: 'hx-faint', style: { fontSize: 11.5 } }, '整个规则库，所有批次共用；点一条看修改历史')),
+          !v ? h('div', { className: 'hx-pad hx-faint' }, d.error ?? '加载中…') : h('table', {},
+            h('thead', {}, h('tr', {}, cols.map((c) => h('th', { key: c }, c)))),
+            h('tbody', {}, v.rows.map((r, i) => h('tr', { key: `${r.id}|${r.key ?? ''}|${i}`, className: `click${sel && sel.id === r.id && (sel.key ?? '') === (r.key ?? '') ? ' sel' : ''}`, onClick: () => setSel(r) },
+              ...(apiKind === 'schema' ? [h('td', { className: 'hx-num' }, r.title), h('td', {}, KIND_ZH[r.recordKind] ?? r.recordKind ?? '—'), h('td', { className: 'hx-num' }, r.roles), h('td', {}, h('span', { className: `hx-chip src-${r.source}` }, SRC_LABEL[r.source])), h('td', { className: r.status === 'review' ? 'hx-warn' : '' }, `${ST[r.status] ?? r.status}${r.unverified && r.source !== 'user' ? ' · 未独立核验' : ''}`)]
+                : apiKind === 'values' ? [h('td', {}, r.group), h('td', { className: 'hx-num' }, r.code ?? ''), h('td', {}, r.display ?? ''), h('td', { className: 'hx-num' }, r.to ?? '—'), h('td', { className: r.status === 'pending' ? 'hx-warn' : '' }, ST[r.status] ?? r.status), h('td', {}, h('span', { className: `hx-chip src-${r.source}` }, SRC_LABEL[r.source]))]
+                  : [h('td', {}, r.group), h('td', { className: 'hx-num' }, r.from?.code ?? ''), h('td', {}, r.from?.display ?? ''), h('td', { className: 'hx-num' }, r.to?.code ? `${r.to.code} ${r.to.display ?? ''}` : r.equivalence === 'unmatched' ? '无对应' : '—'), h('td', {}, h('span', { className: `hx-chip src-${r.source}` }, SRC_LABEL[r.source]))]))))),
+          v && v.total > v.rows.length ? h('div', { className: 'hx-pad' }, h('button', { className: 'hx-btn', onClick: () => setLimit(limit + 200) }, `显示更多（共 ${fmt(v.total)} 条）`)) : null),
+        sel ? h('div', { className: 'hx-frame hx-scroll hx-pad', style: { width: 380, flex: 'none' } },
+          h('div', { className: 'hx-h' }, h('b', {}, '修改历史'), h('button', { className: 'hx-btn sm', onClick: () => setSel(null) }, '关闭')),
+          h('div', { className: 'hx-muted', style: { fontSize: 12, marginBottom: 6 } }, apiKind === 'schema' ? sel.title : `${sel.group} · ${[sel.code ?? sel.from?.code, sel.display ?? sel.from?.display].filter(Boolean).join(' · ')}`),
+          sel.source === 'builtin' ? h('div', { className: 'hx-faint' }, '内置规则，随插件版本发布；本机没有改动。') : !hist.value ? h('div', { className: 'hx-faint' }, '加载中…') : !hist.value.history.length ? h('div', { className: 'hx-faint' }, '没有记录。') : hist.value.history.map((x, i) => h('div', { key: i, className: 'hx-trail-row', style: { gridTemplateColumns: '130px 1fr' } },
+            h('span', { className: 'hx-num hx-faint', style: { fontSize: 11 } }, shortTime(x.at)),
+            h('span', { style: { fontSize: 12 } }, `${{ model: '模型给出', set: '人工修改', confirm: '人工确认', review: '人工复核', import: '导入', invalidate: '作废' }[x.action] ?? x.action}${x.data?.to ? ` → ${typeof x.data.to === 'object' ? x.data.to.code : x.data.to}` : x.data?.status ? ` · ${ST[x.data.status] ?? x.data.status}` : ''}${x.data?.reason ? `（${x.data.reason}）` : ''}`)))) : null)
+    }
+
+    function RulesTab({ run, sub, setSub, onRerun }) {
+      const [mode, setMode] = useState('run')
+      return h('div', { className: 'hx-col', style: { flex: 1, minHeight: 0 } },
+        h('div', { className: 'hx-frame hx-pad hx-subbar' },
+          h('div', { className: 'hx-seg' }, [['schema', '① 结构规格'], ['domains', '② 值域对照'], ['terms', '③ 术语对照']].map(([k, l]) => h('button', { key: k, className: sub === k ? 'on' : '', onClick: () => setSub(k) }, l))),
+          h('div', { className: 'hx-seg' }, [['run', '本批命中'], ['library', '整个规则库']].map(([k, l]) => h('button', { key: k, className: mode === k ? 'on' : '', onClick: () => setMode(k) }, l))),
+          h('span', { className: 'hx-faint', style: { fontSize: 11.5 } }, mode === 'run' ? '本批每张表、每种写法、每个概念用了哪条规则，命中多少' : '内置、模型起草、人工确认的全部规则')),
+        mode === 'library' ? h(LibraryList, { kind: sub })
+          : sub === 'schema' ? h(SchemaTab, { run, onRerun }) : sub === 'domains' ? h(DomainsTab, { run, onRerun }) : h(TermsTab, { run, onRerun }))
+    }
+
     function SchemaTab({ run, onRerun }) {
       const [tick, setTick] = useState(0)
       const d = useAsync(() => call('schema', { runId: run.id }), [run.id, run.status, tick])

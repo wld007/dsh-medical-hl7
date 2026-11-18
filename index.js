@@ -182,6 +182,8 @@ export function apply(ctx, config = {}) {
           case 'testConnection': return service.testConnection(r)
           case 'deleteRun': return service.deleteRun(r.runId)
           case 'history': return service.history(r)
+          case 'rulesQueue': return service.rulesQueue(r)
+          case 'rulesLibrary': return service.rulesLibrary(r)
           case 'pickFolder': return { path: await systemPick('folder') }
           case 'pickFile': return { path: await systemPick('file') }
           case 'saveDefaults': return saveDefaults(r)

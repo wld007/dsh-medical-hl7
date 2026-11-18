@@ -121,14 +121,22 @@ test('没有配置模型：行为与以前一致（无规格的表按 Basic 保�
   assert.equal(R.filter((r) => r.resourceType === 'Basic').length, 1)
 })
 
-test('没有单独的核验模型：由识别模型盲审；盲审失败不算“结论一致”', async () => {
+test('没有独立的核验模型：不做盲审，起草结果全部转人工；人工确认前规格不生效；盲审失败不算“结论一致”', async () => {
   const { reviewLoop } = await import('../lib/model/loop.js')
   const items = [{ id: 'a' }, { id: 'b' }]
   const r1 = await reviewLoop({ items, maxRounds: 2, batch: 2,
     propose: async (l) => new Map(l.map((x) => [x.id, { v: 1 }])), check: () => null,
-    blind: async () => { throw new Error('未配置核验模型') }, adjudicate: async () => new Map() })
+    blind: async () => { throw new Error('端点出错') }, adjudicate: async () => new Map() })
   assert.deepEqual(r1.results.map((x) => x.outcome), ['review', 'review'], '盲审失败转人工')
-  assert.equal(r1.cross.reviewed, 0)
+
+  const steps = []
+  let blinded = 0
+  const r2 = await reviewLoop({ items, maxRounds: 2, batch: 2, noVerify: true, onStep: (id, st) => steps.push(`${id}:${st}`),
+    propose: async (l) => new Map(l.map((x) => [x.id, { v: 1 }])), check: () => null,
+    blind: async () => { blinded++; return new Map() }, adjudicate: async () => new Map() })
+  assert.equal(blinded, 0, '不做盲审')
+  assert.deepEqual(r2.results.map((x) => [x.outcome, x.issue?.by]), [['review', 'no-verify'], ['review', 'no-verify']])
+  assert.ok(steps.includes('a:drafting') && steps.includes('a:checking') && steps.includes('a:review'), '逐站报告')
 
   const base = await realpath(await mkdtemp(join(tmpdir(), 'hl7-same-')))
   await writeFictionalPatient(join(base, 'in', '病人A'))
@@ -136,7 +144,19 @@ test('没有单独的核验模型：由识别模型盲审；盲审失败不算�
   const svc = createService({ config: { outputRoot: join(base, 'out'), baseURL: 'x', model: 'm' }, defaultDirectory: base, stateDir: join(base, 'state'), chatImpl: { suggest: mock('suggest', log) } })
   const run = await wait(svc, (await svc.start({ inputDir: join(base, 'in') })).runId)
   assert.equal(run.model.sameModel, true)
-  assert.equal(run.model.phases.schema.cross.reviewed, 1, '识别模型做了盲审')
-  assert.ok(log.some((x) => x.name === 'suggest' && x.kind.includes('独立的数据映射审查员')))
+  assert.equal(run.model.phases.schema.cross.reviewed, 0, '没有自己审自己')
+  assert.ok(!log.some((x) => x.kind.includes('独立的数据映射审查员')))
+  assert.equal(run.model.phases.schema.review, 1, '起草的规格转人工')
+  assert.equal(run.stages.schema.inferred, 1, '人工确认前这张表按 Basic 保存')
+  const { run: withRules } = await svc.status(run.id)
+  assert.equal(withRules.rules.models.verify, null)
+  assert.equal(withRules.rules.reviewBy.schema, 1, '待人工复核')
+  const q = await svc.rulesQueue({ runId: run.id })
+  const item = q.items.find((x) => x.kind === 'schema')
+  assert.ok(item?.unverified)
+  await svc.reviewDraft({ file: item.id, action: 'confirm' })
+  assert.equal((await svc.rulesQueue({})).counts.schema, 0, '确认后出队')
+  const lib = await svc.rulesLibrary({ kind: 'schema', source: 'user' })
+  assert.equal(lib.total, 1)
   svc.dispose()
 })
