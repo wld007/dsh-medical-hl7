@@ -13,9 +13,9 @@ DeepSeek Harness plugin · schema harmonization · value normalization · termin
 ![node](https://img.shields.io/badge/node-%E2%89%A520-339933)
 ![FHIR](https://img.shields.io/badge/FHIR-R4%204.0.1-e3501c)
 
-![HL7 standardization pipeline: conversion by rules on top, rule production at the bottom](https://raw.githubusercontent.com/wld007/dsh-medical-hl7/main/assets/pipeline-dark.png)
+![HL7 standardization pipeline: a batch from rule production to conversion, then rule review and the rule library](https://raw.githubusercontent.com/wld007/dsh-medical-hl7/main/assets/demo.webp)
 
-<sub>Screenshot from fictional data (`test/fixtures`, 12 fictional patients) and a local fake model endpoint; the two models are set up to disagree so that human review is visible.</sub>
+<sub>Recorded from a real run on fictional data (`scripts/demo-data.mjs`, 16 fictional patients, 10 tables without a mapping spec) against a local fake model endpoint: rule production at the bottom (drafting, blind review, recheck per table), then conversion by rules, rule review and the rule library. The two models disagree on a few items so that human review is visible. Re-record with `scripts/readme-demo.mjs`.</sub>
 
 </div>
 
@@ -124,7 +124,12 @@ Details: [docs/pipeline.md](docs/pipeline.md), [docs/bundle-fields.md](docs/bund
 
 ```sh
 npm test                              # tests (fictional data + mock models, no network)
-node scripts/build.mjs 0.7.1-dev.1    # build dist/<version>, then install from the profile
+node scripts/build.mjs 0.7.2-dev.1    # build dist/<version>, then install from the profile
+REACT_UMD_DIR=<dir with react.js, react-dom.js> node scripts/preview-page.mjs <stateDir>   # preview the page outside DSH
+
+# re-record the README animation (fictional data + local fake models, frames via local Chrome)
+REACT_UMD_DIR=… node scripts/readme-demo.mjs /tmp/hl7-demo [patients]
+python3 scripts/readme-demo.py /tmp/hl7-demo assets/demo.webp   # needs Pillow
 ```
 
 ## License

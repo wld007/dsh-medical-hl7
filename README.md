@@ -13,9 +13,9 @@ DeepSeek Harness 插件 · Schema 同构 · 值域归一 · 术语对照 · 双�
 ![node](https://img.shields.io/badge/node-%E2%89%A520-339933)
 ![FHIR](https://img.shields.io/badge/FHIR-R4%204.0.1-e3501c)
 
-![HL7 标准化流水线：上层按规则转换，底部规则生产](https://raw.githubusercontent.com/wld007/dsh-medical-hl7/main/assets/pipeline-dark.png)
+![HL7 标准化流水线：一个批次从规则生产到按规则转换，再看规则复核和规则库](https://raw.githubusercontent.com/wld007/dsh-medical-hl7/main/assets/demo.webp)
 
-<sub>截图用虚构数据（`test/fixtures`，12 位虚构病人）和本机假模型端点运行得到；两个模型故意设成有分歧，以展示人工复核。</sub>
+<sub>动画用虚构数据（`scripts/demo-data.mjs`，16 位虚构病人、10 张没有映射规格的表）和本机假模型端点真实运行录制：先看底部规则生产（逐表起草、盲审、复查），再看上层按规则转换，然后是规则复核和规则库。两个模型故意在少数项上意见不同，以展示人工复核。用 `scripts/readme-demo.mjs` 可重录。</sub>
 
 </div>
 
@@ -164,7 +164,12 @@ dsh plugin --profile <profile> add dsh-medical-hl7
 
 ```sh
 npm test                              # 测试（虚构数据 + 模拟模型，不需要网络）
-node scripts/build.mjs 0.7.1-dev.1    # 生成 dist/<版本>，再从 profile 安装
+node scripts/build.mjs 0.7.2-dev.1    # 生成 dist/<版本>，再从 profile 安装
+REACT_UMD_DIR=<含 react.js、react-dom.js 的目录> node scripts/preview-page.mjs <stateDir>   # 在 DSH 之外预览页面
+
+# 重录 README 动画（虚构数据 + 本机假模型端点，用本机 Chrome 截帧）
+REACT_UMD_DIR=… node scripts/readme-demo.mjs /tmp/hl7-demo [病人数]
+python3 scripts/readme-demo.py /tmp/hl7-demo assets/demo.webp   # 需要 Pillow
 ```
 
 测试只使用虚构数据；真实病历和由病历派生的结果都不进仓库。更新记录见 [CHANGELOG.md](CHANGELOG.md)。

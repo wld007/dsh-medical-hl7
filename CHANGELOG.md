@@ -1,5 +1,11 @@
 # 更新记录
 
+## 0.7.2 — 2026-11-18
+
+- README 顶部换成动画：虚构数据 + 本机假模型端点真实运行一批录制，依次看规则生产、按规则转换、规则复核、规则库。录制脚本 `scripts/readme-demo.mjs`（用本机 Chrome 的 DevTools 协议截帧，不需要 Playwright）、`scripts/readme-demo.py`（合成 WebP）；演示数据 `scripts/demo-data.mjs`、假模型端点 `scripts/fake-models.mjs`；页面预览 `scripts/preview-page.mjs`。
+- 页面 RPC 的分发移到 `lib/rpc.js`，插件和预览脚本共用。
+- 修正（流水线页规则生产）：各站数量更新被限频丢掉最后一次变化，起草完的表要等全部起草完才移到下一站；模型在途请求数只在其他进度保存时才刷新，指示灯常显示“空闲”。
+
 ## 0.7.1 — 2026-11-18
 
 - README 重写（参照匿名化、病历文书提取）：规则驱动的思路、双模型 + 人工复核流程、页面截图（虚构数据）；新增英文 README。
